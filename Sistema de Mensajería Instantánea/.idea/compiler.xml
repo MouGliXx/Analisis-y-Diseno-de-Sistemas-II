@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Sistema de Mensajeria Instantanea" />
+        <module name="Sistema de Mensajería Instantanea" />
       </profile>
     </annotationProcessing>
   </component>
