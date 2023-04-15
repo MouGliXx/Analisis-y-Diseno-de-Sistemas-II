@@ -1,4 +1,4 @@
-package vista;
+package vista.ventanas;
 
 import javax.swing.*;
 
