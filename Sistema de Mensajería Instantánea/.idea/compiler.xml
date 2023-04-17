@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Sistema de Mensajería Instantánea" />
         <module name="Sistema de Mensajeria Instantanea" />
         <module name="Sistema de Mensajería Instantanea" />
       </profile>
