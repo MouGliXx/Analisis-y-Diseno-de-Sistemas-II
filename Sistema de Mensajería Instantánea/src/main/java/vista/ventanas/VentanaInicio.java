@@ -12,6 +12,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
     private JPanel PanelPrincipal;
     private JPanel PanelCentral;
     private JButton conectarButton;
+
     private JLabel IconoMensaje;
     private JLabel MiDireccionLabel;
     private JTextField NombreDeUsuarioJTextField;
@@ -27,6 +28,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
     @Override
     public void setActionListener(ActionListener controlador) {
         this.modoEscuchaRadioButton.addActionListener(controlador);
+        this.conectarButton.addActionListener(controlador);
     }
 
     @Override
@@ -52,7 +54,10 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
         conectarButton.setEnabled(false);
+        conectarButton.setActionCommand("CONECTAR");
+        modoEscuchaRadioButton.setActionCommand("MODO_ESCUCHA");
     }
+
 
     @Override
     public void cerrarVentana() {
@@ -80,6 +85,9 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
     public String getDireccionIP() {
         return this.IpJTextField.getText();
     }
+
+    @Override
+    public boolean getModoEscucha() { return this.modoEscuchaRadioButton.isSelected();}
 
     @Override
     public void setMiDireccionIP(String IP) {

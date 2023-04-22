@@ -19,7 +19,6 @@ public class ListenerThread implements Runnable{
             try{
                 mensaje = this.input.readLine();
                 if (mensaje != null) {
-                    System.out.printf("\nRecibimos mensaje\n");
                     System.out.println("["+usuario + "]:" + mensaje);
                 }
             }catch(IOException e){

@@ -1,8 +1,12 @@
 package vista.ventanas;
 
-import javax.swing.*;
+import vista.interfaces.IVistaMensajes;
 
-public class VentanaMensajes {
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
+
+public class VentanaMensajes implements IVistaMensajes {
     private JPanel PanelPrincipal;
     private JPanel PanelInferior;
     private JPanel PanelSuperior;
@@ -14,4 +18,39 @@ public class VentanaMensajes {
     private JLabel PersonaLabel;
     private JScrollPane ScrollPanelCentral;
     private JTable table1;
+
+    @Override
+    public void setActionListener(ActionListener controlador) {
+
+    }
+
+    @Override
+    public void setWindowListener(WindowListener controlador) {
+
+    }
+
+    @Override
+    public void ejecutar() {
+
+    }
+
+    @Override
+    public void cerrarVentana() {
+
+    }
+
+    @Override
+    public void creaOtraVentana(String ventana) {
+
+    }
+
+    @Override
+    public void lanzarVentanaEmergente(String mensaje) {
+
+    }
+
+    @Override
+    public void setKeyListener() {
+
+    }
 }

@@ -42,7 +42,7 @@ public class ServerThread implements Runnable{
     public void setListenerMensajes() {
         SocketIO socketServer = this.cliente.getSocketServer();
         if (socketServer.getInput() != null) {
-            Thread receiverThread = new Thread(new ListenerThread(socketServer.getInput(),"Cliente"));
+            Thread receiverThread = new Thread(new ListenerThread(socketServer.getInput(),this.cliente.getUsuario()));
             receiverThread.start();
         } else {
             System.out.println("No se ha establecido una conexión previa.");

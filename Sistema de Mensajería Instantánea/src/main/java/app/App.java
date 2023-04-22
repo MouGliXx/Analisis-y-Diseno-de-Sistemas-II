@@ -6,7 +6,8 @@ import vista.ventanas.VentanaInicio;
 public class App {
     public static void main(String[] args) {
         VentanaInicio ventanaInicio = new VentanaInicio();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
+        Sistema sistema = new Sistema();
+        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio,sistema);
         ventanaInicio.ejecutar();
     }
 }

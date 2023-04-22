@@ -15,6 +15,7 @@ public class Cliente{
     private ServerSocket serverSocket;
     private SocketIO socketCliente;
     private SocketIO socketServer;
+    private boolean modoEscucha;
 
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
@@ -47,7 +48,7 @@ public class Cliente{
 
     public void setListenerMensajesComoCliente() {
         if (this.socketCliente.getInput() != null) {
-            Thread receiverThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Servidor"));
+            Thread receiverThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Usuario 1"));
             receiverThread.start();
         } else {
             System.out.println("No se ha establecido una conexión previa.");
@@ -61,6 +62,26 @@ public class Cliente{
             e.printStackTrace();
         }
     }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public boolean isModoEscucha() {
+        return modoEscucha;
+    }
+
+    public void setModoEscucha(boolean modoEscucha) {
+        this.modoEscucha = modoEscucha;
+    }
+
+    public void mandarMensajeComoCliente(String mensaje){this.getSocketCliente().mandarMensaje(mensaje);}
+
+    public void mandarMensajeComoServidor(String mensaje){this.getSocketServer().mandarMensaje(mensaje);}
 
     public SocketIO getSocketCliente() {
         return socketCliente;

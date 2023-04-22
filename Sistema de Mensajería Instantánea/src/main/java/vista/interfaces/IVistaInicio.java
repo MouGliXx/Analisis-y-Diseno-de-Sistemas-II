@@ -9,5 +9,7 @@ public interface IVistaInicio extends IVista {
 
     void setMiDireccionIP(String texto);
 
+    boolean getModoEscucha();
+
     String getPuerto();
 }
