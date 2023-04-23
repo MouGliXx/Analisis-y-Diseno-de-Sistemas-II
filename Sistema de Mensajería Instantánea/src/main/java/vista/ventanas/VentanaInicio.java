@@ -1,41 +1,44 @@
 package vista.ventanas;
 
+import controlador.ControladorNotificacion;
 import vista.interfaces.IVistaInicio;
-
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.*;
 
-public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
+public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
     private JPanel PanelCentral;
     private JButton conectarButton;
-
     private JLabel IconoMensaje;
     private JLabel MiDireccionLabel;
     private JTextField NombreDeUsuarioJTextField;
     private JTextField IpJTextField;
-    private JTextField PuertoJTextField;
     private JLabel NombreDeUsuarioLabel;
     private JLabel IPLabel;
     private JLabel PuertoLabel;
     private JRadioButton modoEscuchaRadioButton;
     private JLabel Info1Label;
     private JLabel Info2Label;
+    private JSpinner PuertoSpinner;
 
     @Override
     public void setActionListener(ActionListener controlador) {
         this.modoEscuchaRadioButton.addActionListener(controlador);
+        this.modoEscuchaRadioButton.addActionListener(this);
         this.conectarButton.addActionListener(controlador);
     }
 
     @Override
     public void setKeyListener() {
-        NombreDeUsuarioJTextField.addKeyListener(this);
-        IpJTextField.addKeyListener(this);
-        PuertoJTextField.addKeyListener(this);
+        this.NombreDeUsuarioJTextField.addKeyListener(this);
+        this.IpJTextField.addKeyListener(this);
+    }
+
+    @Override
+    public void setChangeListener() {
+        this.PuertoSpinner.addChangeListener(this);
     }
 
     @Override
@@ -54,10 +57,8 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
         conectarButton.setEnabled(false);
-        conectarButton.setActionCommand("CONECTAR");
-        modoEscuchaRadioButton.setActionCommand("MODO_ESCUCHA");
+        PuertoSpinner.setValue(1);
     }
-
 
     @Override
     public void cerrarVentana() {
@@ -66,14 +67,26 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
     }
 
     @Override
-    public void creaOtraVentana(String ventana) {
-
+    public void creaOtraVentana(int tipo, String nombreUsuarioEmisor) {
+        VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
+        ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
+        switch (tipo) {
+            case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
+            case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
+            case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
+        }
+        ventanaNotificacion.ejecutar();
     }
 
     @Override
     public void lanzarVentanaEmergente(String mensaje) {
         JFrame jFrame = new JFrame();
         JOptionPane.showMessageDialog(jFrame, mensaje);
+    }
+
+    @Override
+    public void setMiDireccionIP(String IP) {
+        this.MiDireccionLabel.setText("Mi direccion IP: " + IP);
     }
 
     @Override
@@ -87,22 +100,40 @@ public class VentanaInicio extends JFrame implements IVistaInicio, KeyListener {
     }
 
     @Override
-    public boolean getModoEscucha() { return this.modoEscuchaRadioButton.isSelected();}
-
-    @Override
-    public void setMiDireccionIP(String IP) {
-        this.MiDireccionLabel.setText("Mi direccion IP: " + IP);
+    public boolean getModoEscucha() {
+        return this.modoEscuchaRadioButton.isSelected();
     }
 
     @Override
-    public String getPuerto() {
-        return this.PuertoJTextField.getText();
+    public int getPuerto() {
+        return Integer.parseInt(this.PuertoSpinner.getValue().toString());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Modo Escucha")) {
+            if (modoEscuchaRadioButton.isSelected())
+                modoEscuchaRadioButton.setText("Modo Escucha: ON");
+            else
+                modoEscuchaRadioButton.setText("Modo Escucha: OFF");
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty() && !PuertoJTextField.getText().isEmpty();
+        boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
         conectarButton.setEnabled(conexion);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        int currentValue = (int) PuertoSpinner.getValue();
+        if (currentValue <= 1) {
+            PuertoSpinner.setValue(1);
+        }
+        if (currentValue > 65535) {
+            PuertoSpinner.setValue(65535);
+        }
     }
 
     //METODOS NO USADOS

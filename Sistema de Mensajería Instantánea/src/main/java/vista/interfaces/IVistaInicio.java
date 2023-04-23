@@ -1,15 +1,19 @@
 package vista.interfaces;
 
+import java.awt.event.KeyListener;
+
 public interface IVistaInicio extends IVista {
     void setKeyListener();
+
+    void setChangeListener();
+
+    void setMiDireccionIP(String texto);
 
     String getNombreDeUsuario();
 
     String getDireccionIP();
 
-    void setMiDireccionIP(String texto);
-
     boolean getModoEscucha();
 
-    String getPuerto();
+    int getPuerto();
 }

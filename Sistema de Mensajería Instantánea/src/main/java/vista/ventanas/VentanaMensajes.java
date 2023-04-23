@@ -40,7 +40,7 @@ public class VentanaMensajes implements IVistaMensajes {
     }
 
     @Override
-    public void creaOtraVentana(String ventana) {
+    public void creaOtraVentana(int ventana, String nombreUsuarioEmisor) {
 
     }
 

@@ -1,4 +1,4 @@
-package app;
+package modelo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Cliente{
-
     private  String hostName = "localhost";
     private int puertoPropio;
     private String usuario = "";
@@ -107,5 +106,4 @@ public class Cliente{
         Thread.sleep(1000);
         cliente1.getSocketServer().mandarMensaje("Todo bien???");
     }
-
 }

@@ -1,10 +1,9 @@
-package app;
+package modelo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class ListenerThread implements Runnable{
-
     public BufferedReader input;
     private String mensaje = "";
     private String usuario = "";

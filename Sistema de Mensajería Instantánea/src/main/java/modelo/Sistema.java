@@ -1,13 +1,11 @@
-package app;
+package modelo;
 
-import interfaces.IObservable;
-import interfaces.IObserver;
-
+import modelo.interfaces.IObservable;
+import modelo.interfaces.IObserver;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Sistema implements IObservable {
-
     private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
     private Sesion sesion = new Sesion();
     private ArrayList<IObserver> observadores = new ArrayList<>();
@@ -20,7 +18,6 @@ public class Sistema implements IObservable {
         return cliente;
     }
 
-
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
@@ -32,6 +29,7 @@ public class Sistema implements IObservable {
         int puertoAleatorio = rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial;
         return puertoAleatorio;
     }
+
     public Sesion getSesion() {
         return sesion;
     }

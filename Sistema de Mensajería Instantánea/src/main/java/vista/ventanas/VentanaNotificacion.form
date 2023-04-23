@@ -9,12 +9,13 @@
       <maximumSize width="600" height="300"/>
       <minimumSize width="600" height="300"/>
       <preferredSize width="600" height="300"/>
+      <visible value="true"/>
     </properties>
     <border type="empty">
-      <size top="50" left="50" bottom="50" right="50"/>
+      <size top="25" left="25" bottom="25" right="25"/>
     </border>
     <children>
-      <grid id="f7c14" binding="PanelCentral" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="f7c14" binding="PanelCentral" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="Center"/>
         <properties>
@@ -27,53 +28,9 @@
           <size top="20" left="20" bottom="20" right="20"/>
         </border>
         <children>
-          <component id="29e2e" class="javax.swing.JButton" binding="button1" default-binding="true">
-            <constraints>
-              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="200" height="40"/>
-                <preferred-size width="200" height="40"/>
-                <maximum-size width="200" height="40"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-14082273"/>
-              <borderPainted value="false"/>
-              <contentAreaFilled value="true"/>
-              <defaultCapable value="true"/>
-              <focusPainted value="false"/>
-              <focusable value="false"/>
-              <font name="Inter SemiBold" size="20"/>
-              <foreground color="-1"/>
-              <requestFocusEnabled value="false"/>
-              <rolloverEnabled value="false"/>
-              <selected value="false"/>
-              <text value="Button"/>
-            </properties>
-          </component>
-          <component id="dce69" class="javax.swing.JButton" binding="button2" default-binding="true">
-            <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="200" height="40"/>
-                <preferred-size width="200" height="40"/>
-                <maximum-size width="200" height="40"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-8057330"/>
-              <borderPainted value="false"/>
-              <focusPainted value="false"/>
-              <focusable value="false"/>
-              <font name="Inter SemiBold" size="20"/>
-              <foreground color="-1"/>
-              <requestFocusEnabled value="false"/>
-              <rolloverEnabled value="false"/>
-              <selected value="false"/>
-              <text value="Button"/>
-            </properties>
-          </component>
           <component id="cfadb" class="javax.swing.JLabel" binding="TituloLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font name="Inter" size="32" style="1"/>
@@ -83,32 +40,94 @@
           </component>
           <component id="ed01b" class="javax.swing.JLabel" binding="Contenido1Label">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font name="Inter SemiBold" size="20"/>
+              <font name="Inter SemiBold" size="16"/>
               <foreground color="-16777216"/>
               <text value="[Contenido1]"/>
             </properties>
           </component>
           <component id="e6dc4" class="javax.swing.JLabel" binding="Contenido2Label">
             <constraints>
-              <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font name="Inter SemiBold" size="20"/>
+              <font name="Inter SemiBold" size="16"/>
               <foreground color="-16777216"/>
               <text value="[Contenido2]"/>
             </properties>
           </component>
-          <vspacer id="bfe7d">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </vspacer>
           <vspacer id="c84f9">
             <constraints>
               <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <grid id="6effe" binding="ButtonPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <minimum-size width="400" height="40"/>
+                <preferred-size width="400" height="40"/>
+                <maximum-size width="400" height="40"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-1"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="29e2e" class="javax.swing.JButton" binding="aceptarButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <minimum-size width="200" height="40"/>
+                    <preferred-size width="200" height="40"/>
+                    <maximum-size width="200" height="40"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-14082273"/>
+                  <borderPainted value="false"/>
+                  <contentAreaFilled value="true"/>
+                  <defaultCapable value="true"/>
+                  <focusPainted value="false"/>
+                  <focusable value="false"/>
+                  <font name="Inter SemiBold" size="20"/>
+                  <foreground color="-1"/>
+                  <requestFocusEnabled value="false"/>
+                  <rolloverEnabled value="false"/>
+                  <selected value="false"/>
+                  <text value="Aceptar"/>
+                  <visible value="true"/>
+                </properties>
+              </component>
+              <component id="dce69" class="javax.swing.JButton" binding="cancelarButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <minimum-size width="200" height="40"/>
+                    <preferred-size width="200" height="40"/>
+                    <maximum-size width="200" height="40"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-8057330"/>
+                  <borderPainted value="false"/>
+                  <focusPainted value="false"/>
+                  <focusable value="false"/>
+                  <font name="Inter SemiBold" size="20"/>
+                  <foreground color="-1"/>
+                  <requestFocusEnabled value="false"/>
+                  <rolloverEnabled value="false"/>
+                  <selected value="false"/>
+                  <text value="Cancelar"/>
+                  <visible value="true"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <vspacer id="bfe7d">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
         </children>

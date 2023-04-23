@@ -1,34 +1,33 @@
 package controlador;
 
-import modelo.Sistema;
-import vista.interfaces.IVistaMensajes;
+import vista.interfaces.IVistaNotificacion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class ControladorMensajes implements ActionListener, WindowListener {
-    private IVistaMensajes vista;
-    private Sistema sistema;
+public class ControladorNotificacion implements ActionListener, WindowListener {
+    private IVistaNotificacion vista;
 
-    public ControladorMensajes(IVistaMensajes vista) {
+    public ControladorNotificacion(IVistaNotificacion vista) {
         this.vista = vista;
         this.vista.setActionListener(this);
-        this.vista.setKeyListener();
         this.vista.setWindowListener(this);
     }
 
     @Override
-    public void actionPerformed(ActionEvent evento) {
-        switch (evento.getActionCommand()) {
-            case "NUEVO_MENSAJE":
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case "Aceptar":
                 break;
-            case "CERRAR_SESION":
+            case "Cancelar":
+                this.vista.cerrarVentana();
                 break;
         }
     }
 
+    //METODOS NO USADOS
     @Override
     public void windowOpened(WindowEvent e) {
 
