@@ -16,4 +16,6 @@ public interface IVistaInicio extends IVista {
     boolean getModoEscucha();
 
     int getPuerto();
+
+    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
 }

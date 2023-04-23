@@ -2,15 +2,14 @@ package controlador;
 
 import modelo.Sistema;
 import vista.interfaces.IVistaMensajes;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
+//TODO como recibo los mensajes???
 public class ControladorMensajes implements ActionListener, WindowListener {
     private IVistaMensajes vista;
-    private Sistema sistema;
+    private Sistema modelo;
 
     public ControladorMensajes(IVistaMensajes vista) {
         this.vista = vista;
@@ -22,13 +21,19 @@ public class ControladorMensajes implements ActionListener, WindowListener {
     @Override
     public void actionPerformed(ActionEvent evento) {
         switch (evento.getActionCommand()) {
-            case "NUEVO_MENSAJE":
+            case "Enviar Mensaje":
+                vista.getMensajeEnviado();
+                //TODO enviar mensaje
                 break;
-            case "CERRAR_SESION":
+            case "Cerrar Sesion":
+                vista.creaOtraVentana();
+                vista.cerrarVentana();
+                //TODO cerrar sesion
                 break;
         }
     }
 
+    //METODOS NO USADOS
     @Override
     public void windowOpened(WindowEvent e) {
 

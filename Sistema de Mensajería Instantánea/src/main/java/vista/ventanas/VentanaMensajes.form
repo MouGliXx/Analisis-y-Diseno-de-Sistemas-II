@@ -6,6 +6,8 @@
     </constraints>
     <properties>
       <background color="-2500135"/>
+      <focusable value="false"/>
+      <maximumSize width="1280" height="720"/>
     </properties>
     <border type="empty">
       <size top="50" left="50" bottom="50" right="50"/>
@@ -43,9 +45,12 @@
               </grid>
             </constraints>
             <properties>
+              <actionCommand value="Enviar Mensaje"/>
               <background color="-14082273"/>
               <borderPainted value="false"/>
+              <enabled value="false"/>
               <focusable value="false"/>
+              <foreground color="-1"/>
               <icon value="Flecha.png"/>
               <requestFocusEnabled value="true"/>
               <rolloverEnabled value="true"/>
@@ -112,7 +117,7 @@
               <text value="[Nombre de usuario receptor]"/>
             </properties>
           </component>
-          <component id="265d5" class="javax.swing.JButton" binding="button1" default-binding="true">
+          <component id="265d5" class="javax.swing.JButton" binding="CerrarSesionButton">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <minimum-size width="40" height="40"/>
@@ -121,6 +126,7 @@
               </grid>
             </constraints>
             <properties>
+              <actionCommand value="Cerrar Sesion"/>
               <background color="-14082273"/>
               <borderPainted value="false"/>
               <focusable value="false"/>
@@ -134,15 +140,44 @@
         <constraints border-constraint="Center"/>
         <properties>
           <background color="-1"/>
+          <focusable value="false"/>
+          <font name="Inter" size="16"/>
+          <foreground color="-1"/>
+          <horizontalScrollBarPolicy value="31"/>
           <maximumSize width="1180" height="490"/>
           <minimumSize width="1180" height="490"/>
           <preferredSize width="1180" height="490"/>
+          <wheelScrollingEnabled value="false"/>
         </properties>
         <border type="none"/>
         <children>
-          <component id="466af" class="javax.swing.JTable" binding="table1" default-binding="true">
+          <component id="466af" class="javax.swing.JTable" binding="TablaMensajes">
             <constraints/>
-            <properties/>
+            <properties>
+              <autoResizeMode value="4"/>
+              <background color="-1"/>
+              <dropMode value="INSERT_ROWS"/>
+              <enabled value="true"/>
+              <focusable value="false"/>
+              <font name="Inter" size="16"/>
+              <foreground color="-16777216"/>
+              <gridColor color="-16777216"/>
+              <intercellSpacing width="5" height="5"/>
+              <maximumSize width="1180" height="490"/>
+              <minimumSize width="1180" height="490"/>
+              <preferredScrollableViewportSize width="1180" height="490"/>
+              <preferredSize width="1180" height="490"/>
+              <requestFocusEnabled value="false"/>
+              <rowHeight value="30"/>
+              <rowMargin value="5"/>
+              <rowSelectionAllowed value="false"/>
+              <selectionBackground color="-10185470"/>
+              <selectionForeground color="-1"/>
+              <showHorizontalLines value="false"/>
+              <showVerticalLines value="true"/>
+              <surrendersFocusOnKeystroke value="false"/>
+              <updateSelectionOnSort value="false"/>
+            </properties>
           </component>
         </children>
       </scrollpane>

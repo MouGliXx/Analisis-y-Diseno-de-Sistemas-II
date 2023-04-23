@@ -53,7 +53,8 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
 
     @Override
     public void lanzarVentanaEmergente(String mensaje) {
-
+        JFrame jFrame = new JFrame();
+        JOptionPane.showMessageDialog(jFrame, mensaje);
     }
 
     @Override

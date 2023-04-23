@@ -96,6 +96,8 @@
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
               <opaque value="true"/>
+              <selectedTextColor color="-2500135"/>
+              <selectionColor color="-10185470"/>
               <text value=""/>
             </properties>
           </component>
@@ -135,6 +137,8 @@
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
               <opaque value="true"/>
+              <selectedTextColor color="-1"/>
+              <selectionColor color="-10185470"/>
             </properties>
           </component>
           <hspacer id="55681">

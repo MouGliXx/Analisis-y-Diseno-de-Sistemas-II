@@ -12,7 +12,5 @@ public interface IVista {
 
     void cerrarVentana();
 
-    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
-
     void lanzarVentanaEmergente(String mensaje);
 }
