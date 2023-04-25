@@ -1,7 +1,7 @@
 package modelo.interfaces;
 
 public interface IObservable {
-    void notifyObservadores();
+    void notifyObservadores(String estado, String mensaje);
 
     void agregarObservador(IObserver Observer);
 }

@@ -1,24 +1,23 @@
 package modelo;
 
-import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Sistema implements IObservable {
-    private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
+public class Sistema {
+    private Usuario cliente = new Usuario(this.obtenerPuertoAleatorio());
     private Sesion sesion = new Sesion();
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
     public Sistema() {
-        this.cliente.setListenerServidor();
+        //this.cliente.setListenerServidor();
     }
 
-    public Cliente getCliente() {
+    public Usuario getCliente() {
         return cliente;
     }
 
-    public void setCliente(Cliente cliente) {
+    public void setCliente(Usuario cliente) {
         this.cliente = cliente;
     }
 
@@ -38,15 +37,5 @@ public class Sistema implements IObservable {
         this.sesion = sesion;
     }
 
-    @Override
-    public void notifyObservadores() {
-        for (IObserver observer: observadores){
-            observer.notificarCambio();
-        }
-    }
 
-    @Override
-    public void agregarObservador(IObserver Observer) {
-
-    }
 }

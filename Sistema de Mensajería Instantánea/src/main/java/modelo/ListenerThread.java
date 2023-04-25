@@ -3,26 +3,47 @@ package modelo;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class ListenerThread implements Runnable{
+
+public class ListenerThread implements Runnable {
     public BufferedReader input;
     private String mensaje = "";
     private String usuario = "";
+    private Usuario cliente;
 
-    public ListenerThread(BufferedReader input, String usuario) {
+    public ListenerThread(BufferedReader input, String usuario, Usuario cliente) {
         this.input = input;
         this.usuario = usuario;
+        this.cliente = cliente;
     }
 
-    public void run(){
-        while (true){
-            try{
-                mensaje = this.input.readLine();
-                if (mensaje != null) {
-                    System.out.println("["+usuario + "]:" + mensaje);
+    @Override
+    public void run() {
+        cliente.isStop = false;
+        while (!cliente.isStop) {
+            try {
+                String mensaje = input.readLine();
+                if (mensaje == null) {
+                    break;
+                } else if (mensaje.equals("Se cierra conexion")) {
+                    System.out.println("Cerrando conexiones...");
+                    cliente.desconectar();
+                    break;
+                } else if (mensaje.equals("Se cierra conexion y ventana")) {
+                    System.out.println("Cerrando conexiones y ventana...");
+                    cliente.notifyObservadores("Cierro ventana sesion", "");
+                    cliente.desconectar();
+                    break;
+                } else if (mensaje.equals("Abro ventana sesion")) {
+                    System.out.println("Abriendo ventana...");
+                    cliente.notifyObservadores("Abro ventana sesion", "");
+                } else {
+                    System.out.printf("[%s]: %s%n", usuario, mensaje);
                 }
-            }catch(IOException e){
+                System.out.printf("\nValor de cliente %s", cliente.isStop);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }
