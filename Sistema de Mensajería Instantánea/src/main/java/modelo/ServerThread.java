@@ -25,7 +25,7 @@ public class ServerThread implements Runnable {
             cliente.getSocketServer().setSocket(server.accept());
             cliente.notifyObservadores("Abro ventana notificacion", "");
 
-            while (true) {
+            while (true) {// TODO verificar este while true
                 setAsServer();
                 setMessageListener();
                 if (cliente.isConnected()) {

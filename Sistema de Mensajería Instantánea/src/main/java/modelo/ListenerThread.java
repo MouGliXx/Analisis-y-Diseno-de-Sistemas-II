@@ -19,7 +19,7 @@ public class ListenerThread implements Runnable {
     @Override
     public void run() {
         cliente.isStop = false;
-        while (!cliente.isStop) {
+        while (!cliente.isStop) { //TODO el isStop es lo que va a permitir que el modoEscucha funcione o no
             try {
                 String mensaje = input.readLine();
                 if (mensaje == null) {
