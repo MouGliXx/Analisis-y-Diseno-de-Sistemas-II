@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
-public class VentanaMensajes extends JFrame implements IVistaMensajes, ActionListener, KeyListener {
+public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListener {
     private JPanel PanelPrincipal;
     private JPanel PanelInferior;
     private JPanel PanelSuperior;
@@ -20,13 +20,12 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, ActionLis
     private JScrollPane ScrollPanelCentral;
     private JTable TablaMensajes;
     //ATRIBUTOS TABLA
-    private String[] columnNames = {"Mensajes Recibidos", "Mensajes Enviados"};
-    private DefaultTableModel modeloTabla = new DefaultTableModel(columnNames, 0);
+    private final String[] columnNames = {"Mensajes Recibidos", "Mensajes Enviados"};
+    private final DefaultTableModel modeloTabla = new DefaultTableModel(columnNames, 0);
 
     @Override
     public void setActionListener(ActionListener controlador) {
         this.EnviarButton.addActionListener(controlador);
-        this.EnviarButton.addActionListener(this);
         this.CerrarSesionButton.addActionListener(controlador);
     }
 
@@ -74,8 +73,6 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, ActionLis
 
     @Override
     public void setModelos() {
-//        this.TablaMensajes.getTableHeader().setVisible(false);
-
         this.TablaMensajes.setModel(modeloTabla);
     }
 
@@ -99,14 +96,9 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, ActionLis
 
     @Override
     public String getMensajeEnviado() {
-        return EscribirMensajeJTextField.getText();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("Enviar Mensaje")) {
-            EscribirMensajeJTextField.setText("");
-        }
+        String mensaje = EscribirMensajeJTextField.getText();
+        EscribirMensajeJTextField.setText("");
+        return mensaje;
     }
 
     @Override
