@@ -38,6 +38,7 @@ public class ListenerThread implements Runnable {
                     cliente.notifyObservadores("Abro ventana sesion", "");
                 } else {
                     System.out.printf("[%s]: %s%n", usuario, mensaje);
+                    cliente.notifyObservadores("Recibo mensaje",mensaje);
                 }
                 System.out.printf("\nValor de cliente %s", cliente.isStop);
             } catch (IOException e) {
