@@ -45,6 +45,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void cerrarSesion() {
         vista.creaOtraVentana();
         vista.cerrarVentana();
+        System.out.printf("Sistema.getInstance().getUsuario().isServer() =" + Sistema.getInstance().getUsuario().isServer());
         if (Sistema.getInstance().getUsuario().isServer()) {
             System.out.printf("\nPor cerrar conexion papi");
             Sistema.getInstance().getUsuario().mandarMensajeComoServidor("Se cierra conexion y ventana");

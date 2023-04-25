@@ -31,14 +31,14 @@ public class ControladorInicio implements ActionListener, IObserver {
         Sistema.getInstance().getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
         String usuario = vista.getNombreDeUsuario();
         Sistema.getInstance().getUsuario().setUsuario(usuario);
-        System.out.println("Intentando conectarse con el puerto" + puertoDestino);
+        System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
         Sistema.getInstance().getUsuario().crearConexionCliente(puertoDestino);
 //        vista.cerrarVentana();
     }
 
     private void cambiarModoEscucha() {
-        System.out.println("Cambio el modo escucha");
-        System.out.println("El modo escucha es " + vista.getModoEscucha());
+        System.out.println("\nCambio el modo escucha");
+        System.out.println("\nEl modo escucha es " + vista.getModoEscucha());
         Sistema.getInstance().getUsuario().setModoEscucha(vista.getModoEscucha());
     }
 

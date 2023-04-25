@@ -78,7 +78,6 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
                 ventanaInicio.ejecutar();
                 break;
         }
-
     }
 
     @Override
