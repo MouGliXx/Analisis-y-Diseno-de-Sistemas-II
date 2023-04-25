@@ -1,12 +1,8 @@
 package app;
 
 import controlador.ControladorInicio;
-import controlador.ControladorMensajes;
-import controlador.ControladorNotificacion;
 import modelo.Sistema;
 import vista.ventanas.VentanaInicio;
-import vista.ventanas.VentanaMensajes;
-import vista.ventanas.VentanaNotificacion;
 
 import java.io.IOException;
 
@@ -16,10 +12,9 @@ public class App {
          * PRUEBA VENTANA INICIO
          * **/
         VentanaInicio ventanaInicio = new VentanaInicio();
-        Sistema sistema = new Sistema();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio,sistema);
-        sistema.getCliente().agregarObservador(controladorInicio);
-        sistema.getCliente().setListenerServidor();
+        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
+        Sistema.getInstance().getUsuario().agregarObservador(controladorInicio);
+        Sistema.getInstance().getUsuario().setListenerServidor();
         ventanaInicio.ejecutar();
 
         /**

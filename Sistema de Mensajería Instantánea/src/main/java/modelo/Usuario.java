@@ -16,6 +16,7 @@ import java.util.Observer;
 
 public class Usuario implements IObservable {
     private String hostName = "localhost";
+    private String nombreDeUsuario;
     private int puertoPropio;
     private String usuario = "";
     private ServerSocket serverSocket;
@@ -35,6 +36,14 @@ public class Usuario implements IObservable {
         this.puertoPropio = puertoPropio;
         this.socketCliente = new SocketIO();
         this.socketServer = new SocketIO();
+    }
+
+    public String getNombreDeUsuario() {
+        return nombreDeUsuario;
+    }
+
+    public void setNombreDeUsuario(String nombreDeUsuario) {
+        this.nombreDeUsuario = nombreDeUsuario;
     }
 
     public void crearConexionCliente(int puerto) {
@@ -156,11 +165,11 @@ public class Usuario implements IObservable {
     }
 
     @Override
-    public void notifyObservadores(String estado,String mensaje) {
+    public void notifyObservadores(String estado, String mensaje) {
         Iterator<IObserver> iter = observadores.iterator();
         while (iter.hasNext()) {
             IObserver obs = iter.next();
-            obs.notificarCambio(estado,mensaje);
+            obs.notificarCambio(estado, mensaje);
         }
     }
 

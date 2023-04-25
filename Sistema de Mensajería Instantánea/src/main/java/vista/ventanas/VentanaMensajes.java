@@ -1,8 +1,8 @@
 package vista.ventanas;
 
 import controlador.ControladorInicio;
+import modelo.Sistema;
 import vista.interfaces.IVistaMensajes;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
@@ -61,7 +61,9 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     @Override
     public void creaOtraVentana() {
         VentanaInicio ventanaInicio = new VentanaInicio();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, null);//TODO meter modelo
+        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
+        Sistema.getInstance().getUsuario().agregarObservador(controladorInicio);
+        Sistema.getInstance().getUsuario().setListenerServidor();
         ventanaInicio.ejecutar();
     }
 

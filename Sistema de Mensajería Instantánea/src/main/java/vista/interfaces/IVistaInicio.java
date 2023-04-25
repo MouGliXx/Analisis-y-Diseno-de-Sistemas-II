@@ -17,5 +17,5 @@ public interface IVistaInicio extends IVista {
 
     int getPuerto();
 
-//    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
+    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
 }

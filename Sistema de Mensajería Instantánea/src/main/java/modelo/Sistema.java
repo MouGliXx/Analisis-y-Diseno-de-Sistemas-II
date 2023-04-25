@@ -1,24 +1,33 @@
 package modelo;
 
 import modelo.interfaces.IObserver;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Sistema {
-    private Usuario cliente = new Usuario(this.obtenerPuertoAleatorio());
+    private static Sistema instance = null;
+    private Usuario usuario = new Usuario(this.obtenerPuertoAleatorio());
     private Sesion sesion = new Sesion();
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
-    public Sistema() {
-        //this.cliente.setListenerServidor();
+    private Sistema() {
     }
 
-    public Usuario getCliente() {
-        return cliente;
+    public static Sistema getInstance() {
+        if (instance == null)
+            instance = new Sistema();
+        return instance;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     public void setCliente(Usuario cliente) {
-        this.cliente = cliente;
+        this.usuario = cliente;
     }
 
     public int obtenerPuertoAleatorio() {
@@ -37,5 +46,8 @@ public class Sistema {
         this.sesion = sesion;
     }
 
-
+    public String obtenerIP() throws UnknownHostException {
+        InetAddress ip = InetAddress.getLocalHost();
+        return ip.getHostAddress();
+    }
 }

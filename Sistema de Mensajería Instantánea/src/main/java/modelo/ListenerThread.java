@@ -28,7 +28,7 @@ public class ListenerThread implements Runnable {
                     System.out.println("Cerrando conexiones...");
                     cliente.desconectar();
                     break;
-                } else if (mensaje.equals("Se cierra conexion y ventana")) {
+                } else if (mensaje.equals("Se cierra conexion y ventana")) { //TODO nunca entra aca
                     System.out.println("Cerrando conexiones y ventana...");
                     cliente.notifyObservadores("Cierro ventana sesion", "");
                     cliente.desconectar();

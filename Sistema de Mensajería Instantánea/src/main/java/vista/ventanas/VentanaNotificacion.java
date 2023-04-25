@@ -1,10 +1,16 @@
 package vista.ventanas;
 
+import controlador.ControladorInicio;
+import controlador.ControladorMensajes;
+import modelo.Sistema;
+import modelo.Usuario;
+import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 
 public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     private int tipo;
@@ -48,7 +54,30 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     }
 
     @Override
-    public void creaOtraVentana(int ventana, String nombreUsuarioEmisor) {
+    public void creaOtraVentana(int tipo) {
+        switch (tipo) {
+            case 0: //CASO VENTANA MENSAJES
+                VentanaMensajes ventanaMensajes = new VentanaMensajes();
+                ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes);
+
+                ArrayList<IObserver> observadores = new ArrayList<>(Sistema.getInstance().getUsuario().getObservadores());
+                observadores.add(controladorMensajes);
+                Sistema.getInstance().getUsuario().setObservadores(observadores);
+                Sistema.getInstance().getUsuario().setConnected(true);
+
+                ventanaMensajes.setUsuarios(Sistema.getInstance().getUsuario().getNombreDeUsuario(), "nose como ponerlo"); //TODO poner nombre de usuario receptor y hacer que se configure el nombre de usuario en la notificacion
+                ventanaMensajes.ejecutar();
+                break;
+            case 1: //CASO VENTANA INICIO
+                VentanaInicio ventanaInicio = new VentanaInicio();
+                ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
+
+                Sistema.getInstance().getUsuario().agregarObservador(controladorInicio);
+                Sistema.getInstance().getUsuario().setListenerServidor();
+
+                ventanaInicio.ejecutar();
+                break;
+        }
 
     }
 
