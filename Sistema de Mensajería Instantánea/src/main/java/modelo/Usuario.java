@@ -46,21 +46,13 @@ public class Usuario implements IObservable {
         this.nombreDeUsuario = nombreDeUsuario;
     }
 
-    public void crearConexionCliente(int puerto) {
-        try {
-            System.out.println("\nSe creó conexión como cliente con el puerto" + puerto);
-            Socket socket = new Socket(hostName, puerto);
-            this.socketCliente.setSocket(socket);
-            this.socketCliente.setOutput(new PrintWriter(socket.getOutputStream(), true));
-            this.socketCliente.setInput(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-            this.setListenerMensajesComoCliente();
-        } catch (UnknownHostException e) {
-            System.out.printf("PARECIERA QUE SE RECHAZÓ LA CONEXIÓN");
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.printf("PARECIERA QUE SE RECHAZÓ LA CONEXIÓN");
-            e.printStackTrace();
-        }
+    public void crearConexionCliente(int puerto) throws IOException {
+        System.out.println("\nSe creó conexión como cliente con el puerto" + puerto);
+        Socket socket = new Socket(hostName, puerto);
+        this.socketCliente.setSocket(socket);
+        this.socketCliente.setOutput(new PrintWriter(socket.getOutputStream(), true));
+        this.socketCliente.setInput(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+        this.setListenerMensajesComoCliente();
     }
 
     public void setListenerServidor() {
@@ -153,7 +145,11 @@ public class Usuario implements IObservable {
         cliente1.setListenerServidor();
         cliente2.setListenerServidor();
         Thread.sleep(7000);
-        cliente2.crearConexionCliente(2888); // CLIENTE2(CLIENTE) ---> CLIENTE (SERVIDOR)
+        try {
+            cliente2.crearConexionCliente(2888); // CLIENTE2(CLIENTE) ---> CLIENTE (SERVIDOR)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Thread.sleep(7000);
         //cliente1.crearConexionServer();
         Thread.sleep(15000);

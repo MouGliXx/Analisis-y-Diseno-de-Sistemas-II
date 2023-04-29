@@ -5,6 +5,7 @@ import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class ControladorInicio implements ActionListener, IObserver {
@@ -29,13 +30,18 @@ public class ControladorInicio implements ActionListener, IObserver {
     }
 
     private void conectar() {
-        int puertoDestino = vista.getPuerto();
-        sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
-        String usuario = vista.getNombreDeUsuario();
-        sistema.getUsuario().setUsuario(usuario);
-        System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
-        sistema.getUsuario().crearConexionCliente(puertoDestino);
-//        vista.cerrarVentana();
+        try {
+            int puertoDestino = vista.getPuerto();
+            sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
+            String usuario = vista.getNombreDeUsuario();
+            sistema.getUsuario().setUsuario(usuario);
+            System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
+            sistema.getUsuario().crearConexionCliente(puertoDestino);
+            vista.creaOtraVentana(sistema, 2, null);
+        } catch (IOException e) {
+            vista.creaOtraVentana(sistema, 1, null);
+        }
+        vista.cerrarVentana();
     }
 
     private void cambiarModoEscucha() {
@@ -46,8 +52,8 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.setModoEscucha(false);
         } else {
             sistema.getUsuario().setModoEscucha(vista.getModoEscucha());
+            sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
         }
-
     }
 
     private void establecerIP() {
@@ -60,15 +66,10 @@ public class ControladorInicio implements ActionListener, IObserver {
 
     @Override
     public void notificarCambio(String estado, String mensaje) {
-        switch (estado) {
-            case "Abro ventana sesion" -> {
-                vista.creaOtraVentana(sistema, 0, vista.getNombreDeUsuario());
-                vista.cerrarVentana();
-            }
-            case "Abro ventana notificacion" -> {
-                vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor
-//                vista.cerrarVentana();
-            }
+        //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
+        if ("Abro ventana notificacion".equals(estado)) {
+            vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            vista.cerrarVentana();
         }
     }
 }

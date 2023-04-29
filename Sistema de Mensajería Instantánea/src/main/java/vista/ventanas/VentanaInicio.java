@@ -1,6 +1,5 @@
 package vista.ventanas;
 
-import controlador.ControladorMensajes;
 import controlador.ControladorNotificacion;
 import modelo.Sistema;
 import modelo.interfaces.IObserver;
@@ -67,30 +66,23 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void lanzarVentanaEmergente(String mensaje) {
-        JFrame jFrame = new JFrame();
-        JOptionPane.showMessageDialog(jFrame, mensaje);
+        JFrame jFrameVacio = new JFrame();
+        JOptionPane.showMessageDialog(jFrameVacio, mensaje);
     }
 
     @Override
     public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
-        if (tipo == 0) { //CASO VENTANA MENSAJES
-            VentanaMensajes ventanaMensajes = new VentanaMensajes();
-            ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes, sistema);
-            ArrayList<IObserver> observadores = new ArrayList<>(sistema.getUsuario().getObservadores());
-            observadores.add(controladorMensajes);
-            sistema.getUsuario().setObservadores(observadores);
-            ventanaMensajes.setUsuarios(sistema.getUsuario().getNombreDeUsuario(), nombreUsuarioEmisor);
-            ventanaMensajes.ejecutar();
-        } else { //CASO VENTANA NOTIFICACION
-            VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
-            ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
-            switch (tipo) {
-                case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
-                case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
-                case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
-            }
-            ventanaNotificacion.ejecutar();
+        VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
+        ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+        ArrayList<IObserver> observadores = new ArrayList<>(sistema.getUsuario().getObservadores());
+        observadores.add(controladorNotificacion);
+        sistema.getUsuario().setObservadores(observadores);
+        switch (tipo) {
+            case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
+            case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
+            case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
         }
+        ventanaNotificacion.ejecutar();
     }
 
     @Override

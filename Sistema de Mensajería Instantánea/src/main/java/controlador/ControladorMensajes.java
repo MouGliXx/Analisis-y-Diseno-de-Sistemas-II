@@ -59,7 +59,6 @@ public class ControladorMensajes implements ActionListener, IObserver {
 
     @Override
     public void notificarCambio(String estado, String mensaje) {
-        System.out.printf("\nSe notifico de un cambio en ventana mensajes");
         switch (estado) {
             case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
             case STATE_CERRAR_SESION -> {
