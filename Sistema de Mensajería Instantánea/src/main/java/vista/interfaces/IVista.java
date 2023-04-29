@@ -6,8 +6,6 @@ import java.awt.event.WindowListener;
 public interface IVista {
     void setActionListener(ActionListener controlador);
 
-    void setWindowListener(WindowListener controlador);
-
     void ejecutar();
 
     void cerrarVentana();

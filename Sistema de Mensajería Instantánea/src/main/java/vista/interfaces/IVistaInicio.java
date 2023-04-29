@@ -1,6 +1,6 @@
 package vista.interfaces;
 
-import java.awt.event.KeyListener;
+import modelo.Sistema;
 
 public interface IVistaInicio extends IVista {
     void setKeyListener();
@@ -13,9 +13,11 @@ public interface IVistaInicio extends IVista {
 
     String getDireccionIP();
 
+    void setModoEscucha(Boolean activado);
+
     boolean getModoEscucha();
 
     int getPuerto();
 
-//    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
+   void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor);
 }

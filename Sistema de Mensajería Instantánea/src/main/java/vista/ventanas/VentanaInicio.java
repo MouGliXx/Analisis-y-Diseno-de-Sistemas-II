@@ -1,11 +1,15 @@
 package vista.ventanas;
 
+import controlador.ControladorMensajes;
 import controlador.ControladorNotificacion;
+import modelo.Sistema;
+import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
@@ -42,11 +46,6 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public void setWindowListener(WindowListener controlador) {
-
-    }
-
-    @Override
     public void ejecutar() {
         setTitle("Sistema de Mensajeria Instantaneo");
         pack(); //Coloca los componentes
@@ -73,6 +72,28 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
+        if (tipo == 0) { //CASO VENTANA MENSAJES
+            VentanaMensajes ventanaMensajes = new VentanaMensajes();
+            ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes, sistema);
+            ArrayList<IObserver> observadores = new ArrayList<>(sistema.getUsuario().getObservadores());
+            observadores.add(controladorMensajes);
+            sistema.getUsuario().setObservadores(observadores);
+            ventanaMensajes.setUsuarios(sistema.getUsuario().getNombreDeUsuario(), nombreUsuarioEmisor);
+            ventanaMensajes.ejecutar();
+        } else { //CASO VENTANA NOTIFICACION
+            VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
+            ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+            switch (tipo) {
+                case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
+                case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
+                case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
+            }
+            ventanaNotificacion.ejecutar();
+        }
+    }
+
+    @Override
     public void setMiDireccionIP(String IP) {
         this.MiDireccionLabel.setText("Mi direccion IP: " + IP);
     }
@@ -85,6 +106,15 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public String getDireccionIP() {
         return this.IpJTextField.getText();
+    }
+
+    @Override
+    public void setModoEscucha(Boolean activado) {
+        this.modoEscuchaRadioButton.setSelected(activado);
+        if (activado)
+            modoEscuchaRadioButton.setText("Modo Escucha: ON");
+        else
+            modoEscuchaRadioButton.setText("Modo Escucha: OFF");
     }
 
     @Override

@@ -1,8 +1,9 @@
 package vista.ventanas;
 
 import controlador.ControladorInicio;
+import modelo.Sistema;
+import modelo.Usuario;
 import vista.interfaces.IVistaMensajes;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
@@ -35,11 +36,6 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     }
 
     @Override
-    public void setWindowListener(WindowListener controlador) {
-        this.addWindowListener(controlador);
-    }
-
-    @Override
     public void ejecutar() {
         setTitle("Sistema de Mensajeria Instantaneo");
         pack(); //Coloca los componentes
@@ -59,9 +55,12 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     }
 
     @Override
-    public void creaOtraVentana() {
+    public void creaOtraVentana(Sistema sistema) {
+        Usuario usuario = sistema.getUsuario();
         VentanaInicio ventanaInicio = new VentanaInicio();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, null);//TODO meter modelo
+        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, sistema);
+        usuario.agregarObservador(controladorInicio);
+        usuario.setListenerServidor();
         ventanaInicio.ejecutar();
     }
 

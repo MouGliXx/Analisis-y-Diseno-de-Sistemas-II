@@ -1,10 +1,14 @@
 package vista.ventanas;
 
+import controlador.ControladorInicio;
+import controlador.ControladorMensajes;
+import modelo.Sistema;
+import modelo.Usuario;
+import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
-
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
+import java.util.ArrayList;
 
 public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     private int tipo;
@@ -21,11 +25,6 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     public void setActionListener(ActionListener controlador) {
         this.aceptarButton.addActionListener(controlador);
         this.cancelarButton.addActionListener(controlador);
-    }
-
-    @Override
-    public void setWindowListener(WindowListener controlador) {
-        this.addWindowListener(controlador);
     }
 
     @Override
@@ -48,8 +47,31 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     }
 
     @Override
-    public void creaOtraVentana(int ventana, String nombreUsuarioEmisor) {
+    public void creaOtraVentana(Sistema sistema, int tipo) {
+        Usuario usuario = sistema.getUsuario();
+        switch (tipo) {
+            case 0: //CASO VENTANA MENSAJES
+                VentanaMensajes ventanaMensajes = new VentanaMensajes();
+                ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes, sistema);
 
+                ArrayList<IObserver> observadores = new ArrayList<>(usuario.getObservadores());
+                observadores.add(controladorMensajes);
+                usuario.setObservadores(observadores);
+                usuario.setConnected(true);
+
+                ventanaMensajes.setUsuarios(usuario.getNombreDeUsuario(), "nose como ponerlo"); //TODO poner nombre de usuario receptor y hacer que se configure el nombre de usuario en la notificacion
+                ventanaMensajes.ejecutar();
+                break;
+            case 1: //CASO VENTANA INICIO
+                VentanaInicio ventanaInicio = new VentanaInicio();
+                ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, sistema);
+
+                usuario.agregarObservador(controladorInicio);
+                usuario.setListenerServidor();
+
+                ventanaInicio.ejecutar();
+                break;
+        }
     }
 
     @Override

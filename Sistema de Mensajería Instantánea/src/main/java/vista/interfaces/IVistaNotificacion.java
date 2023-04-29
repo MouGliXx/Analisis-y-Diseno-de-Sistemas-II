@@ -1,7 +1,9 @@
 package vista.interfaces;
 
+import modelo.Sistema;
+
 public interface IVistaNotificacion extends IVista {
-    void creaOtraVentana(int ventana, String nombreUsuarioEmisor);
+    public void creaOtraVentana(Sistema sistema, int tipo);
 
     void setTipoVentana(int tipo, String nombreUsuarioEmisor);
 }
