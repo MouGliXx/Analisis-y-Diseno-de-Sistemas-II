@@ -165,11 +165,11 @@ public class Usuario implements IObservable {
     }
 
     @Override
-    public void notifyObservadores(String estado,String mensaje) {
+    public void notifyObservadores(String estado, String mensaje) {
         Iterator<IObserver> iter = observadores.iterator();
         while (iter.hasNext()) {
             IObserver obs = iter.next();
-            obs.notificarCambio(estado,mensaje);
+            obs.notificarCambio(estado, mensaje);
         }
     }
 

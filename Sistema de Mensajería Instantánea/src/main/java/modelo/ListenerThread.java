@@ -3,7 +3,6 @@ package modelo;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-
 public class ListenerThread implements Runnable {
     public BufferedReader input;
     private String mensaje = "";
@@ -25,19 +24,19 @@ public class ListenerThread implements Runnable {
                 if (mensaje == null) {
                     break;
                 } else if (mensaje.equals("Se cierra conexion")) {
-                    System.out.println("Cerrando conexiones...");
+                    System.out.println("\nCerrando conexiones...");
                     cliente.desconectar();
                     break;
-                } else if (mensaje.equals("Se cierra conexion y ventana")) {
-                    System.out.println("Cerrando conexiones y ventana...");
+                } else if (mensaje.equals("Se cierra conexion y ventana")) { //TODO nunca entra aca
+                    System.out.println("\nCerrando conexiones y ventana...");
                     cliente.notifyObservadores("Cierro ventana sesion", "");
                     cliente.desconectar();
                     break;
                 } else if (mensaje.equals("Abro ventana sesion")) {
-                    System.out.println("Abriendo ventana...");
+                    System.out.println("\nAbriendo ventana...");
                     cliente.notifyObservadores("Abro ventana sesion", "");
                 } else {
-                    System.out.printf("[%s]: %s%n", usuario, mensaje);
+                    System.out.printf("\n[%s]: %s%n", usuario, mensaje);
                     cliente.notifyObservadores("Recibo mensaje",mensaje);
                 }
                 System.out.printf("\nValor de cliente %s", cliente.isStop);
@@ -46,5 +45,4 @@ public class ListenerThread implements Runnable {
             }
         }
     }
-
 }

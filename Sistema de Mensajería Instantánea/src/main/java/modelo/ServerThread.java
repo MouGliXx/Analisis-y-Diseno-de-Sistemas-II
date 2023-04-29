@@ -1,9 +1,5 @@
 package modelo;
 
-import modelo.ListenerThread;
-import modelo.SocketIO;
-import modelo.Usuario;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,11 +26,12 @@ public class ServerThread implements Runnable {
                 setMessageListener();
                 if (cliente.isConnected()) {
                     cliente.setServer(true);
+                    System.out.printf("\nse seteo el server: " + cliente.isServer());
                     cliente.mandarMensajeComoServidor("Abro ventana sesion");
                     break;
                 }
                 if (cliente.isRejected()) {
-                    System.out.println("Se rechazo la conexion");
+                    System.out.println("\nSe rechazo la conexion");
                     cliente.isStop = true; // para detener el Listener de Mensajes
                     cliente.mandarMensajeComoServidor("Se cierra conexion");
                     cliente.desconectar();
@@ -62,7 +59,7 @@ public class ServerThread implements Runnable {
             Thread receiverThread = new Thread(new ListenerThread(socketServer.getInput(), cliente.getUsuario(), cliente));
             receiverThread.start();
         } else {
-            System.out.println("No se ha establecido una conexión previa.");
+            System.out.println("\nNo se ha establecido una conexión previa.");
         }
     }
 }
