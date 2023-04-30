@@ -57,7 +57,6 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
         conectarButton.setEnabled(false);
-        PuertoSpinner.setValue(1);
         IpJTextField.setText("localhost");
     }
 
@@ -134,18 +133,28 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void keyReleased(KeyEvent e) {
-        boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
-        conectarButton.setEnabled(conexion);
+        int currentValue = (int) PuertoSpinner.getValue();
+        if (currentValue == 0) {
+            conectarButton.setEnabled(false);
+        } else {
+            boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
+            conectarButton.setEnabled(conexion);
+        }
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         int currentValue = (int) PuertoSpinner.getValue();
-        if (currentValue <= 1) {
-            PuertoSpinner.setValue(1);
-        }
-        if (currentValue > 65535) {
-            PuertoSpinner.setValue(65535);
+        if (currentValue == 0) {
+            conectarButton.setEnabled(false);
+        } else {
+            conectarButton.setEnabled(true);
+            if (currentValue <= 1) {
+                PuertoSpinner.setValue(1);
+            }
+            if (currentValue > 65535) {
+                PuertoSpinner.setValue(65535);
+            }
         }
     }
 
