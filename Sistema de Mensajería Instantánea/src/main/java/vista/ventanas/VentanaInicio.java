@@ -7,6 +7,7 @@ import vista.interfaces.IVistaInicio;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -54,6 +55,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setSize(600,800); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
         conectarButton.setEnabled(false);
         PuertoSpinner.setValue(1);
         IpJTextField.setText("localhost");

@@ -1,7 +1,6 @@
 package controlador;
 
 import modelo.Sistema;
-import modelo.excepciones.VentanaEmergenteException;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
 import java.awt.event.ActionEvent;
@@ -43,8 +42,6 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.creaOtraVentana(sistema, 2, null);
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
-        } catch( VentanaEmergenteException e){
-            vista.creaOtraVentana(sistema,1,null);
         }
         this.sistema.getUsuario().getObservadores().remove(this);
         vista.cerrarVentana();

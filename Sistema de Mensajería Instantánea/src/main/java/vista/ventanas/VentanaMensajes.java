@@ -45,6 +45,7 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
         setSize(1280,720); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
+        setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
         setModelos();
     }
 

@@ -1,19 +1,15 @@
 package modelo;
 
-import modelo.excepciones.VentanaEmergenteException;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Observer;
 
 public class Usuario implements IObservable {
     private String hostName = "localhost";
@@ -55,8 +51,8 @@ public class Usuario implements IObservable {
         this.receiberThread = receiberThread;
     }
 
-    public void crearConexionCliente(int puerto) throws IOException,VentanaEmergenteException {
-        System.out.println("\nSe creó conexión como cliente con el puerto" + puerto);
+    public void crearConexionCliente(int puerto) throws IOException {
+        System.out.println("\nSe creo conexión como cliente con el puerto" + puerto);
         if (puerto == this.puertoPropio)
             throw new IOException();
         Socket socket = new Socket(hostName, puerto);
@@ -64,7 +60,6 @@ public class Usuario implements IObservable {
         this.socketCliente.setOutput(new PrintWriter(socket.getOutputStream(), true));
         this.socketCliente.setInput(new BufferedReader(new InputStreamReader(socket.getInputStream())));
         this.setListenerMensajesComoCliente();
-
     }
 
     public void setListenerServidor() {
@@ -96,7 +91,7 @@ public class Usuario implements IObservable {
             this.getServerSocket().close();
             this.getSocketCliente().close();
             this.getSocketServer().close();
-            System.out.printf("se desconectó todo");
+            System.out.printf("se desconecto todo");
             this.setRejected(false);
             this.setConnected(false);
             this.setServer(false);
@@ -143,7 +138,7 @@ public class Usuario implements IObservable {
     public boolean isConnected() {return isConnected;}
 
     public void setConnected(boolean connected) {
-        System.out.printf("se cambio el estadodo e is connected");
+        System.out.printf("se cambio el estado de is connected");
         isConnected = connected;}
 
     public boolean isRejected() {return isRejected;}
@@ -152,7 +147,7 @@ public class Usuario implements IObservable {
 
     public boolean isServer() { return isServer; }
 
-    public boolean modoEscucha() {
+    public boolean isModoEscucha() {
         return modoEscucha;
     }
 
@@ -171,8 +166,6 @@ public class Usuario implements IObservable {
         try {
             cliente2.crearConexionCliente(2888); // CLIENTE2(CLIENTE) ---> CLIENTE (SERVIDOR)
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (VentanaEmergenteException e) {
             e.printStackTrace();
         }
         Thread.sleep(7000);

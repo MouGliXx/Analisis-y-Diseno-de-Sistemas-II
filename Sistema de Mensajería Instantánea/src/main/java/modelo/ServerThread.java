@@ -18,17 +18,17 @@ public class ServerThread implements Runnable {
 
     public void run(){
         try {
-            System.out.println("Servidor escuchando en el puerto " + server.getLocalPort());
+            System.out.println("\nServidor escuchando en el puerto " + server.getLocalPort());
             cliente.getSocketServer().setSocket(server.accept());
-            System.out.printf("El modo escucha es" + cliente.modoEscucha());
+            System.out.printf("\nEl modo escucha es" + cliente.isModoEscucha());
             // Un cliente se intento conectar conmigo si esta en modo Escucha acepto.
-            if (cliente.modoEscucha())
+            if (cliente.isModoEscucha())
                 cliente.notifyObservadores("Abro ventana notificacion", "");
             else {
-                System.out.printf("no se envio la solicitud");
+                System.out.printf("\nno se envio la solicitud");
                 cliente.getSocketServer().getSocket().close();
             }
-            while (cliente.modoEscucha()) {// TODO verificar este while true
+            while (cliente.isModoEscucha()) {// TODO verificar este while true
                 cliente.isStop = false;
                 setAsServer();
                 setMessageListener();
@@ -48,7 +48,7 @@ public class ServerThread implements Runnable {
             }
         } catch (SocketException e) {
             // Socket was closed, stop accepting new clients
-            System.out.println("Server socket closed: " + e.getMessage());
+            System.out.println("\nServer socket closed: " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }

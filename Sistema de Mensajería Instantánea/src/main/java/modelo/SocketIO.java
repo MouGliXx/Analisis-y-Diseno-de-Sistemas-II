@@ -33,7 +33,7 @@ public class SocketIO {
                 output.close();
             }
         } catch (IOException e) {
-            System.err.println("Error al cerrar el socket: " + e.getMessage());
+            System.err.println("\nError al cerrar el socket: " + e.getMessage());
         }
     }
 

@@ -8,7 +8,6 @@ import java.util.Random;
 
 public class Sistema {
     private Usuario usuario = new Usuario(this.obtenerPuertoAleatorio());
-    private Sesion sesion = new Sesion();
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
     public Sistema() {
@@ -29,14 +28,6 @@ public class Sistema {
         Random rand = new Random();
         int puertoAleatorio = rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial;
         return puertoAleatorio;
-    }
-
-    public Sesion getSesion() {
-        return sesion;
-    }
-
-    public void setSesion(Sesion sesion) {
-        this.sesion = sesion;
     }
 
     public String obtenerIP() throws UnknownHostException {

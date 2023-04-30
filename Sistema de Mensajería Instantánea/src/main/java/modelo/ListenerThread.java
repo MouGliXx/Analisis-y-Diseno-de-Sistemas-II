@@ -45,14 +45,14 @@ public class ListenerThread implements Runnable {
                     System.out.printf("\n[%s]: %s%n", usuario, mensaje);
                     cliente.notifyObservadores("Recibo mensaje",mensaje);
                 }
-                System.out.printf("\nValor de cliente %s", cliente.modoEscucha());
+                System.out.printf("\nValor de cliente %s", cliente.isModoEscucha());
             } catch (SocketException e) {
-                System.out.println("El socket se cerró: " + e.getMessage());
+                System.out.println("\nEl socket se cerró: " + e.getMessage());
                 try {
                     input.close();
                     socket.close();
                 } catch (IOException ex) {
-                    // manejar el cierre del socket
+                    //TODO manejar el cierre del socket
                     e.printStackTrace();
                 }
                 break;
