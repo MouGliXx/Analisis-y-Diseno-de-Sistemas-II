@@ -39,12 +39,18 @@ public class ControladorInicio implements ActionListener, IObserver {
             sistema.getUsuario().setUsuario(usuario);
             System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
             sistema.getUsuario().crearConexionCliente(puertoDestino);
-            vista.creaOtraVentana(sistema, 2, null);
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
         }
-        this.sistema.getUsuario().getObservadores().remove(this);
-        vista.cerrarVentana();
+    }
+
+
+    private void conexionCorrecta(){
+
+    }
+
+    private void conexionFallida(){
+
     }
 
     private void cambiarModoEscucha() {
@@ -79,6 +85,12 @@ public class ControladorInicio implements ActionListener, IObserver {
         if ("Abro ventana notificacion".equals(estado)) {
             System.out.printf("a ver cuantas veces se imprime esta shit");
             vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            this.sistema.getUsuario().getObservadores().remove(this);
+            vista.cerrarVentana();
+        }
+        if ("Acepto conexion".equals(estado)){
+            System.out.printf("se acepto la conexion");
+            vista.creaOtraVentana(sistema, 2, null);
             this.sistema.getUsuario().getObservadores().remove(this);
             vista.cerrarVentana();
         }

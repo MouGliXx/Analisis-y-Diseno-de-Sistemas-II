@@ -33,14 +33,21 @@ public class ListenerThread implements Runnable {
                     System.out.println("\nCerrando conexiones...");
                     cliente.desconectar();
                     break;
-                } else if (mensaje.equals("Se cierra conexion y ventana")) { //TODO nunca entra aca
+                }else if (mensaje.equals("Abro ventana sesion")) {
+                    System.out.println("\nAbriendo ventana...");
+                    cliente.notifyObservadores("Abro ventana sesion", "");
+                }
+                else if (mensaje.equals("Se cierra conexion y ventana")) { //TODO nunca entra aca
                     System.out.println("\nCerrando conexiones y ventana...");
                     cliente.notifyObservadores("Cierro ventana sesion", "");
                     cliente.desconectar();
                     break;
-                } else if (mensaje.equals("Abro ventana sesion")) {
-                    System.out.println("\nAbriendo ventana...");
-                    cliente.notifyObservadores("Abro ventana sesion", "");
+                } else if (mensaje.equals("Acepto conexion")) {
+                    System.out.println("\nSe acepto la conexion...");
+                    cliente.notifyObservadores("Acepto conexion", "");
+                } else if (mensaje.equals("Rechazo conexion")) {
+                    System.out.println("\nRECHAZO CONEXION...");
+                    cliente.notifyObservadores("Ventana Emergente", "");
                 } else {
                     System.out.printf("\n[%s]: %s%n", usuario, mensaje);
                     cliente.notifyObservadores("Recibo mensaje",mensaje);

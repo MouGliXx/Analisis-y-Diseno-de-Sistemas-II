@@ -22,28 +22,31 @@ public class ServerThread implements Runnable {
             cliente.getSocketServer().setSocket(server.accept());
             System.out.printf("\nEl modo escucha es" + cliente.isModoEscucha());
             // Un cliente se intento conectar conmigo si esta en modo Escucha acepto.
-            if (cliente.isModoEscucha())
+            if (cliente.isModoEscucha()){
                 cliente.notifyObservadores("Abro ventana notificacion", "");
-            else {
-                System.out.printf("\nno se envio la solicitud");
-                cliente.getSocketServer().getSocket().close();
             }
-            while (cliente.isModoEscucha()) {// TODO verificar este while true
-                cliente.isStop = false;
-                setAsServer();
-                setMessageListener();
+            cliente.isStop = false;
+            setAsServer();
+            setMessageListener();
+            if (!cliente.isModoEscucha()){
+                cliente.mandarMensajeComoServidor("Rechazo conexion");
+                cliente.getSocketServer().getSocket().close();
+                cliente.desconectar();
+            } else{
+                System.out.printf("ENTRO ACA");
+                cliente.mandarMensajeComoServidor("Acepto conexion");
+            }
+            while (cliente.isModoEscucha()) {
                 if (cliente.isConnected()) {
                     cliente.setServer(true);
                     System.out.printf("\nse seteo el server: " + cliente.isServer());
                     cliente.mandarMensajeComoServidor("Abro ventana sesion");
-                    break;
                 }
                 if (cliente.isRejected()) {
                     System.out.println("\nSe rechazo la conexion");
                     cliente.modoEscucha = true; // para detener el Listener de Mensajes
                     cliente.mandarMensajeComoServidor("Se cierra conexion");
                     cliente.desconectar();
-                    break;
                 }
             }
         } catch (SocketException e) {
