@@ -2,23 +2,29 @@ package modelo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.SocketException;
 
 public class ListenerThread implements Runnable {
     public BufferedReader input;
     private String mensaje = "";
     private String usuario = "";
     private Usuario cliente;
+    private SocketIO socket;
 
-    public ListenerThread(BufferedReader input, String usuario, Usuario cliente) {
+
+    public ListenerThread(BufferedReader input, String usuario, Usuario cliente, SocketIO socket) {
         this.input = input;
         this.usuario = usuario;
         this.cliente = cliente;
+        this.socket = socket;
     }
+
+
 
     @Override
     public void run() {
         cliente.isStop = false;
-        while (!cliente.isStop) { //TODO el isStop es lo que va a permitir que el modoEscucha funcione o no
+        while (!cliente.isStop ) { //TODO el isStop es lo que va a permitir que el modoEscucha funcione o no
             try {
                 String mensaje = input.readLine();
                 if (mensaje == null) {
@@ -39,9 +45,20 @@ public class ListenerThread implements Runnable {
                     System.out.printf("\n[%s]: %s%n", usuario, mensaje);
                     cliente.notifyObservadores("Recibo mensaje",mensaje);
                 }
-                System.out.printf("\nValor de cliente %s", cliente.isStop);
-            } catch (IOException e) {
+                System.out.printf("\nValor de cliente %s", cliente.modoEscucha());
+            } catch (SocketException e) {
+                System.out.println("El socket se cerró: " + e.getMessage());
+                try {
+                    input.close();
+                    socket.close();
+                } catch (IOException ex) {
+                    // manejar el cierre del socket
+                    e.printStackTrace();
+                }
+                break;
+            }catch (IOException e){
                 e.printStackTrace();
+
             }
         }
     }

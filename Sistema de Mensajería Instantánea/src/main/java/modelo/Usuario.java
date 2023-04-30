@@ -1,5 +1,6 @@
 package modelo;
 
+import modelo.excepciones.VentanaEmergenteException;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 
@@ -22,11 +23,11 @@ public class Usuario implements IObservable {
     private ServerSocket serverSocket;
     private SocketIO socketCliente;
     private SocketIO socketServer;
-    private boolean modoEscucha;
     private boolean isConnected = false;
     private boolean isRejected = false;
     private boolean isServer = false;
     public boolean isStop = false;
+    public boolean modoEscucha = false;
     private Thread receiberThread;
     private Thread serverThread;
 
@@ -46,13 +47,24 @@ public class Usuario implements IObservable {
         this.nombreDeUsuario = nombreDeUsuario;
     }
 
-    public void crearConexionCliente(int puerto) throws IOException {
+    public Thread getReceiberThread() {
+        return receiberThread;
+    }
+
+    public void setReceiberThread(Thread receiberThread) {
+        this.receiberThread = receiberThread;
+    }
+
+    public void crearConexionCliente(int puerto) throws IOException,VentanaEmergenteException {
         System.out.println("\nSe creó conexión como cliente con el puerto" + puerto);
+        if (puerto == this.puertoPropio)
+            throw new IOException();
         Socket socket = new Socket(hostName, puerto);
         this.socketCliente.setSocket(socket);
         this.socketCliente.setOutput(new PrintWriter(socket.getOutputStream(), true));
         this.socketCliente.setInput(new BufferedReader(new InputStreamReader(socket.getInputStream())));
         this.setListenerMensajesComoCliente();
+
     }
 
     public void setListenerServidor() {
@@ -60,6 +72,9 @@ public class Usuario implements IObservable {
             this.serverSocket = new ServerSocket(puertoPropio);
             serverThread = new Thread(new ServerThread(serverSocket, this));
             serverThread.start();
+            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+               this.notifyObservadores("Ventana Emergente","");
+            });
         } catch (IOException e) {
             this.desconectar();
         }
@@ -67,7 +82,7 @@ public class Usuario implements IObservable {
 
     public void setListenerMensajesComoCliente() {
         if (this.socketCliente.getInput() != null) {
-            this.receiberThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Usuario 1", this));
+            this.receiberThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Usuario 1", this,this.socketServer));
             Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
                 System.out.println("Caught " + e);
             });
@@ -77,14 +92,17 @@ public class Usuario implements IObservable {
 
     public void desconectar() {
         try {
+            this.isStop = true;
             this.getServerSocket().close();
             this.getSocketCliente().close();
-            this.getServerSocket().close();
+            this.getSocketServer().close();
             System.out.printf("se desconectó todo");
             this.setRejected(false);
             this.setConnected(false);
             this.setServer(false);
+            this.modoEscucha = false;
             this.isStop = true;
+
             setListenerServidor();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,9 +117,6 @@ public class Usuario implements IObservable {
         this.usuario = usuario;
     }
 
-    public void setModoEscucha(boolean modoEscucha) {
-        this.modoEscucha = modoEscucha;
-    }
 
     public void mandarMensajeComoCliente(String mensaje) {
         this.getSocketCliente().mandarMensaje(mensaje);
@@ -137,6 +152,14 @@ public class Usuario implements IObservable {
 
     public boolean isServer() { return isServer; }
 
+    public boolean modoEscucha() {
+        return modoEscucha;
+    }
+
+    public void setModoEscucha(boolean stop) {
+        modoEscucha = stop;
+    }
+
     public void setServer(boolean cliente) { isServer = cliente; }
 
     public static void main(String[] args) throws InterruptedException {
@@ -148,6 +171,8 @@ public class Usuario implements IObservable {
         try {
             cliente2.crearConexionCliente(2888); // CLIENTE2(CLIENTE) ---> CLIENTE (SERVIDOR)
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (VentanaEmergenteException e) {
             e.printStackTrace();
         }
         Thread.sleep(7000);

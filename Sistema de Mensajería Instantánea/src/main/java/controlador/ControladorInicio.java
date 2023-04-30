@@ -1,6 +1,7 @@
 package controlador;
 
 import modelo.Sistema;
+import modelo.excepciones.VentanaEmergenteException;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
 import java.awt.event.ActionEvent;
@@ -26,12 +27,14 @@ public class ControladorInicio implements ActionListener, IObserver {
         switch (e.getActionCommand()) {
             case "Conectar" -> conectar();
             case "Modo Escucha" -> cambiarModoEscucha();
+            case "Ventana Emergente"-> ventanaEmergente();
         }
     }
 
     private void conectar() {
         try {
             int puertoDestino = vista.getPuerto();
+            System.out.printf("El puerto destino es" + puertoDestino);
             sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
             String usuario = vista.getNombreDeUsuario();
             sistema.getUsuario().setUsuario(usuario);
@@ -40,12 +43,14 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.creaOtraVentana(sistema, 2, null);
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
+        } catch( VentanaEmergenteException e){
+            vista.creaOtraVentana(sistema,1,null);
         }
+        this.sistema.getUsuario().getObservadores().remove(this);
         vista.cerrarVentana();
     }
 
     private void cambiarModoEscucha() {
-        System.out.println("\nCambio el modo escucha");
         System.out.println("\nEl modo escucha es " + vista.getModoEscucha());
         if (vista.getNombreDeUsuario().isEmpty()) {
             vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de usuario primero.");
@@ -64,11 +69,20 @@ public class ControladorInicio implements ActionListener, IObserver {
         }
     }
 
+    public void ventanaEmergente(){
+        vista.lanzarVentanaEmergente("a");
+    }
+
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
+        if ("Ventana Emergente".equals(estado)){
+            vista.lanzarVentanaEmergente("El usuario con el que se intenta conectar no se encuentra en modo escucha");
+        }
         if ("Abro ventana notificacion".equals(estado)) {
+            System.out.printf("a ver cuantas veces se imprime esta shit");
             vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            this.sistema.getUsuario().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }

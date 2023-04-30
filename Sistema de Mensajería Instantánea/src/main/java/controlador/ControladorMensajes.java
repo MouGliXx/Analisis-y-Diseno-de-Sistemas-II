@@ -54,6 +54,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
         }
         usuario.desconectar();
         vista.creaOtraVentana(sistema);
+        this.sistema.getUsuario().getObservadores().remove(this);
         vista.cerrarVentana();
     }
 
@@ -62,6 +63,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
         switch (estado) {
             case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
             case STATE_CERRAR_SESION -> {
+                this.sistema.getUsuario().getObservadores().remove(this);
                 vista.creaOtraVentana(sistema);
                 vista.cerrarVentana();
             }

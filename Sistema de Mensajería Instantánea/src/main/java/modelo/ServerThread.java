@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
+import java.net.SocketException;
 
 public class ServerThread implements Runnable {
     private ServerSocket server;
@@ -15,13 +16,20 @@ public class ServerThread implements Runnable {
         this.cliente = cliente;
     }
 
-    public void run() {
+    public void run(){
         try {
             System.out.println("Servidor escuchando en el puerto " + server.getLocalPort());
             cliente.getSocketServer().setSocket(server.accept());
-            cliente.notifyObservadores("Abro ventana notificacion", "");
-
-            while (true) {// TODO verificar este while true
+            System.out.printf("El modo escucha es" + cliente.modoEscucha());
+            // Un cliente se intento conectar conmigo si esta en modo Escucha acepto.
+            if (cliente.modoEscucha())
+                cliente.notifyObservadores("Abro ventana notificacion", "");
+            else {
+                System.out.printf("no se envio la solicitud");
+                cliente.getSocketServer().getSocket().close();
+            }
+            while (cliente.modoEscucha()) {// TODO verificar este while true
+                cliente.isStop = false;
                 setAsServer();
                 setMessageListener();
                 if (cliente.isConnected()) {
@@ -32,12 +40,15 @@ public class ServerThread implements Runnable {
                 }
                 if (cliente.isRejected()) {
                     System.out.println("\nSe rechazo la conexion");
-                    cliente.isStop = true; // para detener el Listener de Mensajes
+                    cliente.modoEscucha = true; // para detener el Listener de Mensajes
                     cliente.mandarMensajeComoServidor("Se cierra conexion");
                     cliente.desconectar();
                     break;
                 }
             }
+        } catch (SocketException e) {
+            // Socket was closed, stop accepting new clients
+            System.out.println("Server socket closed: " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,8 +67,8 @@ public class ServerThread implements Runnable {
     public void setMessageListener() {
         SocketIO socketServer = cliente.getSocketServer();
         if (socketServer.getInput() != null) {
-            Thread receiverThread = new Thread(new ListenerThread(socketServer.getInput(), cliente.getUsuario(), cliente));
-            receiverThread.start();
+            cliente.setReceiberThread(new Thread(new ListenerThread(socketServer.getInput(), cliente.getUsuario(), cliente,socketServer)));
+            cliente.getReceiberThread().start();
         } else {
             System.out.println("\nNo se ha establecido una conexión previa.");
         }

@@ -56,6 +56,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setLocationRelativeTo(null);
         conectarButton.setEnabled(false);
         PuertoSpinner.setValue(1);
+        IpJTextField.setText("localhost");
     }
 
     @Override
