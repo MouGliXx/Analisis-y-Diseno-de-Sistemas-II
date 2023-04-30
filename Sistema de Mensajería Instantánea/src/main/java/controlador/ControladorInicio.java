@@ -41,6 +41,8 @@ public class ControladorInicio implements ActionListener, IObserver {
             sistema.getUsuario().crearConexionCliente(puertoDestino);
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
+            this.sistema.getUsuario().getObservadores().remove(this);
+            vista.cerrarVentana();
         }
     }
 
