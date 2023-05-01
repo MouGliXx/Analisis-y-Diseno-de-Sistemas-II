@@ -7,7 +7,9 @@ public interface IVistaInicio extends IVista {
 
     void setChangeListener();
 
-    void setMiDireccionIP(String texto);
+    void setMiDireccionIP(String IP);
+
+    void setMiPuerto(String puerto);
 
     String getNombreDeUsuario();
 

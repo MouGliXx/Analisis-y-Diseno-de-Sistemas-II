@@ -2,6 +2,8 @@ package modelo;
 
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
+
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -112,6 +114,13 @@ public class Usuario implements IObservable {
         this.usuario = usuario;
     }
 
+    public int getPuertoPropio() {
+        return puertoPropio;
+    }
+
+    public void setPuertoPropio(int puertoPropio) {
+        this.puertoPropio = puertoPropio;
+    }
 
     public void mandarMensajeComoCliente(String mensaje) {
         this.getSocketCliente().mandarMensaje(mensaje);

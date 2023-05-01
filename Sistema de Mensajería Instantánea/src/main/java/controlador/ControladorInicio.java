@@ -19,6 +19,7 @@ public class ControladorInicio implements ActionListener, IObserver {
         vista.setKeyListener();
         vista.setChangeListener();
         establecerIP();
+        establecerPuerto();
     }
 
     @Override
@@ -45,7 +46,6 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.cerrarVentana();
         }
     }
-
 
     private void conexionCorrecta(){
 
@@ -74,6 +74,15 @@ public class ControladorInicio implements ActionListener, IObserver {
         }
     }
 
+    private void establecerPuerto() {
+        String puerto = String.valueOf(sistema.getUsuario().getPuertoPropio());
+        if (puerto != null) {
+            vista.setMiPuerto(puerto);
+        } else {
+            vista.setMiPuerto("XXXXX");
+        }
+    }
+
     public void ventanaEmergente(){
         vista.lanzarVentanaEmergente("a");
     }
@@ -82,7 +91,9 @@ public class ControladorInicio implements ActionListener, IObserver {
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         if ("Ventana Emergente".equals(estado)){
-            vista.lanzarVentanaEmergente("El usuario con el que se intenta conectar no se encuentra en modo escucha");
+//            vista.lanzarVentanaEmergente("El usuario con el que se intenta conectar no se encuentra en modo escucha");
+            vista.creaOtraVentana(sistema,1,null);
+            vista.cerrarVentana();
         }
         if ("Abro ventana notificacion".equals(estado)) {
             System.out.printf("a ver cuantas veces se imprime esta shit");

@@ -26,6 +26,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     private JLabel Info1Label;
     private JLabel Info2Label;
     private JSpinner PuertoSpinner;
+    private JLabel MiPuertoLabel;
 
     @Override
     public void setActionListener(ActionListener controlador) {
@@ -90,6 +91,11 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public void setMiDireccionIP(String IP) {
         this.MiDireccionLabel.setText("Mi direccion IP: " + IP);
+    }
+
+    @Override
+    public void setMiPuerto(String puerto) {
+        this.MiPuertoLabel.setText("Mi puerto: " + puerto);
     }
 
     @Override
