@@ -18,7 +18,6 @@ public class ServerThread implements Runnable {
 
     public void run(){
         try {
-            System.out.println("\nServidor escuchando en el puerto " + server.getLocalPort());
             cliente.getSocketServer().setSocket(server.accept());
             // Un cliente se intento conectar conmigo si esta en modo Escucha acepto.
             if (cliente.isModoEscucha()){

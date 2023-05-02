@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class Usuario implements IObservable {
     private final String hostName = "localhost";
     private String nombreDeUsuario;
-    private final int puertoPropio;
+    private  int puertoPropio;
     private String usuario = "";
     private ServerSocket serverSocket;
     private final SocketIO socketCliente;
