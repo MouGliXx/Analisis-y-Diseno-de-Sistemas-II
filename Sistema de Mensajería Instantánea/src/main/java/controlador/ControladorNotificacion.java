@@ -41,7 +41,6 @@ public class ControladorNotificacion implements ActionListener, IObserver {
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el EMISOR y el RECEPTOR acepto mi solicitud
         if ("Abro ventana sesion".equals(estado)) {
-            System.out.printf("INTENTANDO ABRIR VENTANA SESION");
             vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
             this.sistema.getUsuario().getObservadores().remove(this);
             vista.cerrarVentana();

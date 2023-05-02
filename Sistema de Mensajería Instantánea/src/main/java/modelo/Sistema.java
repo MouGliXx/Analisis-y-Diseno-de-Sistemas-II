@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Sistema {
     private Usuario usuario = new Usuario(this.obtenerPuertoAleatorio());
-    private ArrayList<IObserver> observadores = new ArrayList<>();
+    private final ArrayList<IObserver> observadores = new ArrayList<>();
 
     public Sistema() {
         //this.cliente.setListenerServidor();

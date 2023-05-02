@@ -33,11 +33,9 @@ public class ControladorInicio implements ActionListener, IObserver {
     private void conectar() {
         try {
             int puertoDestino = vista.getPuerto();
-            System.out.printf("El puerto destino es" + puertoDestino);
             sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
             String usuario = vista.getNombreDeUsuario();
             sistema.getUsuario().setUsuario(usuario);
-            System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
             sistema.getUsuario().crearConexionCliente(puertoDestino);
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
@@ -56,7 +54,6 @@ public class ControladorInicio implements ActionListener, IObserver {
     }
 
     private void cambiarModoEscucha() {
-        System.out.println("\nEl modo escucha es " + vista.getModoEscucha());
         if (vista.getNombreDeUsuario().isEmpty()) {
             vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de usuario primero.");
             vista.setModoEscucha(false);
@@ -85,13 +82,11 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.lanzarVentanaEmergente("El usuario con el que se intenta conectar no se encuentra en modo escucha");
         }
         if ("Abro ventana notificacion".equals(estado)) {
-            System.out.printf("a ver cuantas veces se imprime esta shit");
             vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
             this.sistema.getUsuario().getObservadores().remove(this);
             vista.cerrarVentana();
         }
         if ("Acepto conexion".equals(estado)){
-            System.out.printf("se acepto la conexion");
             vista.creaOtraVentana(sistema, 2, null);
             this.sistema.getUsuario().getObservadores().remove(this);
             vista.cerrarVentana();

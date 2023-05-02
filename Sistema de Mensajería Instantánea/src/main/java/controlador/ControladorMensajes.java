@@ -31,10 +31,8 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void enviarMensaje() {
         String mensaje = vista.getMensajeEnviado();
         Usuario usuario = sistema.getUsuario();
-        System.out.printf("\nEL MENSAJE ENVIADO ES" + mensaje);
         // Esto lo podemos cambiar mas adelante, esta medio pelo
         if (usuario.isServer()) {
-            System.out.printf("\nse mando como servidor");
             usuario.mandarMensajeComoServidor(mensaje);
             this.vista.agregarNuevoEnviado(mensaje);
         } else {
@@ -46,10 +44,8 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void cerrarSesion() {
         Usuario usuario = sistema.getUsuario();
         if (usuario.isServer()) {
-            System.out.printf("\nPor cerrar conexion papi");
             usuario.mandarMensajeComoServidor("Se cierra conexion y ventana");
         } else {
-            System.out.printf("\nIntentando cerrar conexion again");
             usuario.mandarMensajeComoCliente("Se cierra conexion y ventana");
         }
         usuario.desconectar();

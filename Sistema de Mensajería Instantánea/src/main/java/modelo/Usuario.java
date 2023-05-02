@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Usuario implements IObservable {
-    private String hostName = "localhost";
+    private final String hostName = "localhost";
     private String nombreDeUsuario;
-    private int puertoPropio;
+    private final int puertoPropio;
     private String usuario = "";
     private ServerSocket serverSocket;
-    private SocketIO socketCliente;
-    private SocketIO socketServer;
+    private final SocketIO socketCliente;
+    private final SocketIO socketServer;
     private boolean isConnected = false;
     private boolean isRejected = false;
     private boolean isServer = false;
@@ -52,7 +52,6 @@ public class Usuario implements IObservable {
     }
 
     public void crearConexionCliente(int puerto) throws IOException {
-        System.out.println("\nSe creo conexión como cliente con el puerto" + puerto);
         if (puerto == this.puertoPropio)
             throw new IOException();
         Socket socket = new Socket(hostName, puerto);
@@ -79,7 +78,7 @@ public class Usuario implements IObservable {
         if (this.socketCliente.getInput() != null) {
             this.receiberThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Usuario 1", this,this.socketServer));
             Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                System.out.println("Caught " + e);
+               e.getMessage();
             });
             receiberThread.start();
         }
@@ -91,7 +90,6 @@ public class Usuario implements IObservable {
             this.getServerSocket().close();
             this.getSocketCliente().close();
             this.getSocketServer().close();
-            System.out.printf("se desconecto todo");
             this.setRejected(false);
             this.setConnected(false);
             this.setServer(false);
@@ -138,7 +136,6 @@ public class Usuario implements IObservable {
     public boolean isConnected() {return isConnected;}
 
     public void setConnected(boolean connected) {
-        System.out.printf("se cambio el estado de is connected");
         isConnected = connected;}
 
     public boolean isRejected() {return isRejected;}
