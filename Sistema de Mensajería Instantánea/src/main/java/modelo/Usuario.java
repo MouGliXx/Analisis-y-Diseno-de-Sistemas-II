@@ -1,5 +1,6 @@
 package modelo;
 
+import modelo.interfaces.IMensajes;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 
@@ -13,12 +14,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Usuario implements IObservable {
+public class Usuario implements IObservable, IMensajes {
     private final String hostName = "localhost";
     private String nombreDeUsuario;
     private  int puertoPropio;
+    private  int puertoDestino;
+
     private String usuario = "";
     private ServerSocket serverSocket;
+    //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private final SocketIO socketCliente;
     private final SocketIO socketServer;
     private boolean isConnected = false;
@@ -29,12 +33,14 @@ public class Usuario implements IObservable {
     private Thread receiberThread;
     private Thread serverThread;
 
+
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
     public Usuario(int puertoPropio) {
         this.puertoPropio = puertoPropio;
         this.socketCliente = new SocketIO();
         this.socketServer = new SocketIO();
+
     }
 
     public String getNombreDeUsuario() {

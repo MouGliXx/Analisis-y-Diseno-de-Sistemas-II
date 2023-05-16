@@ -1,11 +1,11 @@
 package modelo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import modelo.interfaces.IMensajes;
+
+import java.io.*;
 import java.net.Socket;
 
-public class SocketIO {
+public class SocketIO{
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
@@ -13,12 +13,12 @@ public class SocketIO {
     public SocketIO() {
     }
 
-    public void mandarMensaje(String message) {
-        if (output != null) {
-            output.println(message);
-        } else {
-            System.err.println("No se ha inicializado la salida del socket.");
-        }
+    public void mandarMensaje(Object o){
+//        try{
+//            output.writeObject(o);
+//        } catch(IOException e) {
+//            System.err.println("No se ha inicializado la salida del socket.");
+//        }
     }
 
     public void close() {
