@@ -34,15 +34,14 @@ public class ControladorInicio implements ActionListener, IObserver {
     private void conectar() {
         try {
             int puertoDestino = vista.getPuerto();
-            System.out.printf("El puerto destino es" + puertoDestino);
-            sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
-            String usuario = vista.getNombreDeUsuario();
-            sistema.getUsuario().setUsuario(usuario);
-            System.out.println("\nIntentando conectarse con el puerto" + puertoDestino);
-            sistema.getUsuario().crearConexionCliente(puertoDestino);
+            sistema.getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
+            String cliente = vista.getNombreDeUsuario();
+            sistema.getCliente().setUsuario(cliente);
+            sistema.getCliente().crearConexion(puertoDestino);
+            // Si la conexion falla que tire una excepcion
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
-            this.sistema.getUsuario().getObservadores().remove(this);
+            this.sistema.getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }
@@ -56,13 +55,12 @@ public class ControladorInicio implements ActionListener, IObserver {
     }
 
     private void cambiarModoEscucha() {
-        System.out.println("\nEl modo escucha es " + vista.getModoEscucha());
         if (vista.getNombreDeUsuario().isEmpty()) {
-            vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de usuario primero.");
+            vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de cliente primero.");
             vista.setModoEscucha(false);
         } else {
-            sistema.getUsuario().setModoEscucha(vista.getModoEscucha());
-            sistema.getUsuario().setNombreDeUsuario(vista.getNombreDeUsuario());
+            sistema.getCliente().setModoEscucha(vista.getModoEscucha());
+            sistema.getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
         }
     }
 
@@ -75,7 +73,7 @@ public class ControladorInicio implements ActionListener, IObserver {
     }
 
     private void establecerPuerto() {
-        String puerto = String.valueOf(sistema.getUsuario().getPuertoPropio());
+        String puerto = String.valueOf(sistema.getCliente().getPuertoPropio());
         if (puerto != null) {
             vista.setMiPuerto(puerto);
         } else {
@@ -91,20 +89,18 @@ public class ControladorInicio implements ActionListener, IObserver {
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         if ("Ventana Emergente".equals(estado)){
-//            vista.lanzarVentanaEmergente("El usuario con el que se intenta conectar no se encuentra en modo escucha");
+//            vista.lanzarVentanaEmergente("El cliente con el que se intenta conectar no se encuentra en modo escucha");
             vista.creaOtraVentana(sistema,1,null);
             vista.cerrarVentana();
         }
         if ("Abro ventana notificacion".equals(estado)) {
-            System.out.printf("a ver cuantas veces se imprime esta shit");
-            vista.creaOtraVentana(sistema, 3, "Usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
-            this.sistema.getUsuario().getObservadores().remove(this);
+            vista.creaOtraVentana(sistema, 3, "cliente emisor"); //TODO poner el nombre de cliente del emisor que recibo del modelo
+            this.sistema.getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
         if ("Acepto conexion".equals(estado)){
-            System.out.printf("se acepto la conexion");
             vista.creaOtraVentana(sistema, 2, null);
-            this.sistema.getUsuario().getObservadores().remove(this);
+            this.sistema.getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }

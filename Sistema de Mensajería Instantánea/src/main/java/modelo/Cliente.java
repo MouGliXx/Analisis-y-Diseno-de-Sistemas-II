@@ -1,30 +1,32 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 
-public class Usuario implements IObservable, IMensajes {
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
+
+public class Cliente implements IObservable{
     private final String hostName = "localhost";
+
+
     private String nombreDeUsuario;
     private  int puertoPropio;
-    private  int puertoDestino;
+    private  int puertoServer = 1234;
+    
+    
 
     private String usuario = "";
     private ServerSocket serverSocket;
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
-    private final SocketIO socketCliente;
-    private final SocketIO socketServer;
+    private Conexion conexion = new Conexion();
     private boolean isConnected = false;
     private boolean isRejected = false;
     private boolean isServer = false;
@@ -36,11 +38,57 @@ public class Usuario implements IObservable, IMensajes {
 
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
-    public Usuario(int puertoPropio) {
+    public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
-        this.socketCliente = new SocketIO();
-        this.socketServer = new SocketIO();
+    }
 
+    public void registrarServidor() throws IOException{
+//        if (puertoDestino == this.puertoPropio)
+//            throw new IOException();
+        System.out.printf("Intentando conectarse");
+        Socket socket = new Socket(hostName, puertoServer);
+        this.conexion.setSocket(socket);
+        this.conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+        this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
+        Thread listenerMensajes = new Thread(()-> listenerMensajes());
+        listenerMensajes.start();
+        this.registrar();
+
+    }
+
+    // TODO que lance una excepcion cuando no aceptan conexion
+    public void crearConexion(int puertoDestino) throws IOException{
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","");
+        this.conexion.mandarMensaje(mensaje);
+        //this.conexion.getOutput()
+    }
+
+    public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
+        byte[] textoEncriptado = encriptar("12345678", mensaje.getMensaje(), "DES");
+        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
+        this.conexion.mandarMensaje(mensaje);
+    }
+
+    private void listenerMensajes() {
+        try {
+            Mensaje mensaje;
+            System.out.printf("entro");
+            while ((mensaje = (Mensaje)this.conexion.getInput().readObject()) != null) {
+                System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+                byte[] textoEncriptado =  Base64.getDecoder().decode(mensaje.getMensaje());
+                String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
+                System.out.println(textoOriginal);
+
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getNombreDeUsuario() {
@@ -51,60 +99,31 @@ public class Usuario implements IObservable, IMensajes {
         this.nombreDeUsuario = nombreDeUsuario;
     }
 
-    public Thread getReceiberThread() {
-        return receiberThread;
+    public void registrar(){
+        this.mandarMensaje(puertoServer,"REGISTRAR","");
     }
 
-    public void setReceiberThread(Thread receiberThread) {
-        this.receiberThread = receiberThread;
+    public void aceptarConexion(int puertoDestino){
+        this.mandarMensaje(puertoDestino,"ACEPTAR","");
     }
 
-    public void crearConexionCliente(int puerto) throws IOException {
-        if (puerto == this.puertoPropio)
-            throw new IOException();
-        Socket socket = new Socket(hostName, puerto);
-        this.socketCliente.setSocket(socket);
-        this.socketCliente.setOutput(new PrintWriter(socket.getOutputStream(), true));
-        this.socketCliente.setInput(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-        this.setListenerMensajesComoCliente();
+    public void mandarTexto(int puertoDestino , String mensaje){
+        this.mandarMensaje(puertoDestino,"TEXTO",mensaje);
     }
 
-    public void setListenerServidor() {
-        try {
-            this.serverSocket = new ServerSocket(puertoPropio);
-            serverThread = new Thread(new ServerThread(serverSocket, this));
-            serverThread.start();
-            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-               this.notifyObservadores("Ventana Emergente","");
-            });
-        } catch (IOException e) {
-            this.desconectar();
-        }
-    }
 
-    public void setListenerMensajesComoCliente() {
-        if (this.socketCliente.getInput() != null) {
-            this.receiberThread = new Thread(new ListenerThread(this.socketCliente.getInput(), "Usuario 1", this,this.socketServer));
-            Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-               e.getMessage();
-            });
-            receiberThread.start();
-        }
-    }
 
     public void desconectar() {
         try {
             this.isStop = true;
             this.getServerSocket().close();
             this.getSocketCliente().close();
-            this.getSocketServer().close();
             this.setRejected(false);
             this.setConnected(false);
             this.setServer(false);
             this.modoEscucha = false;
             this.isStop = true;
 
-            setListenerServidor();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,19 +145,11 @@ public class Usuario implements IObservable, IMensajes {
         this.puertoPropio = puertoPropio;
     }
 
-    public void mandarMensajeComoCliente(String mensaje) {
-        this.getSocketCliente().mandarMensaje(mensaje);
+
+    public Conexion getSocketCliente() {
+        return conexion;
     }
 
-    public void mandarMensajeComoServidor(String mensaje){this.getSocketServer().mandarMensaje(mensaje);}
-
-    public SocketIO getSocketCliente() {
-        return socketCliente;
-    }
-
-    public SocketIO getSocketServer() {
-        return socketServer;
-    }
 
     public ServerSocket getServerSocket() {
         return serverSocket;

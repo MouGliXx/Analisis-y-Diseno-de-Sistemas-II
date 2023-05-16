@@ -1,24 +1,24 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
-
 import java.io.*;
 import java.net.Socket;
 
-public class SocketIO{
+public class Conexion {
+    private int puerto;
+    private int puertoDestino;
     private Socket socket;
-    private PrintWriter output;
-    private BufferedReader input;
+    private ObjectOutputStream output;
+    private ObjectInputStream input;
 
-    public SocketIO() {
+    public Conexion() {
     }
 
     public void mandarMensaje(Object o){
-//        try{
-//            output.writeObject(o);
-//        } catch(IOException e) {
-//            System.err.println("No se ha inicializado la salida del socket.");
-//        }
+        try{
+            output.writeObject(o);
+        } catch(IOException e) {
+            System.err.println("No se ha inicializado la salida del socket.");
+        }
     }
 
     public void close() {
@@ -45,19 +45,19 @@ public class SocketIO{
         this.socket = socket;
     }
 
-    public PrintWriter getOutput() {
+    public ObjectOutputStream getOutput() {
         return output;
     }
 
-    public void setOutput(PrintWriter output) {
+    public void setOutput(ObjectOutputStream output) {
         this.output = output;
     }
 
-    public BufferedReader getInput() {
+    public ObjectInputStream getInput() {
         return input;
     }
 
-    public void setInput(BufferedReader input) {
+    public void setInput(ObjectInputStream input) {
         this.input = input;
     }
 }

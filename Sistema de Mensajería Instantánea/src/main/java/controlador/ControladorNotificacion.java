@@ -19,32 +19,31 @@ public class ControladorNotificacion implements ActionListener, IObserver {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "Aceptar" -> {
-                if (vista.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
-                    vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
-                } else { // -> creo ventanaInicio
-                    vista.creaOtraVentana(sistema, 1, null);
-                }
-                this.sistema.getUsuario().getObservadores().remove(this);
-                vista.cerrarVentana();
-            }
-            case "Cancelar" -> {
-                sistema.getUsuario().setRejected(true);
-                vista.creaOtraVentana(sistema, 1, null); //TODO poner el nombre de usuario del emisor que recibo del modelo
-                vista.cerrarVentana();
-            }
-        }
+//        switch (e.getActionCommand()) {
+//            case "Aceptar" -> {
+//                if (vista.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
+//                    vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+//                } else { // -> creo ventanaInicio
+//                    vista.creaOtraVentana(sistema, 1, null);
+//                }
+//                this.sistema.getUsuario().getObservadores().remove(this);
+//                vista.cerrarVentana();
+//            }
+//            case "Cancelar" -> {
+//                sistema.getUsuario().setRejected(true);
+//                vista.creaOtraVentana(sistema, 1, null); //TODO poner el nombre de usuario del emisor que recibo del modelo
+//                vista.cerrarVentana();
+//            }
+//        }
     }
 
     @Override
     public void notificarCambio(String estado, String mensaje) {
-        //A esta funcion solo llego si soy el EMISOR y el RECEPTOR acepto mi solicitud
-        if ("Abro ventana sesion".equals(estado)) {
-            System.out.printf("INTENTANDO ABRIR VENTANA SESION");
-            vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
-            this.sistema.getUsuario().getObservadores().remove(this);
-            vista.cerrarVentana();
-        }
+//        //A esta funcion solo llego si soy el EMISOR y el RECEPTOR acepto mi solicitud
+//        if ("Abro ventana sesion".equals(estado)) {
+//            vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+//            this.sistema.getUsuario().getObservadores().remove(this);
+//            vista.cerrarVentana();
+//        }
     }
 }
