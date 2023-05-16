@@ -1,25 +1,27 @@
 package modelo;
 
 import modelo.interfaces.IObserver;
+
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Sistema {
-    private Usuario usuario = new Usuario(this.obtenerPuertoAleatorio());
-    private final ArrayList<IObserver> observadores = new ArrayList<>();
+    private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
 
-    public Sistema() {
-        //this.cliente.setListenerServidor();
+    public Sistema() throws IOException {
+        // Conecto al cliente con el servidor
+        this.cliente.registrarServidor();
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setCliente(Cliente Cliente) {
+        this.cliente = Cliente;
     }
 
     public int obtenerPuertoAleatorio() {

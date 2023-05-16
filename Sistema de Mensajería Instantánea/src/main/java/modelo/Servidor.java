@@ -12,6 +12,7 @@ public class Servidor implements Runnable, Serializable {
     public Servidor() {
     }
 
+
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(1234);
@@ -22,7 +23,7 @@ public class Servidor implements Runnable, Serializable {
                 Socket clientSocket = serverSocket.accept();
 
                 // Registro del usuario
-                System.out.println("Cliente conectado: " + clientSocket.getInetAddress() + "Port:" +clientSocket.getPort() + "\n");
+                System.out.println("\nSe registro un cliente PORT: " +clientSocket.getPort() + "\n");
                 this.conexion.setSocket(clientSocket);
                 this.conexion.setOutput(new ObjectOutputStream(conexion.getSocket().getOutputStream()));
                 // Ejecuto el metodo Client Thread en un hilo aparte para que reciba mensajes
@@ -43,26 +44,25 @@ public class Servidor implements Runnable, Serializable {
             while ((mensaje = (Mensaje)reader.readObject()) != null) {
 
                 if (mensaje.getMensajeControl().equals("REGISTRAR")){
-                    System.out.printf("\nREGISTRAR");
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
                     clientes.put(mensaje.getPuertoOrigen(),conexion);
                     System.out.printf(clientes.toString());
                 }
                 if (mensaje.getMensajeControl().equals("CONECTAR")){
-                    System.out.printf("\nCONECTAR");
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                     // aviso al puerto destino que se quieren conectar con el
-                    System.out.printf("\nIntentando conectar con otro cliente");
                     System.out.printf("\nPUERTO DESTINO" + mensaje.getPuertoDestino());
                     if (existeCliente(mensaje.getPuertoDestino())){
                         System.out.printf("\nABRIR PESTANA DE INVITACION A SESION");
                     }
                     else{
                         //TODO excepcion
-                        System.out.printf("\nHACER EXCEPCION NO EXISTE CLIENTE O NO ESTA EN MODO ESCUCHA VENTANA");
+                        System.out.printf("");
                     }
                 }
 
                 if (mensaje.getMensajeControl().equals("ACEPTAR")){
-                    System.out.printf("\nACEPTAR");
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR");
                     // AVISAR AL EMISOR QUE SE ACEPTO
                     this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
                     this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
@@ -70,11 +70,13 @@ public class Servidor implements Runnable, Serializable {
                     System.out.printf("\nse creo sesion entre clientes");
                 }
 
-                if (mensaje.getMensajeControl().equals("RECHAZA")){
+                if (mensaje.getMensajeControl().equals("RECHAZAR")){
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
                     // si se recibe un mensaje de rechaza
                     // mando a la conexion que rechaza que se rechazo el chat
                 }
                 if (mensaje.getMensajeControl().equals("TEXTO")){
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: TEXTO");
                     if (sesiones.containsKey(mensaje.getPuertoDestino())){
                         System.out.printf("MANDANDO MENSAJE");
                         System.out.printf(mensaje.getPuertoDestino() + "\n");
@@ -86,6 +88,7 @@ public class Servidor implements Runnable, Serializable {
                     }
                 }
                 if (mensaje.getMensaje().equals("DESCONECTAR")){
+                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: DESCONECTAR");
                     // se deshace la conexion
                 }
                 // manejo mensaje

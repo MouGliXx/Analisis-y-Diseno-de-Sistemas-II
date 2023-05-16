@@ -11,6 +11,8 @@ import java.util.Iterator;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
+
+
     private String nombreDeUsuario;
     private  int puertoPropio;
     private  int puertoServer = 1234;
@@ -36,7 +38,7 @@ public class Cliente implements IObservable{
         this.puertoPropio = puertoPropio;
     }
 
-    public void registroServidor() throws IOException{
+    public void registrarServidor() throws IOException{
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.printf("Intentando conectarse");
@@ -46,12 +48,12 @@ public class Cliente implements IObservable{
         this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
         Thread listenerMensajes = new Thread(()-> listenerMensajes());
         listenerMensajes.start();
+        this.registrar();
 
     }
 
-    // precondicion
-    // la conexion ya debe estar establecida
-    public void crearConexion(int puertoDestino){
+    // TODO que lance una excepcion cuando no aceptan conexion
+    public void crearConexion(int puertoDestino) throws IOException{
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","");
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
@@ -60,22 +62,6 @@ public class Cliente implements IObservable{
     public void mandarMensaje(int puertoDestino,String mensajeControl, String text){
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
         this.conexion.mandarMensaje(mensaje);
-    }
-
-    public String getNombreDeUsuario() {
-        return nombreDeUsuario;
-    }
-
-    public void setNombreDeUsuario(String nombreDeUsuario) {
-        this.nombreDeUsuario = nombreDeUsuario;
-    }
-
-    public Thread getReceiberThread() {
-        return receiberThread;
-    }
-
-    public void setReceiberThread(Thread receiberThread) {
-        this.receiberThread = receiberThread;
     }
 
     private void listenerMensajes() {
@@ -90,6 +76,14 @@ public class Cliente implements IObservable{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getNombreDeUsuario() {
+        return nombreDeUsuario;
+    }
+
+    public void setNombreDeUsuario(String nombreDeUsuario) {
+        this.nombreDeUsuario = nombreDeUsuario;
     }
 
     public void registrar(){
@@ -136,11 +130,6 @@ public class Cliente implements IObservable{
 
     public void setPuertoPropio(int puertoPropio) {
         this.puertoPropio = puertoPropio;
-    }
-
-
-    public void mandarMensajeComoCliente(String mensaje) {
-        this.getSocketCliente().mandarMensaje(mensaje);
     }
 
 
