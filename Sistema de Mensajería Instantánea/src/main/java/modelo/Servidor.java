@@ -1,15 +1,12 @@
 package modelo;
 
-import com.sun.source.doctree.SeeTree;
-
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Servidor implements Runnable, Serializable {
-    private SocketIO2 conexion = new SocketIO2();
-    private HashMap<Integer,SocketIO2> clientes = new HashMap<>();
+    private Conexion conexion = new Conexion();
+    private HashMap<Integer, Conexion> clientes = new HashMap<>();
     private HashMap<Integer,Integer> sesiones = new HashMap<>();
 
     public Servidor() {
@@ -83,6 +80,9 @@ public class Servidor implements Runnable, Serializable {
                         System.out.printf(mensaje.getPuertoDestino() + "\n");
                         System.out.printf(clientes.toString() + "\n");
                         clientes.get(mensaje.getPuertoDestino()).mandarMensaje(mensaje);
+                    }
+                    else{
+
                     }
                 }
                 if (mensaje.getMensaje().equals("DESCONECTAR")){

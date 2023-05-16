@@ -1,10 +1,8 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,7 +20,7 @@ public class Cliente implements IObservable{
     private String usuario = "";
     private ServerSocket serverSocket;
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
-    private SocketIO2 conexion = new SocketIO2();
+    private Conexion conexion = new Conexion();
     private boolean isConnected = false;
     private boolean isRejected = false;
     private boolean isServer = false;
@@ -146,7 +144,7 @@ public class Cliente implements IObservable{
     }
 
 
-    public SocketIO2 getSocketCliente() {
+    public Conexion getSocketCliente() {
         return conexion;
     }
 
