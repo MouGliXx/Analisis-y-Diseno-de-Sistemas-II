@@ -7,7 +7,11 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
+
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
@@ -59,8 +63,10 @@ public class Cliente implements IObservable{
         //this.conexion.getOutput()
     }
 
-    public void mandarMensaje(int puertoDestino,String mensajeControl, String text){
+    public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
+        byte[] textoEncriptado = encriptar("12345678", mensaje.getMensaje(), "DES");
+        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
         this.conexion.mandarMensaje(mensaje);
     }
 
@@ -70,10 +76,17 @@ public class Cliente implements IObservable{
             System.out.printf("entro");
             while ((mensaje = (Mensaje)this.conexion.getInput().readObject()) != null) {
                 System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+                byte[] textoEncriptado =  Base64.getDecoder().decode(mensaje.getMensaje());
+                String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
+                System.out.println(textoOriginal);
+
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
