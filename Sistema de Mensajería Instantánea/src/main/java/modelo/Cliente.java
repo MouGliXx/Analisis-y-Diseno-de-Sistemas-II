@@ -99,15 +99,15 @@ public class Cliente implements IObservable{
         this.nombreDeUsuario = nombreDeUsuario;
     }
 
-    public void registrar(){
+    public void registrar() throws Exception {
         this.mandarMensaje(puertoServer,"REGISTRAR","");
     }
 
-    public void aceptarConexion(int puertoDestino){
+    public void aceptarConexion(int puertoDestino) throws Exception {
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
     }
 
-    public void mandarTexto(int puertoDestino , String mensaje){
+    public void mandarTexto(int puertoDestino , String mensaje) throws Exception {
         this.mandarMensaje(puertoDestino,"TEXTO",mensaje);
     }
 
