@@ -1,7 +1,5 @@
 package vista.interfaces;
 
-import modelo.Sistema;
-
 public interface IVistaMensajes extends IVista{
 
     void setKeyListener();
@@ -16,5 +14,5 @@ public interface IVistaMensajes extends IVista{
 
     String getMensajeEnviado();
 
-    void creaOtraVentana(Sistema sistema);
+    void creaOtraVentana();
 }

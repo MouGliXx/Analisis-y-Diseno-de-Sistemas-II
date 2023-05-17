@@ -10,11 +10,9 @@ import java.net.UnknownHostException;
 
 public class ControladorInicio implements ActionListener, IObserver {
     private final IVistaInicio vista;
-    private final Sistema sistema;
 
-    public ControladorInicio(IVistaInicio vistaInicio, Sistema sistema) {
+    public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
-        this.sistema = sistema;
         vista.setActionListener(this);
         vista.setKeyListener();
         vista.setChangeListener();
@@ -42,17 +40,17 @@ public class ControladorInicio implements ActionListener, IObserver {
     private void conectar() {
         try {
             int puertoDestino = vista.getPuerto();
-            sistema.getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
+            Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             String cliente = vista.getNombreDeUsuario();
-            sistema.getCliente().setNombreDeUsuario(cliente);
-            sistema.getCliente().crearConexion(puertoDestino);
-            vista.creaOtraVentana(sistema, 2, null);
-            this.sistema.getCliente().getObservadores().remove(this);
+            Sistema.getInstance().getCliente().setNombreDeUsuario(cliente);
+            Sistema.getInstance().getCliente().crearConexion(puertoDestino);
+            vista.creaOtraVentana(Sistema.getInstance(), 2, null);
+            Sistema.getInstance().getInstance().getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
             // Si la conexion falla que tire una excepcion
         } catch (IOException e) {
-            vista.creaOtraVentana(sistema, 1, null);
-            this.sistema.getCliente().getObservadores().remove(this);
+            vista.creaOtraVentana(Sistema.getInstance(), 1, null);
+            Sistema.getInstance().getInstance().getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }
@@ -62,25 +60,25 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de cliente primero.");
             vista.setModoEscucha(false);
         } else {
-            sistema.getCliente().setModoEscucha(vista.getModoEscucha());
-            if(sistema.getCliente().modoEscucha)
-                sistema.getCliente().setModoEscucha(false);
+            Sistema.getInstance().getCliente().setModoEscucha(vista.getModoEscucha());
+            if(Sistema.getInstance().getCliente().modoEscucha)
+                Sistema.getInstance().getCliente().setModoEscucha(false);
             else
-                sistema.getCliente().setModoEscucha(true);
-            sistema.getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
+                Sistema.getInstance().getCliente().setModoEscucha(true);
+            Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
         }
     }
 
     private void establecerIP() {
         try {
-            vista.setMiDireccionIP(sistema.obtenerIP());
+            vista.setMiDireccionIP(Sistema.getInstance().obtenerIP());
         } catch (UnknownHostException e) {
             vista.setMiDireccionIP("XXX.XXX.X.X");
         }
     }
 
     private void establecerPuerto() {
-        String puerto = String.valueOf(sistema.getCliente().getPuertoPropio());
+        String puerto = String.valueOf(Sistema.getInstance().getCliente().getPuertoPropio());
         if (puerto != null) {
             vista.setMiPuerto(puerto);
         } else {
@@ -97,17 +95,17 @@ public class ControladorInicio implements ActionListener, IObserver {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         if ("Ventana Emergente".equals(estado)){
 //            vista.lanzarVentanaEmergente("El cliente con el que se intenta conectar no se encuentra en modo escucha");
-            vista.creaOtraVentana(sistema,1,null);
+            vista.creaOtraVentana(Sistema.getInstance(),1,null);
             vista.cerrarVentana();
         }
         if ("Abro ventana notificacion".equals(estado)) {
-            vista.creaOtraVentana(sistema, 3, "cliente emisor"); //TODO poner el nombre de cliente del emisor que recibo del modelo
-            this.sistema.getCliente().getObservadores().remove(this);
+            vista.creaOtraVentana(Sistema.getInstance(), 3, "cliente emisor"); //TODO poner el nombre de cliente del emisor que recibo del modelo
+            Sistema.getInstance().getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
         if ("Acepto conexion".equals(estado)){
-            vista.creaOtraVentana(sistema, 2, null);
-            this.sistema.getCliente().getObservadores().remove(this);
+            vista.creaOtraVentana(Sistema.getInstance(), 2, null);
+            Sistema.getInstance().getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }
@@ -116,8 +114,8 @@ public class ControladorInicio implements ActionListener, IObserver {
         System.out.printf("ENTRO ACAAAAAA2");
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         if ("Abro ventana notificacion".equals(estado)) {
-            vista.creaOtraVentana(sistema, 3,  String.valueOf(puerto)); //TODO poner el nombre de cliente del emisor que recibo del modelo
-            this.sistema.getCliente().getObservadores().remove(this);
+            vista.creaOtraVentana(Sistema.getInstance(), 3,  String.valueOf(puerto)); //TODO poner el nombre de cliente del emisor que recibo del modelo
+            Sistema.getInstance().getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }
     }

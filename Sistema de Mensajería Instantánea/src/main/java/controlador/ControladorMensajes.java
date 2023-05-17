@@ -11,11 +11,9 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private static final String STATE_RECIBIR_MENSAJE = "Recibo mensaje";
     private static final String STATE_CERRAR_SESION = "Cierro ventana sesion";
     private final IVistaMensajes vista;
-    private final Sistema sistema;
 
-    public ControladorMensajes(IVistaMensajes vista, Sistema sistema) {
+    public ControladorMensajes(IVistaMensajes vista) {
         this.vista = vista;
-        this.sistema = sistema;
         this.vista.setActionListener(this);
         this.vista.setKeyListener();
     }
@@ -30,15 +28,15 @@ public class ControladorMensajes implements ActionListener, IObserver {
 
     private void enviarMensaje() {
         String mensaje = vista.getMensajeEnviado();
-        Cliente cliente = sistema.getCliente();
+        Cliente cliente = Sistema.getInstance().getCliente();
         cliente.mandarTexto(mensaje);
         this.vista.agregarNuevoEnviado(mensaje);
     }
 
     private void cerrarSesion() {
-        sistema.getCliente().cerrarConexion("");
-        this.sistema.getCliente().getObservadores().remove(this);
-        vista.creaOtraVentana(sistema);
+        Sistema.getInstance().getCliente().cerrarConexion("");
+        Sistema.getInstance().getCliente().getObservadores().remove(this);
+        vista.creaOtraVentana();
         vista.cerrarVentana();
     }
 
@@ -47,8 +45,8 @@ public class ControladorMensajes implements ActionListener, IObserver {
         switch (estado) {
             case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
             case STATE_CERRAR_SESION -> {
-                this.sistema.getCliente().getObservadores().remove(this);
-                vista.creaOtraVentana(sistema);
+                Sistema.getInstance().getCliente().getObservadores().remove(this);
+                vista.creaOtraVentana();
                 vista.cerrarVentana();
             }
         }
