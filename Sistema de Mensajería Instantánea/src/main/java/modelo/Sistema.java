@@ -11,7 +11,7 @@ import java.util.Random;
 public class Sistema {
     private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
 
-    public Sistema() throws IOException {
+    public Sistema() throws Exception {
         // Conecto al cliente con el servidor
         this.cliente.registrarServidor();
     }

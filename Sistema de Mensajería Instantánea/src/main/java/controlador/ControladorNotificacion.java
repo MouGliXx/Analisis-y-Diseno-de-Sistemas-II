@@ -32,7 +32,11 @@ public class ControladorNotificacion implements ActionListener, IObserver {
                 if (vista.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
                     vista.creaOtraVentana(sistema, 0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
                     System.out.printf("la ip el emisor es:" + ipEmisor);
-                    this.sistema.getCliente().aceptarConexion(ipEmisor);
+                    try {
+                        this.sistema.getCliente().aceptarConexion(ipEmisor);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 } else { // -> creo ventanaInicio
                     vista.creaOtraVentana(sistema, 1, null);
                 }

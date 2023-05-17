@@ -7,26 +7,45 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64;
 import java.util.Iterator;
+
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
+
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
+
+
     private String nombreDeUsuario;
     private  int puertoPropio;
     private  int puertoServer = 1234;
+    
+    
+
     private String usuario = "";
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
     private boolean isConnected = false;
+    private boolean isRejected = false;
+    private boolean isServer = false;
+    public boolean isStop = false;
     public boolean modoEscucha = false;
+    private Thread receiberThread;
+    private Thread serverThread;
+
 
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
     }
 
-    public void registrarServidor() throws IOException{
+    public void registrarServidor() throws Exception {
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.printf("Intentando conectarse");
@@ -40,10 +59,13 @@ public class Cliente implements IObservable{
 
     }
 
+    // TODO que lance una excepcion cuando no aceptan conexion
     public void crearConexion(int puertoDestino) throws IOException{
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","");
         this.conexion.mandarMensaje(mensaje);
+        //this.conexion.getOutput()
     }
+
 
     private void listenerMensajes() {
         try {
@@ -56,8 +78,12 @@ public class Cliente implements IObservable{
         }
     }
 
-    private void procesarMensaje(Mensaje mensaje) {
+    private void procesarMensaje(Mensaje mensaje) throws Exception {
         String mensajeControl = mensaje.getMensajeControl();
+        System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+        byte[] textoEncriptado =  Base64.getDecoder().decode(mensaje.getMensaje());
+        String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
+        System.out.println(textoOriginal);
         switch (mensajeControl) {
             case "Abro ventana sesion":
                 notifyObservadores("Abro ventana sesion", "");
@@ -82,22 +108,16 @@ public class Cliente implements IObservable{
 
     // TIPOS DE MENSAJES
 
-    public void mandarMensaje(int puertoDestino, String mensajeControl, String texto) {
-        Mensaje mensaje = new Mensaje(this.puertoPropio, puertoDestino, mensajeControl, texto);
+
+    public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
+        byte[] textoEncriptado = encriptar("12345678", mensaje.getMensaje(), "DES");
+        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
         this.conexion.mandarMensaje(mensaje);
     }
 
-    public void registrar() {
-        mandarMensaje(puertoServer, "REGISTRAR", "");
-    }
-
-    public void aceptarConexion(int puertoDestino) {
-        mandarMensaje(puertoDestino, "ACEPTAR", "");
-    }
-
-    public void rechazarConexion(int puertoDestino) {
-        mandarMensaje(puertoDestino, "RECHAZAR", "");
-    }
+    public void registrar() throws Exception {this.mandarMensaje(puertoServer, "REGISTRAR", "");}
+    public void aceptarConexion(int puertoDestino) throws Exception {this.mandarMensaje(puertoDestino,"ACEPTAR","");}
 
     public void mandarTexto(String mensaje) {
         mandarMensaje(-1, "TEXTO", mensaje);
