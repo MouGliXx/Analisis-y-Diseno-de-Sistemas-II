@@ -1,25 +1,34 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64;
 import java.util.Iterator;
+
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
+
+import static modelo.Cifrado.desencriptar;
+import static modelo.Cifrado.encriptar;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
+
+
     private String nombreDeUsuario;
     private  int puertoPropio;
     private  int puertoServer = 1234;
     private String usuario = "";
-    private ServerSocket serverSocket;
+    private ArrayList<IObserver> observadores = new ArrayList<>();
+
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
-    private SocketIO2 conexion = new SocketIO2();
+    private Conexion conexion = new Conexion();
     private boolean isConnected = false;
     private boolean isRejected = false;
     private boolean isServer = false;
@@ -29,13 +38,11 @@ public class Cliente implements IObservable{
     private Thread serverThread;
 
 
-    private ArrayList<IObserver> observadores = new ArrayList<>();
-
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
     }
 
-    public void registroServidor() throws IOException{
+    public void registrarServidor() throws Exception {
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.printf("Intentando conectarse");
@@ -45,158 +52,80 @@ public class Cliente implements IObservable{
         this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
         Thread listenerMensajes = new Thread(()-> listenerMensajes());
         listenerMensajes.start();
+        this.registrar();
 
     }
 
-    // precondicion
-    // la conexion ya debe estar establecida
-    public void crearConexion(int puertoDestino){
+    // TODO que lance una excepcion cuando no aceptan conexion
+    public void crearConexion(int puertoDestino) throws IOException{
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","");
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
     }
 
-    public void mandarMensaje(int puertoDestino,String mensajeControl, String text){
-        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
-        this.conexion.mandarMensaje(mensaje);
-    }
-
-    public String getNombreDeUsuario() {
-        return nombreDeUsuario;
-    }
-
-    public void setNombreDeUsuario(String nombreDeUsuario) {
-        this.nombreDeUsuario = nombreDeUsuario;
-    }
-
-    public Thread getReceiberThread() {
-        return receiberThread;
-    }
-
-    public void setReceiberThread(Thread receiberThread) {
-        this.receiberThread = receiberThread;
-    }
 
     private void listenerMensajes() {
         try {
             Mensaje mensaje;
-            System.out.printf("entro");
-            while ((mensaje = (Mensaje)this.conexion.getInput().readObject()) != null) {
-                System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+            while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null) {
+                procesarMensaje(mensaje);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void registrar(){
-        this.mandarMensaje(puertoServer,"REGISTRAR","");
-    }
-
-    public void aceptarConexion(int puertoDestino){
-        this.mandarMensaje(puertoDestino,"ACEPTAR","");
-    }
-
-    public void mandarTexto(int puertoDestino , String mensaje){
-        this.mandarMensaje(puertoDestino,"TEXTO",mensaje);
-    }
-
-
-
-    public void desconectar() {
-        try {
-            this.isStop = true;
-            this.getServerSocket().close();
-            this.getSocketCliente().close();
-            this.setRejected(false);
-            this.setConnected(false);
-            this.setServer(false);
-            this.modoEscucha = false;
-            this.isStop = true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void procesarMensaje(Mensaje mensaje) throws Exception {
+        String mensajeControl = mensaje.getMensajeControl();
+        System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+        byte[] textoEncriptado =  Base64.getDecoder().decode(mensaje.getMensaje());
+        String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
+        System.out.println(textoOriginal);
+        switch (mensajeControl) {
+            case "Abro ventana sesion":
+                notifyObservadores("Abro ventana sesion", "");
+                break;
+            case "NUEVA_CONEXION":
+                notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());
+                break;
+            case "Cerrar sesion":
+                notifyObservadores("Cierro ventana sesion", "");
+                break;
+            case "Acepto conexion":
+                notifyObservadores("Acepto conexion", "");
+                break;
+            case "Rechazo conexion":
+                notifyObservadores("Ventana Emergente", "");
+                break;
+            default:
+                notifyObservadores("Recibo mensaje", mensaje.getMensaje());
+                break;
         }
     }
 
-    public String getUsuario() {
-        return usuario;
+    // TIPOS DE MENSAJES
+
+
+    public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
+        byte[] textoEncriptado = encriptar("12345678", mensaje.getMensaje(), "DES");
+        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
+        this.conexion.mandarMensaje(mensaje);
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void registrar() throws Exception {this.mandarMensaje(puertoServer, "REGISTRAR", "");}
+    public void aceptarConexion(int puertoDestino) throws Exception {this.mandarMensaje(puertoDestino,"ACEPTAR","");}
+
+    public void mandarTexto(String mensaje) {
+        mandarMensaje(-1, "TEXTO", mensaje);
     }
 
-    public int getPuertoPropio() {
-        return puertoPropio;
-    }
-
-    public void setPuertoPropio(int puertoPropio) {
-        this.puertoPropio = puertoPropio;
-    }
-
-
-    public void mandarMensajeComoCliente(String mensaje) {
-        this.getSocketCliente().mandarMensaje(mensaje);
-    }
-
-
-    public SocketIO2 getSocketCliente() {
-        return conexion;
+    public void cerrarConexion(String mensaje) {
+        mandarMensaje(-1, "DESCONECTAR", mensaje);
     }
 
 
-    public ServerSocket getServerSocket() {
-        return serverSocket;
-    }
-
-    public void setServerSocket(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
-
-    public boolean isConnected() {return isConnected;}
-
-    public void setConnected(boolean connected) {
-        isConnected = connected;}
-
-    public boolean isRejected() {return isRejected;}
-
-    public void setRejected(boolean rejected) {isRejected = rejected;}
-
-    public boolean isServer() { return isServer; }
-
-    public boolean isModoEscucha() {
-        return modoEscucha;
-    }
-
-    public void setModoEscucha(boolean stop) {
-        modoEscucha = stop;
-    }
-
-    public void setServer(boolean cliente) { isServer = cliente; }
-
-    public static void main(String[] args) throws InterruptedException {
-        Usuario cliente1 = new Usuario(2888);
-        Usuario cliente2 = new Usuario(2887);
-        cliente1.setListenerServidor();
-        cliente2.setListenerServidor();
-        Thread.sleep(7000);
-        try {
-            cliente2.crearConexionCliente(2888); // CLIENTE2(CLIENTE) ---> CLIENTE (SERVIDOR)
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Thread.sleep(7000);
-        //cliente1.crearConexionServer();
-        Thread.sleep(15000);
-        cliente2.getSocketCliente().mandarMensaje("Holaaaa");
-        Thread.sleep(1000);
-        cliente2.getSocketCliente().mandarMensaje("Todo bien???");
-        Thread.sleep(1000);
-        cliente1.getSocketServer().mandarMensaje("Todo bien???");
-    }
+    // METODOS PARA EL OBSERVER
 
     @Override
     public void notifyObservadores(String estado, String mensaje) {
@@ -204,6 +133,15 @@ public class Cliente implements IObservable{
         while (iter.hasNext()) {
             IObserver obs = iter.next();
             obs.notificarCambio(estado, mensaje);
+        }
+    }
+
+    @Override
+    public void notifyObservadores(String estado, int puerto) {
+        Iterator<IObserver> iter = observadores.iterator();
+        while (iter.hasNext()) {
+            IObserver obs = iter.next();
+            obs.notificarCambio(estado, puerto);
         }
     }
 
@@ -219,4 +157,33 @@ public class Cliente implements IObservable{
     public void setObservadores(ArrayList<IObserver> observadores) {
         this.observadores = observadores;
     }
+
+    // GETTERS AND SETTERS.
+
+    public int getPuertoPropio() {
+        return puertoPropio;
+    }
+
+
+
+    public boolean isConnected() {return isConnected;}
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;}
+
+
+    public void setModoEscucha(boolean stop) {
+        modoEscucha = stop;
+    }
+
+    public String getNombreDeUsuario() {
+        return nombreDeUsuario;
+    }
+
+    public void setNombreDeUsuario(String nombreDeUsuario) {
+        this.nombreDeUsuario = nombreDeUsuario;
+    }
+
+
+
 }

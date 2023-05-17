@@ -13,12 +13,8 @@ public class App {
         VentanaInicio ventanaInicio = new VentanaInicio();
         Sistema sistema = new Sistema();
         ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio,sistema);
-        sistema.getUsuario().agregarObservador(controladorInicio);
-        sistema.getUsuario().setListenerServidor();
+        sistema.getCliente().agregarObservador(controladorInicio);
         ventanaInicio.ejecutar();
-
-//        Thread servidor = new Thread(new Servidor());
-//        servidor.start();
 //        Thread.sleep(1000);
 //        Cliente cliente = new Cliente(1111);
 //        Cliente cliente2 = new Cliente(2222);

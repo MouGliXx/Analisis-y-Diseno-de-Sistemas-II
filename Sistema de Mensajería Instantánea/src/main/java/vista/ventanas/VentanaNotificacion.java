@@ -2,12 +2,13 @@ package vista.ventanas;
 
 import controlador.ControladorInicio;
 import controlador.ControladorMensajes;
+import modelo.Cliente;
 import modelo.Sistema;
-import modelo.Usuario;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
@@ -49,27 +50,34 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
 
     @Override
     public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
-        Usuario usuario = sistema.getUsuario();
+        Cliente cliente = sistema.getCliente();
         switch (tipo) {
             case 0 -> { //CASO VENTANA MENSAJES
                 VentanaMensajes ventanaMensajes = new VentanaMensajes();
                 ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes, sistema);
-                ArrayList<IObserver> observadores = new ArrayList<>(usuario.getObservadores());
+                ArrayList<IObserver> observadores = new ArrayList<>(cliente.getObservadores());
                 observadores.add(controladorMensajes);
-                usuario.setObservadores(observadores);
-                usuario.setConnected(true);
-                ventanaMensajes.setUsuarios(usuario.getNombreDeUsuario(), "nombre del receptor"); //TODO poner nombre de usuario receptor y hacer que se configure el nombre de usuario en la notificacion
+                cliente.setObservadores(observadores);
+                cliente.setConnected(true);
+                ventanaMensajes.setUsuarios(cliente.getNombreDeUsuario(), "nombre del receptor"); //TODO poner nombre de cliente receptor y hacer que se configure el nombre de cliente en la notificacion
                 ventanaMensajes.ejecutar();
             }
             case 1 -> { //CASO VENTANA INICIO
                 VentanaInicio ventanaInicio = new VentanaInicio();
                 ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, sistema);
-                usuario.agregarObservador(controladorInicio);
-                usuario.setListenerServidor();
+                cliente.agregarObservador(controladorInicio);
+                //TODO REVISAR SI TENGO QUE REGISTRARME EN EL SERVER DE NUEVO
+                try {
+                    cliente.registrarServidor();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
                 ventanaInicio.ejecutar();
             }
         }
     }
+
+
 
     @Override
     public void lanzarVentanaEmergente(String mensaje) {
@@ -87,7 +95,7 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
         switch (tipo) {
             case 1 -> { //tipo 1 -> Notificacion Error
                 this.TituloLabel.setText("Error");
-                this.Contenido1Label.setText("No ha sido posible conectarse con el usuario ingresado.");
+                this.Contenido1Label.setText("No ha sido posible conectarse con el cliente ingresado.");
                 this.Contenido2Label.setText("Es posible que este no se encuentra disponible.");
                 this.aceptarButton.setVisible(true);
                 this.cancelarButton.setVisible(false);
@@ -95,13 +103,13 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
             case 2 -> { //tipo 2 -> Notificacion Espera
                 this.TituloLabel.setText("Espere...");
                 this.Contenido1Label.setText("La solicitud ha sido enviada correctamente. Aguarde a ");
-                this.Contenido2Label.setText("que el usuario ingresado responda la misma.");
+                this.Contenido2Label.setText("que el cliente ingresado responda la misma.");
                 this.aceptarButton.setVisible(false);
                 this.cancelarButton.setVisible(true);
             }
             case 3 -> { //tipo 3 -> Notificacion Solicitud
                 this.TituloLabel.setText("Atencion!");
-                this.Contenido1Label.setText("El usuario '" + nombreUsuarioEmisor + "' quiere unirse a una ");
+                this.Contenido1Label.setText("El cliente '" + nombreUsuarioEmisor + "' quiere unirse a una ");
                 this.Contenido2Label.setText("sesión con usted.");
                 this.aceptarButton.setVisible(true);
                 this.cancelarButton.setVisible(true);

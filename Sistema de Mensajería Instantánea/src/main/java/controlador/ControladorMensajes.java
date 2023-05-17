@@ -1,7 +1,7 @@
 package controlador;
 
+import modelo.Cliente;
 import modelo.Sistema;
-import modelo.Usuario;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaMensajes;
 import java.awt.event.ActionEvent;
@@ -30,27 +30,15 @@ public class ControladorMensajes implements ActionListener, IObserver {
 
     private void enviarMensaje() {
         String mensaje = vista.getMensajeEnviado();
-        Usuario usuario = sistema.getUsuario();
-        // Esto lo podemos cambiar mas adelante, esta medio pelo
-        if (usuario.isServer()) {
-            usuario.mandarMensajeComoServidor(mensaje);
-            this.vista.agregarNuevoEnviado(mensaje);
-        } else {
-            usuario.mandarMensajeComoCliente(mensaje);
-            this.vista.agregarNuevoEnviado(mensaje);
-        }
+        Cliente cliente = sistema.getCliente();
+        cliente.mandarTexto(mensaje);
+        this.vista.agregarNuevoEnviado(mensaje);
     }
 
     private void cerrarSesion() {
-        Usuario usuario = sistema.getUsuario();
-        if (usuario.isServer()) {
-            usuario.mandarMensajeComoServidor("Se cierra conexion y ventana");
-        } else {
-            usuario.mandarMensajeComoCliente("Se cierra conexion y ventana");
-        }
-        usuario.desconectar();
+        sistema.getCliente().cerrarConexion("");
+        this.sistema.getCliente().getObservadores().remove(this);
         vista.creaOtraVentana(sistema);
-        this.sistema.getUsuario().getObservadores().remove(this);
         vista.cerrarVentana();
     }
 
@@ -59,10 +47,13 @@ public class ControladorMensajes implements ActionListener, IObserver {
         switch (estado) {
             case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
             case STATE_CERRAR_SESION -> {
-                this.sistema.getUsuario().getObservadores().remove(this);
+                this.sistema.getCliente().getObservadores().remove(this);
                 vista.creaOtraVentana(sistema);
                 vista.cerrarVentana();
             }
         }
     }
+
+    @Override
+    public void notificarCambio(String estado, int puerto) {}
 }

@@ -1,18 +1,16 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
-
 import java.io.*;
 import java.net.Socket;
 
-public class SocketIO2{
-    private int puerto;
-    private int puertoDestino;
+public class Conexion {
+    private int puertoServidor;
+    private int puertoCliente;
     private Socket socket;
     private ObjectOutputStream output;
     private ObjectInputStream input;
 
-    public SocketIO2() {
+    public Conexion() {
     }
 
     public void mandarMensaje(Object o){
@@ -61,5 +59,16 @@ public class SocketIO2{
 
     public void setInput(ObjectInputStream input) {
         this.input = input;
+    }
+
+    @Override
+    public String toString() {
+        return "Conexion{" +
+                "puertoServidor=" + puertoServidor +
+                ", puertoCliente=" + puertoCliente +
+                ", socket=" + socket +
+                ", output=" + output +
+                ", input=" + input +
+                '}';
     }
 }
