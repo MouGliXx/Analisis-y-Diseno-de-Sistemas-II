@@ -75,8 +75,14 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
+        ControladorNotificacion controladorNotificacion;
         VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
-        ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+        if (nombreUsuarioEmisor == null){
+           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+        }
+        else {
+            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema, Integer.parseInt(nombreUsuarioEmisor));
+        }
         ArrayList<IObserver> observadores = new ArrayList<>(sistema.getCliente().getObservadores());
         observadores.add(controladorNotificacion);
         sistema.getCliente().setObservadores(observadores);

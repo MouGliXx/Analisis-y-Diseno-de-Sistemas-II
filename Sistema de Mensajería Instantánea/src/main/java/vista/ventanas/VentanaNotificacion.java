@@ -77,6 +77,8 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
         }
     }
 
+
+
     @Override
     public void lanzarVentanaEmergente(String mensaje) {
         JFrame jFrameVacio = new JFrame();
