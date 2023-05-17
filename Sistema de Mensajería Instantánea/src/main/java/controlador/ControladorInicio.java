@@ -63,10 +63,6 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.setModoEscucha(false);
         } else {
             Sistema.getInstance().getCliente().setModoEscucha(vista.getModoEscucha());
-            if(Sistema.getInstance().getCliente().modoEscucha)
-                Sistema.getInstance().getCliente().setModoEscucha(false);
-            else
-                Sistema.getInstance().getCliente().setModoEscucha(true);
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
         }
     }

@@ -51,7 +51,6 @@ public class Cliente implements IObservable{
         Thread listenerMensajes = new Thread(()-> listenerMensajes());
         listenerMensajes.start();
         this.registrar();
-
     }
 
     // TODO que lance una excepcion cuando no aceptan conexion
@@ -65,8 +64,13 @@ public class Cliente implements IObservable{
     private void listenerMensajes() {
         try {
             Mensaje mensaje;
-            while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null) {
-                procesarMensaje(mensaje);
+            while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
+                if (!modoEscucha){
+                    System.out.printf("NO ESTA EN MODO ESCUCHA");
+                }
+                else {
+                    procesarMensaje(mensaje);
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -78,9 +82,6 @@ public class Cliente implements IObservable{
     private void procesarMensaje(Mensaje mensaje) throws Exception {
         String mensajeControl = mensaje.getMensajeControl();
         System.out.printf("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
-        byte[] textoEncriptado =  Base64.getDecoder().decode(mensaje.getMensaje());
-        String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
-        System.out.println(textoOriginal);
         switch (mensajeControl) {
             case "Abro ventana sesion":
                 notifyObservadores("Abro ventana sesion", "");
@@ -99,7 +100,9 @@ public class Cliente implements IObservable{
                 notifyObservadores("Ventana Emergente", "");
                 break;
             default:
-                notifyObservadores("Recibo mensaje", mensaje.getMensaje());
+                byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
+                String textoOriginal = desencriptar("12345678",textoEncriptado, "DES");
+                notifyObservadores("Recibo mensaje", textoOriginal);
                 break;
         }
     }
@@ -109,17 +112,20 @@ public class Cliente implements IObservable{
 
     public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
-        byte[] textoEncriptado = encriptar("12345678", mensaje.getMensaje(), "DES");
-        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
         this.conexion.mandarMensaje(mensaje);
     }
 
     public void registrar() throws Exception {this.mandarMensaje(puertoServer, "REGISTRAR", "");}
-    public void aceptarConexion(int puertoDestino) throws Exception {this.mandarMensaje(puertoDestino,"ACEPTAR","");}
+    public void aceptarConexion(int puertoDestino) throws Exception {
+        System.out.printf("se mando mensaje");
+        this.mandarMensaje(puertoDestino,"ACEPTAR","");
+    }
 
     public void mandarTexto(String mensaje) {
         try {
-            mandarMensaje(-1, "TEXTO", mensaje);
+            byte[] textoEncriptado = encriptar("12345678", mensaje, "DES");
+            String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
+            mandarMensaje(-1, "TEXTO", textoEncriptadoBase64);
         } catch (Exception e) { //TODO getionar excepcion
             e.printStackTrace();
         }

@@ -82,8 +82,6 @@ public class Servidor implements Runnable, Serializable {
         System.out.println("LLegueeasfd");
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
             mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA_CONEXION", "");
-        } else {
-            System.out.printf("NO EXISTE EL CLIENTE");
         }
     }
 
@@ -122,22 +120,19 @@ public class Servidor implements Runnable, Serializable {
 
     //chequeo si existe la conexion entre el puerto destino y el server, ademas
     private boolean existeCliente(int puertoDestino, int puertoOrigen){
-        System.out.println("\n ESTOY ACA");
-        System.out.printf(this.clientes.get(puertoDestino).toString());
-        System.out.println();
         if(this.clientes.containsKey(puertoDestino))
             return true;
         else
             return false;
     }
 
-    private void cambiarModoEscucha(int puerto){
-        Conexion conex=this.clientes.get(puerto);
-        if(conex.isEstaModoEscucha())
-            conex.setEstaModoEscucha(false);
-        else
-            conex.setEstaModoEscucha(true);
-    }
+//    private void cambiarModoEscucha(int puerto){
+//        Conexion conex=this.clientes.get(puerto);
+//        if(conex.isEstaModoEscucha())
+//            conex.setEstaModoEscucha(false);
+//        else
+//            conex.setEstaModoEscucha(true);
+//    }
 
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text){
