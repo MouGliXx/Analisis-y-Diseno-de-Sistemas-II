@@ -72,6 +72,8 @@ public class Cliente implements IObservable{
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

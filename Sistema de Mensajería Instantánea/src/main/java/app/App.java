@@ -1,8 +1,6 @@
 package app;
 
 import controlador.ControladorInicio;
-import modelo.Cliente;
-import modelo.Servidor;
 import modelo.Sistema;
 import vista.ventanas.VentanaInicio;
 
@@ -11,7 +9,12 @@ import java.io.IOException;
 public class App {
     public static void main(String[] args) throws IOException, InterruptedException {
         VentanaInicio ventanaInicio = new VentanaInicio();
-        Sistema sistema = new Sistema();
+        Sistema sistema = null;
+        try {
+            sistema = new Sistema();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio,sistema);
         sistema.getCliente().agregarObservador(controladorInicio);
         ventanaInicio.ejecutar();

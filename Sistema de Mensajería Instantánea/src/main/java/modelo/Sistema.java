@@ -1,11 +1,7 @@
 package modelo;
 
-import modelo.interfaces.IObserver;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Sistema {
