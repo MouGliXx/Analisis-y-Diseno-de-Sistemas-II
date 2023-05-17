@@ -1,7 +1,5 @@
 package modelo;
 
-import modelo.interfaces.IMensajes;
-
 import java.io.*;
 import java.net.Socket;
 

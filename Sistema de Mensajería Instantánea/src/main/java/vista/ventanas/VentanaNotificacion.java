@@ -49,12 +49,12 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     }
 
     @Override
-    public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
-        Cliente cliente = sistema.getCliente();
+    public void creaOtraVentana(int tipo, String nombreUsuarioEmisor) {
+        Cliente cliente = Sistema.getInstance().getCliente();
         switch (tipo) {
             case 0 -> { //CASO VENTANA MENSAJES
                 VentanaMensajes ventanaMensajes = new VentanaMensajes();
-                ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes, sistema);
+                ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes);
                 ArrayList<IObserver> observadores = new ArrayList<>(cliente.getObservadores());
                 observadores.add(controladorMensajes);
                 cliente.setObservadores(observadores);
@@ -64,7 +64,7 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
             }
             case 1 -> { //CASO VENTANA INICIO
                 VentanaInicio ventanaInicio = new VentanaInicio();
-                ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, sistema);
+                ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
                 cliente.agregarObservador(controladorInicio);
                 //TODO REVISAR SI TENGO QUE REGISTRARME EN EL SERVER DE NUEVO
                 try {

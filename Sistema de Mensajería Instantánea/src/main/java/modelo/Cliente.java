@@ -19,8 +19,6 @@ import static modelo.Cifrado.encriptar;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
-
-
     private String nombreDeUsuario;
     private  int puertoPropio;
     private  int puertoServer = 1234;
@@ -88,6 +86,7 @@ public class Cliente implements IObservable{
                 notifyObservadores("Abro ventana sesion", "");
                 break;
             case "NUEVA_CONEXION":
+                System.out.println("Entre a nueva conexion");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());
                 break;
             case "Cerrar sesion":
@@ -134,9 +133,7 @@ public class Cliente implements IObservable{
         }
     }
 
-
     // METODOS PARA EL OBSERVER
-
     @Override
     public void notifyObservadores(String estado, String mensaje) {
         Iterator<IObserver> iter = observadores.iterator();

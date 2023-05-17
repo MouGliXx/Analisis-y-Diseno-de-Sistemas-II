@@ -57,10 +57,10 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     }
 
     @Override
-    public void creaOtraVentana(Sistema sistema) {
-        Cliente cliente = sistema.getCliente();
+    public void creaOtraVentana() {
+        Cliente cliente = Sistema.getInstance().getCliente();
         VentanaInicio ventanaInicio = new VentanaInicio();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio, sistema);
+        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
         cliente.agregarObservador(controladorInicio);
         try {
             cliente.registrarServidor();
