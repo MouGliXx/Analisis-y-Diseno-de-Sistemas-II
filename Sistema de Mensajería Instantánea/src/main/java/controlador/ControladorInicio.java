@@ -25,10 +25,18 @@ public class ControladorInicio implements ActionListener, IObserver {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
+            case "Registrarse" -> registrarUsuario();
             case "Conectar" -> conectar();
             case "Modo Escucha" -> cambiarModoEscucha();
             case "Ventana Emergente"-> ventanaEmergente();
         }
+    }
+
+    private void registrarUsuario() {
+        //TODO registrar usuario dentro del servidor
+        System.out.printf("me registro");
+        this.vista.setModoConectar();
+        this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
     }
 
     private void conectar() {

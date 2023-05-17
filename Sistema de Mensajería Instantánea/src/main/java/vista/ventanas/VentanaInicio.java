@@ -104,6 +104,21 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void setModoConectar() {
+        IpJTextField.setEnabled(true);
+        PuertoSpinner.setEnabled(true);
+        modoEscuchaCheckBox.setEnabled(true);
+
+        NombreDeUsuarioJTextField.setFocusable(false);
+        registrarseConectarButton.setEnabled(false);
+        registrarseConectarButton.setActionCommand("Conectar");
+        registrarseConectarButton.setText("Conectar");
+
+        Info1Label.setText("Para chatear con otro usuario ingrese");
+        Info2Label.setText("su IP y puerto para continuar:");
+    }
+
+    @Override
     public String getNombreDeUsuario() {
         return this.NombreDeUsuarioJTextField.getText();
     }
@@ -145,17 +160,21 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public void keyReleased(KeyEvent e) {
         int currentValue = (int) PuertoSpinner.getValue();
+        boolean conexion;
+
         if (currentValue == 0) {
-            registrarseConectarButton.setEnabled(false);
+            conexion = registrarseConectarButton.getText().equals("Registrarse") && !NombreDeUsuarioJTextField.getText().isEmpty();
         } else {
-            boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
-            registrarseConectarButton.setEnabled(conexion);
+            conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
         }
+
+        registrarseConectarButton.setEnabled(conexion);
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         int currentValue = (int) PuertoSpinner.getValue();
+
         if (currentValue == 0) {
             registrarseConectarButton.setEnabled(false);
         } else {

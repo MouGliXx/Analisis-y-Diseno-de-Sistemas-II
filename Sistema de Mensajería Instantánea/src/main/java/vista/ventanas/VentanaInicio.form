@@ -96,8 +96,10 @@
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
               <opaque value="true"/>
+              <scrollOffset value="0"/>
               <selectedTextColor color="-2500135"/>
               <selectionColor color="-3235991"/>
+              <selectionStart value="0"/>
               <text value=""/>
             </properties>
           </component>
@@ -140,6 +142,7 @@
               <opaque value="true"/>
               <selectedTextColor color="-1"/>
               <selectionColor color="-3235991"/>
+              <selectionStart value="0"/>
             </properties>
           </component>
           <hspacer id="55681">
