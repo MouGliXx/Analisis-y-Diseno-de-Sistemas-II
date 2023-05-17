@@ -1,17 +1,13 @@
 package modelo;
 
-import modelo.interfaces.IObserver;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Sistema {
     private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
 
-    public Sistema() throws IOException {
+    public Sistema() throws Exception {
         // Conecto al cliente con el servidor
         this.cliente.registrarServidor();
     }
@@ -36,4 +32,5 @@ public class Sistema {
         InetAddress ip = InetAddress.getLocalHost();
         return ip.getHostAddress();
     }
+
 }

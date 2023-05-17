@@ -31,27 +31,15 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void enviarMensaje() {
         String mensaje = vista.getMensajeEnviado();
         Cliente cliente = sistema.getCliente();
-//        // Esto lo podemos cambiar mas adelante, esta medio pelo
-//        if (cliente.isServer()) {
-//            cliente.mandarMensajeComoServidor(mensaje);
-//            this.vista.agregarNuevoEnviado(mensaje);
-//        } else {
-//            cliente.mandarMensajeComoCliente(mensaje);
-//            this.vista.agregarNuevoEnviado(mensaje);
-//        }
+        cliente.mandarTexto(mensaje);
+        this.vista.agregarNuevoEnviado(mensaje);
     }
 
     private void cerrarSesion() {
-//        cliente cliente = sistema.getCliente();
-//        if (cliente.isServer()) {
-//            cliente.mandarMensajeComoServidor("Se cierra conexion y ventana");
-//        } else {
-//            cliente.mandarMensajeComoCliente("Se cierra conexion y ventana");
-//        }
-//        cliente.desconectar();
-//        vista.creaOtraVentana(sistema);
-//        this.sistema.getCliente().getObservadores().remove(this);
-//        vista.cerrarVentana();
+        sistema.getCliente().cerrarConexion("");
+        this.sistema.getCliente().getObservadores().remove(this);
+        vista.creaOtraVentana(sistema);
+        vista.cerrarVentana();
     }
 
     @Override
@@ -65,4 +53,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
             }
         }
     }
+
+    @Override
+    public void notificarCambio(String estado, int puerto) {}
 }

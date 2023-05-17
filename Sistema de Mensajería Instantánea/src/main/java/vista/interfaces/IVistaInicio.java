@@ -11,6 +11,8 @@ public interface IVistaInicio extends IVista {
 
     void setMiPuerto(String puerto);
 
+    void setModoConectar();
+
     String getNombreDeUsuario();
 
     String getDireccionIP();

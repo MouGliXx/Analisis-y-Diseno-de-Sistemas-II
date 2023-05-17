@@ -25,10 +25,18 @@ public class ControladorInicio implements ActionListener, IObserver {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
+            case "Registrarse" -> registrarUsuario();
             case "Conectar" -> conectar();
             case "Modo Escucha" -> cambiarModoEscucha();
             case "Ventana Emergente"-> ventanaEmergente();
         }
+    }
+
+    private void registrarUsuario() {
+        //TODO registrar usuario dentro del servidor
+        System.out.printf("me registro");
+        this.vista.setModoConectar();
+        this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
     }
 
     private void conectar() {
@@ -36,8 +44,11 @@ public class ControladorInicio implements ActionListener, IObserver {
             int puertoDestino = vista.getPuerto();
             sistema.getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             String cliente = vista.getNombreDeUsuario();
-            sistema.getCliente().setUsuario(cliente);
+            sistema.getCliente().setNombreDeUsuario(cliente);
             sistema.getCliente().crearConexion(puertoDestino);
+            vista.creaOtraVentana(sistema, 2, null);
+            this.sistema.getCliente().getObservadores().remove(this);
+            vista.cerrarVentana();
             // Si la conexion falla que tire una excepcion
         } catch (IOException e) {
             vista.creaOtraVentana(sistema, 1, null);
@@ -100,6 +111,16 @@ public class ControladorInicio implements ActionListener, IObserver {
         }
         if ("Acepto conexion".equals(estado)){
             vista.creaOtraVentana(sistema, 2, null);
+            this.sistema.getCliente().getObservadores().remove(this);
+            vista.cerrarVentana();
+        }
+    }
+    @Override
+    public void notificarCambio(String estado, int puerto) {
+        System.out.printf("ENTRO ACAAAAAA2");
+        //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
+        if ("Abro ventana notificacion".equals(estado)) {
+            vista.creaOtraVentana(sistema, 3,  String.valueOf(puerto)); //TODO poner el nombre de cliente del emisor que recibo del modelo
             this.sistema.getCliente().getObservadores().remove(this);
             vista.cerrarVentana();
         }

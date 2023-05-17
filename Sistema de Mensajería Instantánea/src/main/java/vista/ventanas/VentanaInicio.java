@@ -7,14 +7,13 @@ import vista.interfaces.IVistaInicio;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
     private JPanel PanelCentral;
-    private JButton conectarButton;
+    private JButton registrarseConectarButton;
     private JLabel IconoMensaje;
     private JLabel MiDireccionLabel;
     private JTextField NombreDeUsuarioJTextField;
@@ -22,7 +21,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     private JLabel NombreDeUsuarioLabel;
     private JLabel IPLabel;
     private JLabel PuertoLabel;
-    private JRadioButton modoEscuchaRadioButton;
+    private JCheckBox modoEscuchaCheckBox;
     private JLabel Info1Label;
     private JLabel Info2Label;
     private JSpinner PuertoSpinner;
@@ -30,9 +29,9 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void setActionListener(ActionListener controlador) {
-        this.modoEscuchaRadioButton.addActionListener(controlador);
-        this.modoEscuchaRadioButton.addActionListener(this);
-        this.conectarButton.addActionListener(controlador);
+        this.modoEscuchaCheckBox.addActionListener(controlador);
+        this.modoEscuchaCheckBox.addActionListener(this);
+        this.registrarseConectarButton.addActionListener(controlador);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
-        conectarButton.setEnabled(false);
+        registrarseConectarButton.setEnabled(false);
         IpJTextField.setText("localhost");
     }
 
@@ -75,8 +74,14 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
+        ControladorNotificacion controladorNotificacion;
         VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
-        ControladorNotificacion controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+        if (nombreUsuarioEmisor == null){
+           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+        }
+        else {
+            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema, Integer.parseInt(nombreUsuarioEmisor));
+        }
         ArrayList<IObserver> observadores = new ArrayList<>(sistema.getCliente().getObservadores());
         observadores.add(controladorNotificacion);
         sistema.getCliente().setObservadores(observadores);
@@ -99,6 +104,21 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void setModoConectar() {
+        IpJTextField.setEnabled(true);
+        PuertoSpinner.setEnabled(true);
+        modoEscuchaCheckBox.setEnabled(true);
+
+        NombreDeUsuarioJTextField.setFocusable(false);
+        registrarseConectarButton.setEnabled(false);
+        registrarseConectarButton.setActionCommand("Conectar");
+        registrarseConectarButton.setText("Conectar");
+
+        Info1Label.setText("Para chatear con otro usuario ingrese");
+        Info2Label.setText("su IP y puerto para continuar:");
+    }
+
+    @Override
     public String getNombreDeUsuario() {
         return this.NombreDeUsuarioJTextField.getText();
     }
@@ -110,16 +130,16 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void setModoEscucha(Boolean activado) {
-        this.modoEscuchaRadioButton.setSelected(activado);
+        this.modoEscuchaCheckBox.setSelected(activado);
         if (activado)
-            modoEscuchaRadioButton.setText("Modo Escucha: ON");
+            modoEscuchaCheckBox.setText("Modo Escucha: ON");
         else
-            modoEscuchaRadioButton.setText("Modo Escucha: OFF");
+            modoEscuchaCheckBox.setText("Modo Escucha: OFF");
     }
 
     @Override
     public boolean getModoEscucha() {
-        return this.modoEscuchaRadioButton.isSelected();
+        return this.modoEscuchaCheckBox.isSelected();
     }
 
     @Override
@@ -130,31 +150,35 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Modo Escucha")) {
-            if (modoEscuchaRadioButton.isSelected())
-                modoEscuchaRadioButton.setText("Modo Escucha: ON");
+            if (modoEscuchaCheckBox.isSelected())
+                modoEscuchaCheckBox.setText("Modo Escucha: ON");
             else
-                modoEscuchaRadioButton.setText("Modo Escucha: OFF");
+                modoEscuchaCheckBox.setText("Modo Escucha: OFF");
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int currentValue = (int) PuertoSpinner.getValue();
+        boolean conexion;
+
         if (currentValue == 0) {
-            conectarButton.setEnabled(false);
+            conexion = registrarseConectarButton.getText().equals("Registrarse") && !NombreDeUsuarioJTextField.getText().isEmpty();
         } else {
-            boolean conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
-            conectarButton.setEnabled(conexion);
+            conexion = !NombreDeUsuarioJTextField.getText().isEmpty() && !IpJTextField.getText().isEmpty();
         }
+
+        registrarseConectarButton.setEnabled(conexion);
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         int currentValue = (int) PuertoSpinner.getValue();
+
         if (currentValue == 0) {
-            conectarButton.setEnabled(false);
+            registrarseConectarButton.setEnabled(false);
         } else {
-            conectarButton.setEnabled(true);
+            registrarseConectarButton.setEnabled(true);
             if (currentValue <= 1) {
                 PuertoSpinner.setValue(1);
             }
