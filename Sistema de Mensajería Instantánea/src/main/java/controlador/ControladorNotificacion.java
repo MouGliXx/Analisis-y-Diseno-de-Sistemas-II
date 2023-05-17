@@ -3,7 +3,6 @@ package controlador;
 import modelo.Sistema;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -34,14 +33,16 @@ public class ControladorNotificacion implements ActionListener, IObserver {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                } else { // -> creo ventanaInicio
+                } else { //Si es de tipo error -> creo ventanaInicio
                     vista.creaOtraVentana(1, null);
                 }
                 Sistema.getInstance().getCliente().getObservadores().remove(this);
                 vista.cerrarVentana();
             }
             case "Cancelar" -> {
-                // TODO avisarle al usuario que no se acepto la sesion ES LO QUE QUEDA
+                if (vista.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
+                    //TODO avisarle al emisor que la solicitud ha sido RECHAZADA
+                }
                 vista.creaOtraVentana(1, null); //TODO poner el nombre de usuario del emisor que recibo del modelo
                 vista.cerrarVentana();
             }
@@ -61,6 +62,5 @@ public class ControladorNotificacion implements ActionListener, IObserver {
     public void notificarCambio(String estado, int puerto) {
         //A esta funcion solo llego si soy el EMISOR y el RECEPTOR acepto mi solicitud
         System.out.printf("ENTRO ACA:  ",puerto);
-
     }
 }

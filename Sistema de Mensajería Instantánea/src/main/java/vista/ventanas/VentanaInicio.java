@@ -55,7 +55,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setSize(600,800); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("Icono.png")).getImage());
         registrarseConectarButton.setEnabled(false);
         IpJTextField.setText("localhost");
     }
@@ -191,7 +191,6 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     //METODOS NO USADOS
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override

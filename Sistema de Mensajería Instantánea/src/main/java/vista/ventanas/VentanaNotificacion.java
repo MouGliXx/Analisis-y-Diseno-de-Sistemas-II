@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
+public class VentanaNotificacion extends JDialog implements IVistaNotificacion {
     private int tipo; // 1=error | 2=espera | 3=solicitud
     private JPanel PanelPrincipal;
     private JPanel PanelCentral;
@@ -33,7 +33,7 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
         setTitle("Sistema de Mensajeria Instantaneo");
         pack(); //Coloca los componentes
         setContentPane(PanelPrincipal);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
         setSize(600,300); //Dimensiones del JFrame
         setResizable(false); //No redimensionable

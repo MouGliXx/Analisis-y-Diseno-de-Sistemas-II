@@ -13,11 +13,12 @@ public class ControladorInicio implements ActionListener, IObserver {
 
     public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
+
         vista.setActionListener(this);
         vista.setKeyListener();
         vista.setChangeListener();
-        establecerIP();
-        establecerPuerto();
+
+        this.establecerIP();
     }
 
     @Override
@@ -39,6 +40,7 @@ public class ControladorInicio implements ActionListener, IObserver {
 
     private void conectar() {
         try {
+            //TODO contemplar el caso en donde no exista el usuario que quiero contactar --> Notificacion error
             int puertoDestino = vista.getPuerto();
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             String cliente = vista.getNombreDeUsuario();
@@ -72,6 +74,7 @@ public class ControladorInicio implements ActionListener, IObserver {
     private void establecerIP() {
         try {
             vista.setMiDireccionIP(Sistema.getInstance().obtenerIP());
+            establecerPuerto();
         } catch (UnknownHostException e) {
             vista.setMiDireccionIP("XXX.XXX.X.X");
         }
