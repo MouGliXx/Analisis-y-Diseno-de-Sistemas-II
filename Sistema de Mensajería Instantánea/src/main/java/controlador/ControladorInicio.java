@@ -57,14 +57,6 @@ public class ControladorInicio implements ActionListener, IObserver {
         }
     }
 
-    private void conexionCorrecta(){
-
-    }
-
-    private void conexionFallida(){
-
-    }
-
     private void cambiarModoEscucha() {
         if (vista.getNombreDeUsuario().isEmpty()) {
             vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de cliente primero.");
