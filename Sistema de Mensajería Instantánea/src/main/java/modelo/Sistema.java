@@ -32,4 +32,5 @@ public class Sistema {
         InetAddress ip = InetAddress.getLocalHost();
         return ip.getHostAddress();
     }
+
 }
