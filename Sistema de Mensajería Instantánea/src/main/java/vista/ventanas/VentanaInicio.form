@@ -63,12 +63,12 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-14082273"/>
-              <enabled value="false"/>
+              <background color="-16756178"/>
+              <enabled value="true"/>
               <focusable value="false"/>
               <font name="Inter SemiBold" size="20"/>
               <foreground color="-2500135"/>
-              <text value="Conectar"/>
+              <text value="Registrarse"/>
             </properties>
           </component>
           <component id="e1a2b" class="javax.swing.JLabel" binding="NombreDeUsuarioLabel">
@@ -91,13 +91,13 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-2500135"/>
+              <background color="-328966"/>
               <focusable value="true"/>
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
               <opaque value="true"/>
               <selectedTextColor color="-2500135"/>
-              <selectionColor color="-10185470"/>
+              <selectionColor color="-3235991"/>
               <text value=""/>
             </properties>
           </component>
@@ -132,13 +132,14 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-2500135"/>
+              <background color="-328966"/>
+              <enabled value="false"/>
               <focusable value="true"/>
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
               <opaque value="true"/>
               <selectedTextColor color="-1"/>
-              <selectionColor color="-10185470"/>
+              <selectionColor color="-3235991"/>
             </properties>
           </component>
           <hspacer id="55681">
@@ -151,25 +152,6 @@
               <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="117b4" class="javax.swing.JRadioButton" binding="modoEscuchaRadioButton">
-            <constraints>
-              <grid row="14" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <actionCommand value="Modo Escucha"/>
-              <background color="-1"/>
-              <borderPainted value="false"/>
-              <contentAreaFilled value="false"/>
-              <focusable value="false"/>
-              <font name="Inter" size="20" style="1"/>
-              <foreground color="-16777216"/>
-              <horizontalAlignment value="0"/>
-              <horizontalTextPosition value="4"/>
-              <opaque value="false"/>
-              <selected value="false"/>
-              <text value="Modo Escucha: OFF"/>
-            </properties>
-          </component>
           <component id="fdcd3" class="javax.swing.JLabel" binding="Info1Label">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -180,7 +162,7 @@
               <foreground color="-16777216"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
-              <text value="Para chatear con otro usuario complete"/>
+              <text value="Para registrarse en el servidor"/>
             </properties>
           </component>
           <component id="249b6" class="javax.swing.JLabel" binding="Info2Label">
@@ -192,7 +174,7 @@
               <font name="Inter" size="20" style="1"/>
               <foreground color="-16777216"/>
               <horizontalAlignment value="0"/>
-              <text value="los siguientes campos:"/>
+              <text value="ingrese un nombre de usuario:"/>
             </properties>
           </component>
           <vspacer id="d4aca">
@@ -234,7 +216,9 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-2500135"/>
+              <autoscrolls value="false"/>
+              <background color="-328966"/>
+              <enabled value="false"/>
               <focusable value="false"/>
               <font name="Inter" size="16"/>
               <foreground color="-16777216"/>
@@ -247,12 +231,33 @@
               <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <focusable value="false"/>
               <font name="Inter" size="24" style="1"/>
               <foreground color="-16777216"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
-              <text value="Mi Puerto: XXXXX"/>
+              <text value="Mi puerto: XXXXX"/>
+            </properties>
+          </component>
+          <component id="2280c" class="javax.swing.JCheckBox" binding="modoEscuchaCheckBox">
+            <constraints>
+              <grid row="14" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <actionCommand value="Modo Escucha"/>
+              <background color="-1"/>
+              <enabled value="false"/>
+              <focusPainted value="true"/>
+              <focusable value="false"/>
+              <font name="Inter" size="20" style="1"/>
+              <foreground color="-16777216"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="4"/>
+              <label value="Modo Escucha: OFF"/>
+              <opaque value="true"/>
+              <selected value="false"/>
+              <text value="Modo Escucha: OFF"/>
             </properties>
           </component>
         </children>

@@ -37,7 +37,7 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
         setSize(600,300); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon(getClass().getResource("/Icon.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/Icono.png")).getImage());
         toFront();
     }
 

@@ -16,9 +16,6 @@ public class Cliente implements IObservable{
     private String nombreDeUsuario;
     private  int puertoPropio;
     private  int puertoServer = 1234;
-    
-    
-
     private String usuario = "";
     private ServerSocket serverSocket;
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes

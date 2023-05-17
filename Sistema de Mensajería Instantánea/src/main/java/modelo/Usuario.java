@@ -3,8 +3,6 @@ package modelo;
 import modelo.interfaces.IMensajes;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
-
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

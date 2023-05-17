@@ -17,7 +17,7 @@
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="South"/>
         <properties>
-          <background color="-14082273"/>
+          <background color="-16756178"/>
           <maximumSize width="1180" height="50"/>
           <minimumSize width="1180" height="50"/>
           <preferredSize width="1180" height="50"/>
@@ -46,7 +46,7 @@
             </constraints>
             <properties>
               <actionCommand value="Enviar Mensaje"/>
-              <background color="-14082273"/>
+              <background color="-16756178"/>
               <borderPainted value="false"/>
               <enabled value="false"/>
               <focusable value="false"/>
@@ -64,7 +64,7 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-14082273"/>
+              <background color="-16756178"/>
               <caretPosition value="0"/>
               <enabled value="true"/>
               <font name="Inter" size="16"/>
@@ -84,7 +84,7 @@
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="North"/>
         <properties>
-          <background color="-14082273"/>
+          <background color="-16756178"/>
           <maximumSize width="1180" height="80"/>
           <minimumSize width="1180" height="80"/>
           <preferredSize width="1180" height="80"/>
@@ -127,7 +127,7 @@
             </constraints>
             <properties>
               <actionCommand value="Cerrar Sesion"/>
-              <background color="-14082273"/>
+              <background color="-16756178"/>
               <borderPainted value="false"/>
               <focusable value="false"/>
               <icon value="Cruz.png"/>

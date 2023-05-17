@@ -1,11 +1,8 @@
 package modelo;
 
-import com.sun.source.doctree.SeeTree;
-
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Servidor implements Runnable, Serializable {
     private SocketIO2 conexion = new SocketIO2();
