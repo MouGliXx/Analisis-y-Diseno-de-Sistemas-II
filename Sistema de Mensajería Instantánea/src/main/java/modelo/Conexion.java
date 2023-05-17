@@ -4,14 +4,10 @@ import java.io.*;
 import java.net.Socket;
 
 public class Conexion {
-<<<<<<< Updated upstream
-    private int puertoServidor;
+
     private int puertoCliente;
-=======
-    private int puertoCliente; //
     private int puertoServidor;
     private boolean estaModoEscucha;
->>>>>>> Stashed changes
     private Socket socket;
     private ObjectOutputStream output;
     private ObjectInputStream input;

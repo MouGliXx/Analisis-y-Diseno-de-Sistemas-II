@@ -15,12 +15,6 @@ public class Servidor implements Runnable, Serializable {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(1234);
-<<<<<<< Updated upstream
-=======
-            System.out.println("Servidor iniciado. Esperando clientes...");
-
-
->>>>>>> Stashed changes
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 Conexion conexion = new Conexion();
@@ -38,68 +32,8 @@ public class Servidor implements Runnable, Serializable {
         try {
             ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
             Mensaje mensaje;
-<<<<<<< Updated upstream
-            while ((mensaje = (Mensaje) reader.readObject()) != null) {
+            while ((mensaje = (Mensaje) reader.readObject()) != null)
                 procesarMensaje(clientSocket, conexion, mensaje);
-=======
-            while ((mensaje = (Mensaje)reader.readObject()) != null) {
-
-                if (mensaje.getMensajeControl().equals("REGISTRAR")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
-                    conexion.setPuertoServidor(1234);
-                    conexion.setEstaModoEscucha(false);
-                    clientes.put(mensaje.getPuertoOrigen(),conexion);
-                    System.out.printf(clientes.toString());
-                }
-                if (mensaje.getMensajeControl().equals("CONECTAR")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
-                    // aviso al puerto destino que se quieren conectar con el
-                    System.out.printf("\nPUERTO DESTINO" + mensaje.getPuertoDestino());
-                    if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())){
-                        System.out.printf("\nABRIR PESTANA DE INVITACION A SESION");
-                    }
-                    else{
-                        //TODO excepcion
-                        System.out.printf("");
-                    }
-                }
-
-                if (mensaje.getMensajeControl().equals("ACEPTAR")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR");
-                    // AVISAR AL EMISOR QUE SE ACEPTO
-                    this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
-                    this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
-                    System.out.printf(sesiones.toString());
-                    System.out.printf("\nse creo sesion entre clientes");
-                }
-
-                if (mensaje.getMensajeControl().equals("RECHAZAR")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
-                    // si se recibe un mensaje de rechaza
-                    // mando a la conexion que rechaza que se rechazo el chat
-                }
-                if (mensaje.getMensajeControl().equals("TEXTO")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: TEXTO");
-                    if (sesiones.containsKey(mensaje.getPuertoDestino())){
-                        System.out.printf("MANDANDO MENSAJE");
-                        System.out.printf(mensaje.getPuertoDestino() + "\n");
-                        System.out.printf(clientes.toString() + "\n");
-                        clientes.get(mensaje.getPuertoDestino()).mandarMensaje(mensaje);
-                    }
-                    else{
-
-                    }
-                }
-                if (mensaje.getMensaje().equals("DESCONECTAR")){
-                    System.out.printf("\n ------------------------ \n MENSAJE CONTROL: DESCONECTAR");
-                    // se deshace la conexion
-                }
-                // manejo mensaje
-                // Envía una respuesta al cliente
-                // tipo mensaje
-                //this.conexion.mandarMensaje(new Mensaje());
->>>>>>> Stashed changes
-            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -145,7 +79,7 @@ public class Servidor implements Runnable, Serializable {
     //Aviso al puerto destino que me quiero conectar con el
 
     private void procesarConexion(Mensaje mensaje) {
-        if (existeCliente(mensaje.getPuertoDestino())) {
+        if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
             mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA_CONEXION", "");
         } else {
             System.out.printf("");
@@ -185,18 +119,14 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
-<<<<<<< Updated upstream
-    private boolean existeCliente(int puerto){
-        return this.clientes.containsKey(puerto);
-=======
     private boolean existeCliente(int puertoDestino, int puertoOrigen){
         System.out.println("\n ESTOY ACA");
         System.out.printf(this.clientes.get(puertoDestino).toString());
-        if(this.clientes.containsKey(puertoDestino) && this.conexion.isEstaModoEscucha())
-            return true;
-        else
-            return false;
->>>>>>> Stashed changes
+//        if(this.clientes.containsKey(puertoDestino) && this.conexion.isEstaModoEscucha())
+//            return true;
+//        else
+//            return false;
+        return true;
     }
 
 
