@@ -88,6 +88,7 @@ public class Cliente implements IObservable{
                 notifyObservadores("Abro ventana sesion", "");
                 break;
             case "NUEVA_CONEXION":
+                System.out.println("Entre a nueva conexion");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());
                 break;
             case "Cerrar sesion":
