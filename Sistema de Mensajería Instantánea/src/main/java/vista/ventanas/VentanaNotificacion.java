@@ -71,6 +71,8 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
                     cliente.registrarServidor();
                 } catch (IOException e){
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 ventanaInicio.ejecutar();
             }

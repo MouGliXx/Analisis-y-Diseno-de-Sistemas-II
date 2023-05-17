@@ -18,6 +18,7 @@ public class App {
         ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio,sistema);
         sistema.getCliente().agregarObservador(controladorInicio);
         ventanaInicio.ejecutar();
+        
 //        Thread.sleep(1000);
 //        Cliente cliente = new Cliente(1111);
 //        Cliente cliente2 = new Cliente(2222);

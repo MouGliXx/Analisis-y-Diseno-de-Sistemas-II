@@ -119,11 +119,19 @@ public class Cliente implements IObservable{
     public void aceptarConexion(int puertoDestino) throws Exception {this.mandarMensaje(puertoDestino,"ACEPTAR","");}
 
     public void mandarTexto(String mensaje) {
-        mandarMensaje(-1, "TEXTO", mensaje);
+        try {
+            mandarMensaje(-1, "TEXTO", mensaje);
+        } catch (Exception e) { //TODO getionar excepcion
+            e.printStackTrace();
+        }
     }
 
     public void cerrarConexion(String mensaje) {
-        mandarMensaje(-1, "DESCONECTAR", mensaje);
+        try {
+            mandarMensaje(-1, "DESCONECTAR", mensaje);
+        } catch (Exception e) { //TODO getionar excepcion
+            e.printStackTrace();
+        }
     }
 
 

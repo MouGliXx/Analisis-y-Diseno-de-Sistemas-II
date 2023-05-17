@@ -66,6 +66,8 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
             cliente.registrarServidor();
         } catch (IOException e){
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         ventanaInicio.ejecutar();
     }
