@@ -65,8 +65,13 @@ public class Cliente implements IObservable{
     private void listenerMensajes() {
         try {
             Mensaje mensaje;
-            while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null) {
-                procesarMensaje(mensaje);
+            while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
+                if (!modoEscucha){
+                    System.out.printf("NO ESTA EN MODO ESCUCHA");
+                }
+                else {
+                    procesarMensaje(mensaje);
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -115,7 +120,10 @@ public class Cliente implements IObservable{
     }
 
     public void registrar() throws Exception {this.mandarMensaje(puertoServer, "REGISTRAR", "");}
-    public void aceptarConexion(int puertoDestino) throws Exception {this.mandarMensaje(puertoDestino,"ACEPTAR","");}
+    public void aceptarConexion(int puertoDestino) throws Exception {
+        System.out.printf("se mando mensaje");
+        this.mandarMensaje(puertoDestino,"ACEPTAR","");
+    }
 
     public void mandarTexto(String mensaje) {
         try {
