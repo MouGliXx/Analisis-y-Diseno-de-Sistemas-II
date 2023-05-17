@@ -129,6 +129,14 @@ public class Servidor implements Runnable, Serializable {
         return true;
     }
 
+    private void cambiarModoEscucha(int puerto){
+        Conexion conex=this.clientes.get(puerto);
+        if(conex.isEstaModoEscucha())
+            conex.setEstaModoEscucha(false);
+        else
+            conex.setEstaModoEscucha(true);
+    }
+
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text);
