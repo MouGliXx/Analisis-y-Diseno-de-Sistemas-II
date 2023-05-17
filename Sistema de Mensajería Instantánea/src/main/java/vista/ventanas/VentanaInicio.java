@@ -77,10 +77,10 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         ControladorNotificacion controladorNotificacion;
         VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
         if (nombreUsuarioEmisor == null){
-           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema);
+           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
         }
         else {
-            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, sistema, Integer.parseInt(nombreUsuarioEmisor));
+            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, Integer.parseInt(nombreUsuarioEmisor));
         }
         ArrayList<IObserver> observadores = new ArrayList<>(sistema.getCliente().getObservadores());
         observadores.add(controladorNotificacion);
