@@ -26,13 +26,13 @@ public class ControladorNotificacion implements ActionListener, IObserver {
         switch (e.getActionCommand()) {
             case "Aceptar" -> {
                 if (vista.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
-                    vista.creaOtraVentana(0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
                     System.out.printf("la ip el emisor es:" + ipEmisor);
                     try {
                         Sistema.getInstance().getCliente().aceptarConexion(ipEmisor);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+                    vista.creaOtraVentana(0, "nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
                 } else { //Si es de tipo error -> creo ventanaInicio
                     vista.creaOtraVentana(1, null);
                 }
