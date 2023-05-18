@@ -82,7 +82,7 @@ public class Cliente implements IObservable{
             }
             case "Cerrar sesion" -> notifyObservadores("Cierro ventana sesion", "");
             case "Acepto conexion" -> notifyObservadores("Acepto conexion", "");
-            case "Rechazo conexion" -> notifyObservadores("Ventana Emergente", "");
+            case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "");
             default -> {
                 byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
                 String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");
@@ -104,6 +104,11 @@ public class Cliente implements IObservable{
     public void aceptarConexion(int puertoDestino) {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
+    }
+
+    public void rechazarConexion(int puertoDestino){
+        System.out.printf("se rechazo la conexion con el puerto destino");
+        this.mandarMensaje(puertoDestino,"RECHAZAR","");
     }
 
     public void mandarTexto(String mensaje) {

@@ -99,7 +99,7 @@ public class Servidor implements Runnable, Serializable {
     //TODO hay que terminarlo
     private void procesarRechazo(Conexion conexion, Mensaje mensaje) {
         System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
-
+        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"Rechazo conexion","");
     }
 
     // Mando mensaje de texto entre sesiones, por las dudas verifico que la sesion exista

@@ -61,16 +61,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void notificacionRechazada() {
+        //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
-            System.out.print("Se rechazo la solicitud");
-            //TODO avisarle al emisor que la solicitud ha sido RECHAZADA
-            this.notificacion.cerrarVentana();
-
-        } else { //Si es de tipo espera -> cancelo la solicitud
-            System.out.print("Se cancelo la solicitud la solicitud");
-            //TODO cancelar la solicitud al receptor
-            this.notificacion.cerrarVentana();
+            System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
+            Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
         }
+        this.notificacion.cerrarVentana();
     }
 
     private void registrarUsuario() {
@@ -127,8 +123,9 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        if ("Ventana Emergente".equals(estado)){
-            setNotificacion(1);
+        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO" + estado);
+        if ("Rechazo invitacion sesion".equals(estado)){
+            this.notificacion.cerrarVentana();
         }
         if ("Abro ventana notificacion".equals(estado)) {
             setNotificacion(1);
@@ -137,7 +134,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             setNotificacion(3);
         }
         if ("Abro ventana sesion".equals(estado)){
-            // TODO recibir mensaje de usuario emisor
+            // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
             vista.creaVentanaMensajes("nombre usuario emisor");
             this.notificacion.cerrarVentana();
         }
