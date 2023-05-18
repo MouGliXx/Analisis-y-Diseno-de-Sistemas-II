@@ -72,7 +72,10 @@ public class Cliente implements IObservable{
         String mensajeControl = mensaje.getMensajeControl();
         System.out.print("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
         switch (mensajeControl) {
-            case "Abro ventana sesion" -> notifyObservadores("Abro ventana sesion", "");
+            case "Abro ventana sesion" -> {
+                System.out.printf("INTENTANDO ABRIR VENTANA 1");
+                notifyObservadores("Abro ventana sesion", "");
+            }
             case "NUEVA_CONEXION" -> {
                 System.out.println("Entre a nueva conexion");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());

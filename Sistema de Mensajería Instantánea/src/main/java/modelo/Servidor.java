@@ -74,6 +74,7 @@ public class Servidor implements Runnable, Serializable {
 
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         clientes.put(mensaje.getPuertoOrigen(), conexion);
+        System.out.printf("Los clientes son" + clientes.toString());
     }
 
     //Aviso al puerto destino que me quiero conectar con el
@@ -90,6 +91,7 @@ public class Servidor implements Runnable, Serializable {
     private void procesarAceptacion(Mensaje mensaje) {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
+        System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "Abro ventana sesion", "");
     }
 

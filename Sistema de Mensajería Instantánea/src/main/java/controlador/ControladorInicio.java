@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 public class ControladorInicio implements ActionListener, WindowListener, IObserver {
     private final IVistaInicio vista;
     private IVistaNotificacion notificacion;
+    private int puertoInvitoASesion;
 
     public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
@@ -49,7 +50,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     private void notificacionAceptada() {
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
-                Sistema.getInstance().getCliente().aceptarConexion(vista.getPuerto()); //TODO mandar el pueto esta bien?
+                Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -73,10 +74,14 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void registrarUsuario() {
-        //TODO registrar usuario dentro del servidor
-        System.out.print("me registro");
-        this.vista.setModoConectar();
-        this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
+        try {
+            Sistema.getInstance().getCliente().registrarServidor();
+            this.vista.setModoConectar();
+            this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
+        }
+        catch (Exception e){
+            this.vista.lanzarVentanaEmergente("ALERTA: No existe servidor.");
+        }
     }
 
     private void conectar() {
@@ -131,6 +136,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         if ("Acepto conexion".equals(estado)){
             setNotificacion(3);
         }
+        if ("Abro ventana sesion".equals(estado)){
+            // TODO recibir mensaje de usuario emisor
+            vista.creaVentanaMensajes("nombre usuario emisor");
+            this.notificacion.cerrarVentana();
+        }
+        // TODO caso que se rechace excepcion
     }
 
     @Override
@@ -138,9 +149,18 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         System.out.print("ENTRO A NOTIFICAR CAMBIO [CONTROLADOR INICIO]");
 
+        setPuertoInvitoASesion(puerto);
         if ("Abro ventana notificacion".equals(estado)) {
             setNotificacion(3);
         }
+    }
+
+    public int getPuertoInvitoASesion() {
+        return puertoInvitoASesion;
+    }
+
+    public void setPuertoInvitoASesion(int puertoInvitoASesion) {
+        this.puertoInvitoASesion = puertoInvitoASesion;
     }
 
     @Override
