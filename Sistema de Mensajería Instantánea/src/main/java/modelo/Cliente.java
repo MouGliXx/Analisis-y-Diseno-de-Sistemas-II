@@ -73,7 +73,7 @@ public class Cliente implements IObservable{
         System.out.print("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
         switch (mensajeControl) {
             case "Abro ventana sesion" -> {
-                System.out.printf("INTENTANDO ABRIR VENTANA 1");
+                System.out.print("INTENTANDO ABRIR VENTANA 1");
                 notifyObservadores("Abro ventana sesion", "");
             }
             case "NUEVA_CONEXION" -> {
@@ -107,7 +107,7 @@ public class Cliente implements IObservable{
     }
 
     public void rechazarConexion(int puertoDestino){
-        System.out.printf("se rechazo la conexion con el puerto destino");
+        System.out.print("se rechazo la conexion con el puerto destino");
         this.mandarMensaje(puertoDestino,"RECHAZAR","");
     }
 

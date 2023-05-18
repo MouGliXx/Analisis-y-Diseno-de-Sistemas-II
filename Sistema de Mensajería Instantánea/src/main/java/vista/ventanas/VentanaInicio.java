@@ -6,12 +6,12 @@ import modelo.Sistema;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
 import vista.interfaces.IVistaNotificacion;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
@@ -58,15 +58,19 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setSize(600,800); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon(getClass().getResource("/Icono.png")).getImage());
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());
         registrarseConectarButton.setEnabled(false);
         IpJTextField.setText("localhost");
     }
 
     @Override
-    public void cerrarVentana() {
+    public void mostrarVentana() {
+        setVisible(true);
+    }
+
+    @Override
+    public void ocultarVentana() {
         setVisible(false); //Oculto la ventana
-        dispose(); //Cierro la ventana
     }
 
     @Override
@@ -76,9 +80,8 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public IVistaNotificacion lanzarNotificacion() { //tipo 1 -> Notificacion Error
-        DialogoNotificacion dialogoNotificacion = new DialogoNotificacion(this);
-        return dialogoNotificacion;
+    public IVistaNotificacion lanzarNotificacion() {
+        return new DialogoNotificacion(this);
     }
 
     @Override
@@ -92,24 +95,6 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         cliente.setConnected(true);
         ventanaMensajes.setUsuarios(cliente.getNombreDeUsuario(), "nombre del receptor"); //TODO poner nombre de cliente receptor y hacer que se configure el nombre de cliente en la notificacion
         ventanaMensajes.ejecutar();
-
-//        ControladorNotificacion controladorNotificacion;
-//        VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
-//        if (nombreUsuarioEmisor == null){
-//           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
-//        } else {
-//            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, Integer.parseInt(nombreUsuarioEmisor));
-//        }
-//        ArrayList<IObserver> observadores = new ArrayList<>(Sistema.getInstance().getCliente().getObservadores());
-//        observadores.add(controladorNotificacion);
-//        Sistema.getInstance().getCliente().setObservadores(observadores);
-//        switch (tipo) {
-//            case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
-//            case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
-//            case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
-//        }
-//        ventanaNotificacion.setVisible(true);
-//        ventanaNotificacion.ejecutar();
     }
 
     @Override
@@ -173,11 +158,21 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int puerto = (int) PuertoSpinner.getValue();
+        boolean modoEscucha = modoEscuchaCheckBox.isSelected();
+
         if (e.getActionCommand().equals("Modo Escucha")) {
-            if (modoEscuchaCheckBox.isSelected())
+            if (modoEscucha) {
                 modoEscuchaCheckBox.setText("Modo Escucha: ON");
-            else
+            } else {
                 modoEscuchaCheckBox.setText("Modo Escucha: OFF");
+            }
+
+            if (puerto == 0) {
+                registrarseConectarButton.setEnabled(false);
+            } else {
+                registrarseConectarButton.setEnabled(modoEscucha);
+            }
         }
     }
 
@@ -202,7 +197,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         if (currentValue == 0) {
             registrarseConectarButton.setEnabled(false);
         } else {
-            registrarseConectarButton.setEnabled(true);
+            registrarseConectarButton.setEnabled(modoEscuchaCheckBox.isSelected());
             if (currentValue <= 1) {
                 PuertoSpinner.setValue(1);
             }

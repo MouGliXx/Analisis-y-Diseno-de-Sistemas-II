@@ -37,13 +37,21 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         }
     }
 
+    public int getPuertoInvitoASesion() {
+        return puertoInvitoASesion;
+    }
+
+    public void setPuertoInvitoASesion(int puertoInvitoASesion) {
+        this.puertoInvitoASesion = puertoInvitoASesion;
+    }
+
     private void setNotificacion(int tipo) {
         String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
 
         this.notificacion = vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);
-        this.notificacion.setTipoVentana(tipo, nombreUsuarioEmisor);
+        this.notificacion.setTipoNotificacion(tipo, nombreUsuarioEmisor);
         this.notificacion.ejecutar();
     }
 
@@ -55,18 +63,19 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 ex.printStackTrace();
             }
             vista.creaVentanaMensajes("nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            this.vista.ocultarVentana();
         }
         //Si es de tipo error -> no hago nada
-        this.notificacion.cerrarVentana();
+        this.notificacion.cerrarDialogo();
     }
 
     private void notificacionRechazada() {
         //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
-            System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
+            System.out.print("Se rechazo la solicitud: " + getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
         }
-        this.notificacion.cerrarVentana();
+        this.notificacion.cerrarDialogo();
     }
 
     private void registrarUsuario() {
@@ -97,13 +106,8 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void cambiarModoEscucha() {
-        if (vista.getNombreDeUsuario().isEmpty()) {
-            vista.lanzarVentanaEmergente("Para activar el modo escucha, es necesario que establezca su nombre de cliente primero.");
-            vista.setModoEscucha(false);
-        } else {
-            Sistema.getInstance().getCliente().setModoEscucha(vista.getModoEscucha());
-            Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
-        }
+        Sistema.getInstance().getCliente().setModoEscucha(vista.getModoEscucha());
+        Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
     }
 
     private void establecerIP() {
@@ -123,22 +127,25 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO" + estado);
-        if ("Rechazo invitacion sesion".equals(estado)){
-            this.notificacion.cerrarVentana();
+        System.out.print("RECIBIO NOTIFICACION DE CAMBIO" + estado);
+
+        switch (estado) {
+            case "Rechazo invitacion sesion" -> this.notificacion.cerrarDialogo();
+            case "Abro ventana notificacion" -> setNotificacion(1);
+            case "Acepto conexion" -> setNotificacion(3);
+            case "Abro ventana sesion" -> {
+                // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
+                this.vista.creaVentanaMensajes("nombre usuario emisor");
+                this.notificacion.cerrarDialogo();
+                this.vista.ocultarVentana();
+            }
+            case "Cierro ventana sesion" -> {
+                System.out.print("\n[VENTANA INICIO] ME ENTERO QUE SE CERRO LA SESION\n");
+                this.vista.mostrarVentana();
+            }
+            // TODO caso que se rechace excepcion
         }
-        if ("Abro ventana notificacion".equals(estado)) {
-            setNotificacion(1);
-        }
-        if ("Acepto conexion".equals(estado)){
-            setNotificacion(3);
-        }
-        if ("Abro ventana sesion".equals(estado)){
-            // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
-            vista.creaVentanaMensajes("nombre usuario emisor");
-            this.notificacion.cerrarVentana();
-        }
-        // TODO caso que se rechace excepcion
+
     }
 
     @Override
@@ -152,16 +159,13 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         }
     }
 
-    public int getPuertoInvitoASesion() {
-        return puertoInvitoASesion;
-    }
-
-    public void setPuertoInvitoASesion(int puertoInvitoASesion) {
-        this.puertoInvitoASesion = puertoInvitoASesion;
+    @Override
+    public void windowClosing(WindowEvent e) {
+        //TODO se cierra la app --> deberia eliminar al cliente registrado del servidor
     }
 
     @Override
-    public void windowClosing(WindowEvent e) {
+    public void windowClosed(WindowEvent e) {
         notificacionRechazada();
     }
 
@@ -171,10 +175,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
     }
 
-    @Override
-    public void windowClosed(WindowEvent e) {
-
-    }
 
     @Override
     public void windowIconified(WindowEvent e) {

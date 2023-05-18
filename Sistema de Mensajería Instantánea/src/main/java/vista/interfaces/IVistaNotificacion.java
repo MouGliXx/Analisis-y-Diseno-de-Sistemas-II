@@ -1,14 +1,19 @@
 package vista.interfaces;
 
+import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
 
-public interface IVistaNotificacion extends IVista {
+public interface IVistaNotificacion {
+
+    void setActionListener(ActionListener controlador);
 
     void setWindowListener(WindowListener controlador);
-    
-    void creaOtraVentana(int tipo, String nombreUsuarioEmisor);
+
+    void ejecutar();
+
+    void cerrarDialogo();
 
     int getTipo();
 
-    void setTipoVentana(int tipo, String nombreUsuarioEmisor);
+    void setTipoNotificacion(int tipo, String nombreUsuarioEmisor);
 }

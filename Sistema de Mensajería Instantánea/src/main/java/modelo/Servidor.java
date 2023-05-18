@@ -11,7 +11,6 @@ public class Servidor implements Runnable, Serializable {
     public Servidor() {
     }
 
-
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(1234);
@@ -71,14 +70,12 @@ public class Servidor implements Runnable, Serializable {
     }
 
     // Agrego la conexion al servidor
-
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         clientes.put(mensaje.getPuertoOrigen(), conexion);
         System.out.printf("Los clientes son" + clientes.toString());
     }
 
     //Aviso al puerto destino que me quiero conectar con el
-
     private void procesarConexion(Mensaje mensaje) {
         System.out.println("LLegueeasfd");
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
@@ -87,7 +84,6 @@ public class Servidor implements Runnable, Serializable {
     }
 
     //Aviso al puerto que me aceptaron la sesion, creo sesiones y abro ventana sesion.
-
     private void procesarAceptacion(Mensaje mensaje) {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
@@ -141,5 +137,4 @@ public class Servidor implements Runnable, Serializable {
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
-
 }

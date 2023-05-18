@@ -15,4 +15,6 @@ public interface IVistaMensajes extends IVista{
     String getMensajeEnviado();
 
     void creaVentanaInicio();
+
+    void cerrarVentana();
 }
