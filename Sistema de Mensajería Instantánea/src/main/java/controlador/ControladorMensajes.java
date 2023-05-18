@@ -27,10 +27,11 @@ public class ControladorMensajes implements ActionListener, IObserver {
     }
 
     private void enviarMensaje() {
-        String mensaje = vista.getMensajeEnviado();
         Cliente cliente = Sistema.getInstance().getCliente();
+        String mensaje = vista.getMensajeEnviado();
+
         cliente.mandarTexto(mensaje);
-        this.vista.agregarNuevoEnviado(mensaje);
+        vista.agregarNuevoEnviado(mensaje);
     }
 
     private void cerrarSesion() {

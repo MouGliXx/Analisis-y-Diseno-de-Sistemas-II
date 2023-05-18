@@ -9,6 +9,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
@@ -73,23 +74,23 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor) {
+    public void creaOtraVentana(int tipo, String nombreUsuarioEmisor) {
         ControladorNotificacion controladorNotificacion;
         VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
         if (nombreUsuarioEmisor == null){
            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
-        }
-        else {
+        } else {
             controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, Integer.parseInt(nombreUsuarioEmisor));
         }
-        ArrayList<IObserver> observadores = new ArrayList<>(sistema.getCliente().getObservadores());
+        ArrayList<IObserver> observadores = new ArrayList<>(Sistema.getInstance().getCliente().getObservadores());
         observadores.add(controladorNotificacion);
-        sistema.getCliente().setObservadores(observadores);
+        Sistema.getInstance().getCliente().setObservadores(observadores);
         switch (tipo) {
             case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
             case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
             case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
         }
+        ventanaNotificacion.setVisible(true);
         ventanaNotificacion.ejecutar();
     }
 

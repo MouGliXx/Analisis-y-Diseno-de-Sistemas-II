@@ -8,10 +8,11 @@ import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
-public class VentanaNotificacion extends JDialog implements IVistaNotificacion {
+public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
     private int tipo; // 1=error | 2=espera | 3=solicitud
     private JPanel PanelPrincipal;
     private JPanel PanelCentral;
@@ -33,19 +34,19 @@ public class VentanaNotificacion extends JDialog implements IVistaNotificacion {
         setTitle("Sistema de Mensajeria Instantaneo");
         pack(); //Coloca los componentes
         setContentPane(PanelPrincipal);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setSize(600,300); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon(getClass().getResource("/Icono.png")).getImage());
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());
         toFront();
     }
 
     @Override
     public void cerrarVentana() {
         setVisible(false); //Oculto la ventana
-        dispose(); //Cierro la ventana
+        dispose(); // Cierra el JDialog
     }
 
     @Override
@@ -69,9 +70,7 @@ public class VentanaNotificacion extends JDialog implements IVistaNotificacion {
                 //TODO REVISAR SI TENGO QUE REGISTRARME EN EL SERVER DE NUEVO
                 try {
                     cliente.registrarServidor();
-                } catch (IOException e){
-                    e.printStackTrace();
-                } catch (Exception e) {
+                } catch (Exception e){
                     e.printStackTrace();
                 }
                 ventanaInicio.ejecutar();

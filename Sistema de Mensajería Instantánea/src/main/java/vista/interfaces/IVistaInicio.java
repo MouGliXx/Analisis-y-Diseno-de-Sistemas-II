@@ -1,8 +1,7 @@
 package vista.interfaces;
 
-import modelo.Sistema;
-
 public interface IVistaInicio extends IVista {
+
     void setKeyListener();
 
     void setChangeListener();
@@ -23,5 +22,5 @@ public interface IVistaInicio extends IVista {
 
     int getPuerto();
 
-   void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor);
+    void creaOtraVentana(int tipo, String nombreUsuarioEmisor);
 }

@@ -2,20 +2,15 @@ package modelo;
 
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
-
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Base64;
 import java.util.Iterator;
 
 import static modelo.Cifrado.desencriptar;
 import static modelo.Cifrado.encriptar;
 
-import static modelo.Cifrado.desencriptar;
-import static modelo.Cifrado.encriptar;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
@@ -108,16 +103,17 @@ public class Cliente implements IObservable{
     }
 
     // TIPOS DE MENSAJES
-
-
-    public void mandarMensaje(int puertoDestino,String mensajeControl, String text) throws Exception {
+    public void mandarMensaje(int puertoDestino, String mensajeControl, String text) throws Exception {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text);
         this.conexion.mandarMensaje(mensaje);
     }
 
-    public void registrar() throws Exception {this.mandarMensaje(puertoServer, "REGISTRAR", "");}
+    public void registrar() throws Exception {
+        this.mandarMensaje(puertoServer, "REGISTRAR", "");
+    }
+
     public void aceptarConexion(int puertoDestino) throws Exception {
-        System.out.printf("se mando mensaje");
+        System.out.printf("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
     }
 
@@ -172,18 +168,17 @@ public class Cliente implements IObservable{
     }
 
     // GETTERS AND SETTERS.
-
     public int getPuertoPropio() {
         return puertoPropio;
     }
 
-
-
-    public boolean isConnected() {return isConnected;}
+    public boolean isConnected() {
+        return isConnected;
+    }
 
     public void setConnected(boolean connected) {
-        isConnected = connected;}
-
+        isConnected = connected;
+    }
 
     public void setModoEscucha(boolean stop) {
         modoEscucha = stop;
@@ -196,7 +191,4 @@ public class Cliente implements IObservable{
     public void setNombreDeUsuario(String nombreDeUsuario) {
         this.nombreDeUsuario = nombreDeUsuario;
     }
-
-
-
 }
