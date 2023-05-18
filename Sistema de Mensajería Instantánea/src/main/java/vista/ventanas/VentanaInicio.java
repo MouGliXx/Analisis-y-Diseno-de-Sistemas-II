@@ -1,15 +1,17 @@
 package vista.ventanas;
 
-import controlador.ControladorNotificacion;
+import controlador.ControladorMensajes;
+import modelo.Cliente;
 import modelo.Sistema;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
+import vista.interfaces.IVistaNotificacion;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
@@ -74,29 +76,50 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public void creaOtraVentana(int tipo, String nombreUsuarioEmisor) {
-        ControladorNotificacion controladorNotificacion;
-        VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
-        if (nombreUsuarioEmisor == null){
-           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
-        } else {
-            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, Integer.parseInt(nombreUsuarioEmisor));
-        }
-        ArrayList<IObserver> observadores = new ArrayList<>(Sistema.getInstance().getCliente().getObservadores());
-        observadores.add(controladorNotificacion);
-        Sistema.getInstance().getCliente().setObservadores(observadores);
-        switch (tipo) {
-            case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
-            case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
-            case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
-        }
-        ventanaNotificacion.setVisible(true);
-        ventanaNotificacion.ejecutar();
+    public IVistaNotificacion lanzarNotificacion() { //tipo 1 -> Notificacion Error
+        DialogoNotificacion dialogoNotificacion = new DialogoNotificacion(this);
+        return dialogoNotificacion;
+    }
+
+    @Override
+    public void creaVentanaMensajes(String nombreUsuarioEmisor) { //TODO crear ventana mensajes
+        Cliente cliente = Sistema.getInstance().getCliente();
+        VentanaMensajes ventanaMensajes = new VentanaMensajes();
+        ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes);
+        ArrayList<IObserver> observadores = new ArrayList<>(cliente.getObservadores());
+        observadores.add(controladorMensajes);
+        cliente.setObservadores(observadores);
+        cliente.setConnected(true);
+        ventanaMensajes.setUsuarios(cliente.getNombreDeUsuario(), "nombre del receptor"); //TODO poner nombre de cliente receptor y hacer que se configure el nombre de cliente en la notificacion
+        ventanaMensajes.ejecutar();
+
+//        ControladorNotificacion controladorNotificacion;
+//        VentanaNotificacion ventanaNotificacion = new VentanaNotificacion();
+//        if (nombreUsuarioEmisor == null){
+//           controladorNotificacion = new ControladorNotificacion(ventanaNotificacion);
+//        } else {
+//            controladorNotificacion = new ControladorNotificacion(ventanaNotificacion, Integer.parseInt(nombreUsuarioEmisor));
+//        }
+//        ArrayList<IObserver> observadores = new ArrayList<>(Sistema.getInstance().getCliente().getObservadores());
+//        observadores.add(controladorNotificacion);
+//        Sistema.getInstance().getCliente().setObservadores(observadores);
+//        switch (tipo) {
+//            case 1 -> ventanaNotificacion.setTipoVentana(1, null); //tipo 1 -> Notificacion Error
+//            case 2 -> ventanaNotificacion.setTipoVentana(2, null); //tipo 2 -> Notificacion Espera
+//            case 3 -> ventanaNotificacion.setTipoVentana(3, nombreUsuarioEmisor); //tipo 3 -> Notificacion Solicitud
+//        }
+//        ventanaNotificacion.setVisible(true);
+//        ventanaNotificacion.ejecutar();
     }
 
     @Override
     public void setMiDireccionIP(String IP) {
         this.MiDireccionLabel.setText("Mi direccion IP: " + IP);
+    }
+
+    @Override
+    public String getMiDireccionIP() {
+        return this.MiDireccionLabel.getText();
     }
 
     @Override

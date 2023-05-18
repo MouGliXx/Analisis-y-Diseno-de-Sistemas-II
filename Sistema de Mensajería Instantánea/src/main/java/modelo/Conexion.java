@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 
 public class Conexion {
-
     private int puertoCliente;
     private int puertoServidor;
     private boolean estaModoEscucha;

@@ -29,7 +29,6 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void enviarMensaje() {
         Cliente cliente = Sistema.getInstance().getCliente();
         String mensaje = vista.getMensajeEnviado();
-
         cliente.mandarTexto(mensaje);
         vista.agregarNuevoEnviado(mensaje);
     }
@@ -37,7 +36,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void cerrarSesion() {
         Sistema.getInstance().getCliente().cerrarConexion("");
         Sistema.getInstance().getCliente().getObservadores().remove(this);
-        vista.creaOtraVentana();
+        vista.creaVentanaInicio();
         vista.cerrarVentana();
     }
 
@@ -47,7 +46,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
             case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
             case STATE_CERRAR_SESION -> {
                 Sistema.getInstance().getCliente().getObservadores().remove(this);
-                vista.creaOtraVentana();
+                vista.creaVentanaInicio();
                 vista.cerrarVentana();
             }
         }

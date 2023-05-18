@@ -6,46 +6,61 @@ import modelo.Cliente;
 import modelo.Sistema;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
+
 import javax.swing.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
-public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
+public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
     private int tipo; // 1=error | 2=espera | 3=solicitud
-    private JPanel PanelPrincipal;
+    private JPanel panelPrincipal;
     private JPanel PanelCentral;
-    private JButton aceptarButton;
-    private JButton cancelarButton;
+    private JPanel ButtonPanel;
     private JLabel TituloLabel;
     private JLabel Contenido1Label;
     private JLabel Contenido2Label;
-    private JPanel ButtonPanel;
+    private JButton aceptarButton;
+    private JButton cancelarButton;
 
-    @Override
-    public void setActionListener(ActionListener controlador) {
-        this.aceptarButton.addActionListener(controlador);
-        this.cancelarButton.addActionListener(controlador);
+    public DialogoNotificacion(JFrame parent) {
+        setLocationRelativeTo(parent);
     }
 
     @Override
     public void ejecutar() {
         setTitle("Sistema de Mensajeria Instantaneo");
-        pack(); //Coloca los componentes
-        setContentPane(PanelPrincipal);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setContentPane(panelPrincipal);
+        setSize(600,300);
+        setModal(true);
         setVisible(true);
-        setSize(600,300); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
-        setLocationRelativeTo(null);
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        getRootPane().setDefaultButton(aceptarButton);
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());
+        pack();
         toFront();
     }
 
     @Override
+    public void lanzarVentanaEmergente(String mensaje) {
+
+    }
+
+    @Override
+    public void setActionListener(ActionListener controlador) {
+        aceptarButton.addActionListener(controlador);
+        cancelarButton.addActionListener(controlador);
+    }
+
+    @Override
+    public void setWindowListener(WindowListener controlador) {
+        this.addWindowListener(controlador);
+    }
+
+    @Override
     public void cerrarVentana() {
-        setVisible(false); //Oculto la ventana
         dispose(); // Cierra el JDialog
     }
 
@@ -76,14 +91,6 @@ public class VentanaNotificacion extends JFrame implements IVistaNotificacion {
                 ventanaInicio.ejecutar();
             }
         }
-    }
-
-
-
-    @Override
-    public void lanzarVentanaEmergente(String mensaje) {
-        JFrame jFrameVacio = new JFrame();
-        JOptionPane.showMessageDialog(jFrameVacio, mensaje);
     }
 
     public int getTipo() {

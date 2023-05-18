@@ -11,6 +11,4 @@ public interface IVista {
     void cerrarVentana();
 
     void lanzarVentanaEmergente(String mensaje);
-
-
 }
