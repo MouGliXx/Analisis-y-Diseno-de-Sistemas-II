@@ -50,7 +50,7 @@ public class Cliente implements IObservable{
     }
 
     // TODO que lance una excepcion cuando no aceptan conexion
-    public void crearConexion(int puertoDestino) throws IOException {
+    public void crearConexion(int puertoDestino){
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","");
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
@@ -60,29 +60,34 @@ public class Cliente implements IObservable{
     private void listenerMensajes() throws Exception {
         Mensaje mensaje;
         while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
+            System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
             if (modoEscucha){
                 procesarMensaje(mensaje);
             } else {
-                throw new Exception("El usuario que desea contactar no se encuentra en modo escucha");
+                System.out.printf("entro aca");
+                notifyObservadores("ERROR CONEXION","");
             }
         }
     }
 
     private void procesarMensaje(Mensaje mensaje) throws Exception {
         String mensajeControl = mensaje.getMensajeControl();
-        System.out.print("\n[" + mensaje.getPuertoOrigen() + "] : " + mensaje.getMensaje());
+        System.out.printf("\nel mensaje de CONTROL RECIBIDO: " + mensajeControl);
         switch (mensajeControl) {
             case "Abro ventana sesion" -> {
                 System.out.printf("INTENTANDO ABRIR VENTANA 1");
                 notifyObservadores("Abro ventana sesion", "");
             }
             case "NUEVA_CONEXION" -> {
-                System.out.println("Entre a nueva conexion");
+                System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
+                mandarMensaje(mensaje.getPuertoOrigen(),"CONEXION CORRECTA","");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());
             }
             case "Cerrar sesion" -> notifyObservadores("Cierro ventana sesion", "");
             case "Acepto conexion" -> notifyObservadores("Acepto conexion", "");
             case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "");
+            case "ERROR CONEXION" ->notifyObservadores("ERROR CONEXION","");
+            case "CONEXION CORRECTA"->notifyObservadores("CONEXION CORRECTA","");
             default -> {
                 byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
                 String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");

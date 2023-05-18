@@ -50,6 +50,9 @@ public class Servidor implements Runnable, Serializable {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                 procesarConexion(mensaje);
                 break;
+            case "CONEXION CORRECTA":
+                procesarConexionAceptada(mensaje);
+                break;
             case "ACEPTAR":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
                 procesarAceptacion(mensaje);
@@ -65,6 +68,7 @@ public class Servidor implements Runnable, Serializable {
             case "DESCONECTAR":
                 procesarDesconexion(mensaje);
                 break;
+
             default:
                 break;
         }
@@ -80,10 +84,20 @@ public class Servidor implements Runnable, Serializable {
     //Aviso al puerto destino que me quiero conectar con el
 
     private void procesarConexion(Mensaje mensaje) {
-        System.out.println("LLegueeasfd");
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
+            System.out.printf("EL PUERTO ORIGEN ES" + mensaje.getPuertoOrigen());
             mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA_CONEXION", "");
         }
+        else{
+            //TODO definir como variable el puerto del server
+            // Aviso al origen que no existe el usuaario
+            mandarMensaje(1234,mensaje.getPuertoOrigen(), "ERROR CONEXION","");
+        }
+    }
+
+    private void procesarConexionAceptada(Mensaje mensaje) {
+        System.out.printf("\n CONEXION ACEPTADA \nse mando conexion aceptadaa");
+        mandarMensaje(1234,mensaje.getPuertoDestino(), "CONEXION CORRECTA","");
     }
 
     //Aviso al puerto que me aceptaron la sesion, creo sesiones y abro ventana sesion.
@@ -139,6 +153,7 @@ public class Servidor implements Runnable, Serializable {
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text);
+        System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
 

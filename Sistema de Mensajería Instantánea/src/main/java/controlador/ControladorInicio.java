@@ -50,6 +50,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     private void notificacionAceptada() {
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
+                System.out.printf("puerto que me invito a sesion" + getPuertoInvitoASesion());
                 Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -61,7 +62,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void notificacionRechazada() {
-        //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
@@ -81,19 +81,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void conectar() {
-        try {
             //NOTIFICACION ESPERA
             int puertoDestino = vista.getPuerto();
 
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
 
-            setNotificacion(2);
-        } catch (IOException e) {
-            //NOTIFICAION ERROR
-            //TODO contemplar el caso en donde no exista el usuario que quiero contactar --> Notificacion error
-            setNotificacion(1);
-        }
     }
 
     private void cambiarModoEscucha() {
@@ -123,7 +116,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO" + estado);
+        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO " + estado);
         if ("Rechazo invitacion sesion".equals(estado)){
             this.notificacion.cerrarVentana();
         }
@@ -138,7 +131,14 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             vista.creaVentanaMensajes("nombre usuario emisor");
             this.notificacion.cerrarVentana();
         }
-        // TODO caso que se rechace excepcion
+        if ("ERROR CONEXION".equals(estado)){
+            // TODO se puede poner notificacion uno
+            vista.lanzarVentanaEmergente("El usuario no existe o no se encuentra en modo escucha");
+        }
+        if ("CONEXION CORRECTA".equals(estado)){
+            // TODO la podemos cambiar por una ventana mas chota diciendo esperando
+            setNotificacion(2);
+        }
     }
 
     @Override
