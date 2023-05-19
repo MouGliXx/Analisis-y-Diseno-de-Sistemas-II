@@ -13,8 +13,6 @@ public interface IVistaNotificacion {
 
     void cerrarDialogo();
 
-    void cerrarVentana();
-
     int getTipo();
 
     void setTipoNotificacion(int tipo, String nombreUsuarioEmisor);

@@ -43,7 +43,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         this.notificacion = vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);
-        this.notificacion.setTipoVentana(tipo, nombreUsuarioEmisor);
+        this.notificacion.setTipoNotificacion(tipo, nombreUsuarioEmisor);
         this.notificacion.ejecutar();
     }
 
@@ -58,7 +58,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             this.vista.ocultarVentana();
         }
         //Si es de tipo error -> no hago nada
-        this.notificacion.cerrarVentana();
+        this.notificacion.cerrarDialogo();
     }
 
     private void notificacionRechazada() {
@@ -67,7 +67,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
         }
-        this.notificacion.cerrarVentana();
+        this.notificacion.cerrarDialogo();
     }
 
     private void registrarUsuario() {
@@ -120,7 +120,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         System.out.printf("RECIBIO NOTIFICACION DE CAMBIO " + estado);
         if ("Rechazo invitacion sesion".equals(estado)){
-            this.notificacion.cerrarVentana();
+            this.notificacion.cerrarDialogo();
         }
         if ("Abro ventana notificacion".equals(estado)) {
             setNotificacion(1);
@@ -131,7 +131,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         if ("Abro ventana sesion".equals(estado)){
             // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
             vista.creaVentanaMensajes("nombre usuario emisor");
-            this.notificacion.cerrarVentana();
+            this.notificacion.cerrarDialogo();
         }
         if ("ERROR CONEXION".equals(estado)){
             // TODO se puede poner notificacion uno

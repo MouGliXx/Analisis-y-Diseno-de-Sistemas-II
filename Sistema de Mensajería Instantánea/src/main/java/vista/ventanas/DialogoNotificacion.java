@@ -52,6 +52,11 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
         dispose(); // Cierra el JDialog
     }
 
+    @Override
+    public void cerrarVentana() {
+
+    }
+
     public int getTipo() {
         return tipo;
     }
