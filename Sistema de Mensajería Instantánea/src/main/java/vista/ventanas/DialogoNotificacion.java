@@ -25,7 +25,8 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
         setTitle("Sistema de Mensajeria Instantaneo");
         setContentPane(panelPrincipal);
         setSize(600,300);
-        setModal(true);
+//        setModal(true);
+        setModal(false);
         setVisible(true);
         setResizable(false); //No redimensionable
 

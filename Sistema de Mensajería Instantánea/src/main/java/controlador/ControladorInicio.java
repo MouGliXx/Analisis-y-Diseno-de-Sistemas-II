@@ -40,7 +40,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     private void setNotificacion(int tipo) {
         String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
 
-        this.notificacion = vista.lanzarNotificacion();
+        this.notificacion = this.vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);
         this.notificacion.setTipoNotificacion(tipo, nombreUsuarioEmisor);
@@ -55,10 +55,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 ex.printStackTrace();
             }
             vista.creaVentanaMensajes("nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
-            this.vista.ocultarVentana();
+            this.notificacion.cerrarDialogo();
+        } else {
+            //Si es de tipo error -> no hago nada
+            this.notificacion.cerrarDialogo();
+            this.vista.mostrarVentana();
         }
-        //Si es de tipo error -> no hago nada
-        this.notificacion.cerrarDialogo();
     }
 
     private void notificacionRechazada() {
@@ -68,6 +70,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
         }
         this.notificacion.cerrarDialogo();
+        this.vista.mostrarVentana();
     }
 
     private void registrarUsuario() {
@@ -117,32 +120,27 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         System.out.printf("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
-        if ("Rechazo invitacion sesion".equals(estado)){
-            this.notificacion.cerrarDialogo();
-        }
-        if ("Abro ventana notificacion".equals(estado)) {
-            setNotificacion(1);
-        }
-        if ("Acepto conexion".equals(estado)){
-            setNotificacion(3);
-        }
-        if ("Abro ventana sesion".equals(estado)){
-            // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
-            this.notificacion.cerrarDialogo();
-            vista.creaVentanaMensajes("nombre usuario emisor");
-        }
-        if ("CIERRO VENTANA SESION".equals(estado)) {
-            Sistema.getInstance().getCliente().getObservadores().remove(this);
-//                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
-            vista.mostrarVentana();
-        }
-        if ("ERROR CONEXION".equals(estado)){
-            // TODO se puede poner notificacion uno
-            vista.lanzarVentanaEmergente("El usuario no existe o no se encuentra en modo escucha");
-        }
-        if ("CONEXION CORRECTA".equals(estado)){
-            // TODO la podemos cambiar por una ventana mas chota diciendo esperando
-            setNotificacion(2);
+
+        switch (estado) {
+            case "Rechazo invitacion sesion" -> this.notificacion.cerrarDialogo();
+            case "Abro ventana notificacion", "ERROR CONEXION" -> {
+                setNotificacion(1);
+                this.vista.ocultarVentana();
+            }
+            case "CONEXION CORRECTA" -> {
+                setNotificacion(2);
+                this.vista.ocultarVentana();
+            }
+            case "Abro ventana sesion" -> {
+                // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
+                this.vista.creaVentanaMensajes("nombre usuario emisor");
+                this.notificacion.cerrarDialogo();
+            }
+            case "CIERRO VENTANA SESION" -> {
+                Sistema.getInstance().getCliente().getObservadores().remove(this);
+                this.vista.mostrarVentana();
+            }
+
         }
     }
 
@@ -154,6 +152,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         setPuertoInvitoASesion(puerto);
         if ("Abro ventana notificacion".equals(estado)) {
             setNotificacion(3);
+            this.vista.ocultarVentana();
         }
     }
 
