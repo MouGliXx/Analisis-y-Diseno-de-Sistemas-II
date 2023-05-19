@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Iterator;
 
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
@@ -64,8 +65,7 @@ public class Cliente implements IObservable{
             if (modoEscucha){
                 procesarMensaje(mensaje);
             } else {
-                System.out.printf("entro aca");
-                notifyObservadores("ERROR CONEXION","");
+                mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
             }
         }
     }
@@ -114,6 +114,11 @@ public class Cliente implements IObservable{
         this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
     }
 
+    public void cerrarVentanaSesionLocal() {
+        System.out.printf("Mandamos mensaje para cerrar sesion");
+        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION LOCAL", "");
+    }
+
     public void aceptarConexion(int puertoDestino) {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
@@ -143,19 +148,25 @@ public class Cliente implements IObservable{
     }
 
     // METODOS PARA EL OBSERVER
+
     @Override
     public void notifyObservadores(String estado, String mensaje) {
-        for (IObserver obs : observadores) {
-            obs.notificarCambio(estado, mensaje );
+        Iterator<IObserver> iter = observadores.iterator();
+        while (iter.hasNext()) {
+            IObserver obs = iter.next();
+            obs.notificarCambio(estado, mensaje);
         }
     }
 
     @Override
     public void notifyObservadores(String estado, int puerto) {
-        for (IObserver obs : observadores) {
-            obs.notificarCambio(estado, puerto,this.nombreDeUsuario );
+        Iterator<IObserver> iter = observadores.iterator();
+        while (iter.hasNext()) {
+            IObserver obs = iter.next();
+            obs.notificarCambio(estado, puerto,"");
         }
     }
+
 
     @Override
     public void agregarObservador(IObserver observer) {

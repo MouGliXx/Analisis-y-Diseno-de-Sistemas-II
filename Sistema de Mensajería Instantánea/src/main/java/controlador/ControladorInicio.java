@@ -122,8 +122,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         System.out.printf("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
 
         switch (estado) {
-            case "Rechazo invitacion sesion" -> this.notificacion.cerrarDialogo();
+            case "Rechazo invitacion sesion" -> {
+                this.notificacion.cerrarDialogo();
+                this.vista.mostrarVentana();
+            }
             case "Abro ventana notificacion", "ERROR CONEXION" -> {
+                System.out.printf("entro aca?");
                 setNotificacion(1,null);
                 this.vista.ocultarVentana();
             }
@@ -137,8 +141,9 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 this.notificacion.cerrarDialogo();
             }
             case "CIERRO VENTANA SESION" -> {
-                Sistema.getInstance().getCliente().getObservadores().remove(this);
+                System.out.printf("\nhola papi\n");
                 this.vista.mostrarVentana();
+                //Sistema.getInstance().getCliente().getObservadores().remove(this);
             }
         }
     }

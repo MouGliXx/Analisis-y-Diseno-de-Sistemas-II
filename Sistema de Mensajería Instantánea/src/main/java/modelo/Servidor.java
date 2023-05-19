@@ -71,6 +71,14 @@ public class Servidor implements Runnable, Serializable {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
                 procesarCierroVentana(mensaje);
                 break;
+            case "CIERRO VENTANA SESION LOCAL":
+                System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
+                procesarCierroVentanaLocal(mensaje);
+                break;
+            case "ERROR CONEXION":
+                System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ERRO CONEXION");
+                mandarMensaje(1234,mensaje.getPuertoDestino(), "ERROR CONEXION","");
+                break;
 
             default:
                 break;
@@ -147,6 +155,14 @@ public class Servidor implements Runnable, Serializable {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","");
             clientes.get(puertoDestino).mandarMensaje(mensaje1);
+        }
+    }
+
+    private void procesarCierroVentanaLocal(Mensaje mensaje){
+        if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
+            int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
+            Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","");
+            clientes.get(mensaje.getPuertoOrigen()).mandarMensaje(mensaje1);
         }
     }
 
