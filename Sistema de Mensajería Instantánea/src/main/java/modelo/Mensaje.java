@@ -3,8 +3,8 @@ package modelo;
 import java.io.Serializable;
 
 public class Mensaje implements Serializable {
-    private int puertoOrigen;
-    private int puertoDestino;
+    private final int puertoOrigen;
+    private final int puertoDestino;
     String mensajeControl;
     String mensaje;
     private String nombreUsuarioEmisor;
@@ -29,24 +29,12 @@ public class Mensaje implements Serializable {
         return puertoOrigen;
     }
 
-    public void setPuertoOrigen(int puertoOrigen) {
-        this.puertoOrigen = puertoOrigen;
-    }
-
     public int getPuertoDestino() {
         return puertoDestino;
     }
 
-    public void setPuertoDestino(int puertoDestino) {
-        this.puertoDestino = puertoDestino;
-    }
-
     public String getMensajeControl() {
         return mensajeControl;
-    }
-
-    public void setMensajeControl(String mensajeControl) {
-        this.mensajeControl = mensajeControl;
     }
 
     public String getMensaje() {

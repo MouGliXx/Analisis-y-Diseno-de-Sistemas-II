@@ -8,13 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class ControladorInicio implements ActionListener, WindowListener, IObserver {
     private final IVistaInicio vista;
     private IVistaNotificacion notificacion;
     private int puertoInvitoASesion;
+    private String nombreEmisor;
 
     public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
@@ -38,8 +38,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
-        //String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
-
         this.notificacion = this.vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);
@@ -54,8 +52,9 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.printf("\nEl nombre es: " +Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
-            vista.creaVentanaMensajes(Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor()); //TODO poner el nombre de usuario del emisor que recibo del modelo
+//            System.out.printf("\nEl nombre es: " +Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
+//            vista.creaVentanaMensajes(Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor()); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            vista.creaVentanaMensajes(nombreEmisor);
             this.notificacion.cerrarDialogo();
         } else {
             //Si es de tipo error -> no hago nada
@@ -65,13 +64,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     private void notificacionRechazada() {
-        //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
         }
-        this.notificacion.cerrarDialogo();
         this.vista.mostrarVentana();
+        this.notificacion.cerrarDialogo();
     }
 
     private void registrarUsuario() {
@@ -92,7 +90,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
-            System.out.printf("INTENTAMOS CONECTARNOS");
+            System.out.printf("\nINTENTAMOS CONECTARNOS");
             Sistema.getInstance().getCliente().setearNombreReceptor(puertoDestino);
             System.out.printf("\nEl nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
     }
@@ -128,27 +126,26 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
         switch (estado) {
             case "Rechazo invitacion sesion" -> {
+                System.out.printf("\nRechazo invitacion sesion\n");
                 this.notificacion.cerrarDialogo();
                 this.vista.mostrarVentana();
             }
-            case "Abro ventana notificacion", "ERROR CONEXION" -> {
-                System.out.printf("entro aca?");
-                setNotificacion(1,nombreUsuarioEmisor);
+            case "Abro ventana notificacion" -> {
+                System.out.printf("\n\nHOLAAAAAAAAAAAAAAAAAAAAAAAA Abro ventana notificacion? \n\n");
                 this.vista.ocultarVentana();
+                setNotificacion(1,nombreUsuarioEmisor);
             }
             case "CONEXION CORRECTA" -> {
+                System.out.printf("\n\nHOLAAAAAAAAAAAAAAAAAAAAAAAA CONEXION CORRECTA? \n\n");
                 setNotificacion(2,nombreUsuarioEmisor);
                 this.vista.ocultarVentana();
             }
             case "Abro ventana sesion" -> {
-                // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
                 this.vista.creaVentanaMensajes(nombreUsuarioEmisor);
                 this.notificacion.cerrarDialogo();
             }
             case "CIERRO VENTANA SESION" -> {
-                System.out.printf("\nhola papi\n");
                 this.vista.mostrarVentana();
-                //Sistema.getInstance().getCliente().getObservadores().remove(this);
             }
         }
     }
@@ -156,13 +153,12 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, int puerto, String nombreEmisor) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.print("ENTRO A NOTIFICAR CAMBIO [CONTROLADOR INICIO]");
-
         setPuertoInvitoASesion(puerto);
-        System.out.println("ENTRE Y EL nombre emisor es: "+nombreEmisor);
+        System.out.println("ENTRE Y EL nombre emisor es: " + nombreEmisor);
+        this.nombreEmisor = nombreEmisor;
         if ("Abro ventana notificacion".equals(estado)) {
-            setNotificacion(3,nombreEmisor);
             this.vista.ocultarVentana();
+            setNotificacion(3, nombreEmisor);
         }
     }
 

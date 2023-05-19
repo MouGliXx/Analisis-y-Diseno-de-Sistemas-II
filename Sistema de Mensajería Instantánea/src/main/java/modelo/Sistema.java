@@ -29,8 +29,7 @@ public class Sistema {
         int puertoInicial = 1024;
         int puertoFinal = 65535;
         Random rand = new Random();
-        int puertoAleatorio = rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial;
-        return puertoAleatorio;
+        return rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial; //Puerto aleatorio
     }
 
     public String obtenerIP() throws UnknownHostException {

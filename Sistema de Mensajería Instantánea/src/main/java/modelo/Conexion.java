@@ -4,9 +4,6 @@ import java.io.*;
 import java.net.Socket;
 
 public class Conexion {
-    private int puertoCliente;
-    private int puertoServidor;
-    private boolean estaModoEscucha;
     private Socket socket;
     private ObjectOutputStream output;
     private ObjectInputStream input;
@@ -47,18 +44,6 @@ public class Conexion {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public int getPuertoCliente() { return puertoCliente; }
-
-    public void setPuertoCliente(int puertoCliente) { this.puertoCliente = puertoCliente; }
-
-    public int getPuertoServidor() { return puertoServidor; }
-
-    public void setPuertoServidor(int puertoServidor) { this.puertoServidor = puertoServidor; }
-
-    public boolean isEstaModoEscucha() { return estaModoEscucha;}
-
-    public void setEstaModoEscucha(boolean estaModoEscucha) {this.estaModoEscucha = estaModoEscucha;}
-
     public Socket getSocket() {
         return socket;
     }
@@ -86,8 +71,6 @@ public class Conexion {
     @Override
     public String toString() {
         return "Conexion{" +
-                "puertoServidor=" + puertoServidor +
-                ", puertoCliente=" + puertoCliente +
                 ", socket=" + socket +
                 ", output=" + output +
                 ", input=" + input +
