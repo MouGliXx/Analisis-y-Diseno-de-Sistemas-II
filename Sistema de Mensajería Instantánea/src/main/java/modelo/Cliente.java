@@ -146,14 +146,14 @@ public class Cliente implements IObservable{
     @Override
     public void notifyObservadores(String estado, String mensaje) {
         for (IObserver obs : observadores) {
-            obs.notificarCambio(estado, mensaje);
+            obs.notificarCambio(estado, mensaje );
         }
     }
 
     @Override
     public void notifyObservadores(String estado, int puerto) {
         for (IObserver obs : observadores) {
-            obs.notificarCambio(estado, puerto);
+            obs.notificarCambio(estado, puerto,this.nombreDeUsuario );
         }
     }
 

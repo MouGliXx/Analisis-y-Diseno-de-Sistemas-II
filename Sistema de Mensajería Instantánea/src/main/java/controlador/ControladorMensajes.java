@@ -50,5 +50,5 @@ public class ControladorMensajes implements ActionListener, IObserver {
     }
 
     @Override
-    public void notificarCambio(String estado, int puerto) {}
+    public void notificarCambio(String estado, int puerto, String nombreEmisor) {}
 }
