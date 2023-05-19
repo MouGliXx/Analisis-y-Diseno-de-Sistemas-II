@@ -3,13 +3,18 @@ package controlador;
 import modelo.Sistema;
 import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaInicio;
+import vista.interfaces.IVistaNotificacion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public class ControladorInicio implements ActionListener, IObserver {
+public class ControladorInicio implements ActionListener, WindowListener, IObserver {
     private final IVistaInicio vista;
+    private IVistaNotificacion notificacion;
+    private int puertoInvitoASesion;
 
     public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
@@ -27,34 +32,63 @@ public class ControladorInicio implements ActionListener, IObserver {
             case "Registrarse" -> registrarUsuario();
             case "Conectar" -> conectar();
             case "Modo Escucha" -> cambiarModoEscucha();
-            case "Ventana Emergente"-> ventanaEmergente();
+            case "Aceptar Notificacion" -> notificacionAceptada();
+            case "Cancelar Notificacion" -> notificacionRechazada();
         }
+    }
+
+    private void setNotificacion(int tipo) {
+        String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
+
+        this.notificacion = vista.lanzarNotificacion();
+        this.notificacion.setActionListener(this);
+        this.notificacion.setWindowListener(this);
+        this.notificacion.setTipoNotificacion(tipo, nombreUsuarioEmisor);
+        this.notificacion.ejecutar();
+    }
+
+    private void notificacionAceptada() {
+        if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
+            try {
+                Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            vista.creaVentanaMensajes("nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            this.vista.ocultarVentana();
+        }
+        //Si es de tipo error -> no hago nada
+        this.notificacion.cerrarDialogo();
+    }
+
+    private void notificacionRechazada() {
+        //TODO revisar esto con lauta
+        if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
+            System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
+            Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
+        }
+        this.notificacion.cerrarDialogo();
     }
 
     private void registrarUsuario() {
-        //TODO registrar usuario dentro del servidor
-        System.out.printf("me registro");
-        this.vista.setModoConectar();
-        this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
+        try {
+            Sistema.getInstance().getCliente().registrarServidor();
+            this.vista.setModoConectar();
+            this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
+        }
+        catch (Exception e){
+            this.vista.lanzarVentanaEmergente("ALERTA: No existe servidor.");
+        }
     }
 
     private void conectar() {
-        try {
-            //TODO contemplar el caso en donde no exista el usuario que quiero contactar --> Notificacion error
+            //NOTIFICACION ESPERA
             int puertoDestino = vista.getPuerto();
+
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
-            String cliente = vista.getNombreDeUsuario();
-            Sistema.getInstance().getCliente().setNombreDeUsuario(cliente);
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
-            vista.creaOtraVentana(Sistema.getInstance(), 2, null);
-            Sistema.getInstance().getInstance().getCliente().getObservadores().remove(this);
-            vista.cerrarVentana();
-            // Si la conexion falla que tire una excepcion
-        } catch (IOException e) {
-            vista.creaOtraVentana(Sistema.getInstance(), 1, null);
-            Sistema.getInstance().getInstance().getCliente().getObservadores().remove(this);
-            vista.cerrarVentana();
-        }
+
+            setNotificacion(2);
     }
 
     private void cambiarModoEscucha() {
@@ -63,10 +97,6 @@ public class ControladorInicio implements ActionListener, IObserver {
             vista.setModoEscucha(false);
         } else {
             Sistema.getInstance().getCliente().setModoEscucha(vista.getModoEscucha());
-            if(Sistema.getInstance().getCliente().modoEscucha)
-                Sistema.getInstance().getCliente().setModoEscucha(false);
-            else
-                Sistema.getInstance().getCliente().setModoEscucha(true);
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
         }
     }
@@ -82,44 +112,94 @@ public class ControladorInicio implements ActionListener, IObserver {
 
     private void establecerPuerto() {
         String puerto = String.valueOf(Sistema.getInstance().getCliente().getPuertoPropio());
-        if (puerto != null) {
-            vista.setMiPuerto(puerto);
-        } else {
-            vista.setMiPuerto("XXXXX");
-        }
-    }
-
-    public void ventanaEmergente(){
-        vista.lanzarVentanaEmergente("a");
+        vista.setMiPuerto(puerto);
     }
 
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        if ("Ventana Emergente".equals(estado)){
-//            vista.lanzarVentanaEmergente("El cliente con el que se intenta conectar no se encuentra en modo escucha");
-            vista.creaOtraVentana(Sistema.getInstance(),1,null);
-            vista.cerrarVentana();
+        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO " + estado);
+        if ("Rechazo invitacion sesion".equals(estado)){
+            this.notificacion.cerrarDialogo();
         }
         if ("Abro ventana notificacion".equals(estado)) {
-            vista.creaOtraVentana(Sistema.getInstance(), 3, "cliente emisor"); //TODO poner el nombre de cliente del emisor que recibo del modelo
-            Sistema.getInstance().getCliente().getObservadores().remove(this);
-            vista.cerrarVentana();
+            setNotificacion(1);
         }
         if ("Acepto conexion".equals(estado)){
-            vista.creaOtraVentana(Sistema.getInstance(), 2, null);
+            setNotificacion(3);
+        }
+        if ("Abro ventana sesion".equals(estado)){
+            // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
+            vista.creaVentanaMensajes("nombre usuario emisor");
+            this.notificacion.cerrarDialogo();
+        }
+        if ("Cierro ventana sesion".equals(estado)) {
             Sistema.getInstance().getCliente().getObservadores().remove(this);
-            vista.cerrarVentana();
+//                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
+            vista.mostrarVentana();
+        }
+        if ("ERROR CONEXION".equals(estado)){
+            // TODO se puede poner notificacion uno
+            vista.lanzarVentanaEmergente("El usuario no existe o no se encuentra en modo escucha");
+        }
+        if ("CONEXION CORRECTA".equals(estado)){
+            // TODO la podemos cambiar por una ventana mas chota diciendo esperando
+            setNotificacion(2);
         }
     }
+
     @Override
     public void notificarCambio(String estado, int puerto) {
-        System.out.printf("ENTRO ACAAAAAA2");
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
+        System.out.print("ENTRO A NOTIFICAR CAMBIO [CONTROLADOR INICIO]");
+
+        setPuertoInvitoASesion(puerto);
         if ("Abro ventana notificacion".equals(estado)) {
-            vista.creaOtraVentana(Sistema.getInstance(), 3,  String.valueOf(puerto)); //TODO poner el nombre de cliente del emisor que recibo del modelo
-            Sistema.getInstance().getCliente().getObservadores().remove(this);
-            vista.cerrarVentana();
+            setNotificacion(3);
         }
+    }
+
+    public int getPuertoInvitoASesion() {
+        return puertoInvitoASesion;
+    }
+
+    public void setPuertoInvitoASesion(int puertoInvitoASesion) {
+        this.puertoInvitoASesion = puertoInvitoASesion;
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        notificacionRechazada();
+    }
+
+    //METODOS NO USADOS
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }

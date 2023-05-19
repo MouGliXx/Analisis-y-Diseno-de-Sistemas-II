@@ -11,7 +11,6 @@ public class Servidor implements Runnable, Serializable {
     public Servidor() {
     }
 
-
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(1234);
@@ -50,6 +49,9 @@ public class Servidor implements Runnable, Serializable {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                 procesarConexion(mensaje);
                 break;
+            case "CONEXION CORRECTA":
+                procesarConexionAceptada(mensaje);
+                break;
             case "ACEPTAR":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
                 procesarAceptacion(mensaje);
@@ -65,33 +67,41 @@ public class Servidor implements Runnable, Serializable {
             case "DESCONECTAR":
                 procesarDesconexion(mensaje);
                 break;
+
             default:
                 break;
         }
     }
 
     // Agrego la conexion al servidor
-
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         clientes.put(mensaje.getPuertoOrigen(), conexion);
+        System.out.printf("Los clientes son" + clientes.toString());
     }
 
     //Aviso al puerto destino que me quiero conectar con el
-
     private void procesarConexion(Mensaje mensaje) {
-        System.out.println("LLegueeasfd");
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
+            System.out.printf("EL PUERTO ORIGEN ES" + mensaje.getPuertoOrigen());
             mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA_CONEXION", "");
-        } else {
-            System.out.printf("NO EXISTE EL CLIENTE");
+        }
+        else{
+            //TODO definir como variable el puerto del server
+            // Aviso al origen que no existe el usuaario
+            mandarMensaje(1234,mensaje.getPuertoOrigen(), "ERROR CONEXION","");
         }
     }
 
-    //Aviso al puerto que me aceptaron la sesion, creo sesiones y abro ventana sesion.
+    private void procesarConexionAceptada(Mensaje mensaje) {
+        System.out.printf("\n CONEXION ACEPTADA \nse mando conexion aceptadaa");
+        mandarMensaje(1234,mensaje.getPuertoDestino(), "CONEXION CORRECTA","");
+    }
 
+    //Aviso al puerto que me aceptaron la sesion, creo sesiones y abro ventana sesion.
     private void procesarAceptacion(Mensaje mensaje) {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
+        System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "Abro ventana sesion", "");
     }
 
@@ -99,7 +109,7 @@ public class Servidor implements Runnable, Serializable {
     //TODO hay que terminarlo
     private void procesarRechazo(Conexion conexion, Mensaje mensaje) {
         System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
-
+        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"Rechazo conexion","");
     }
 
     // Mando mensaje de texto entre sesiones, por las dudas verifico que la sesion exista
@@ -122,27 +132,24 @@ public class Servidor implements Runnable, Serializable {
 
     //chequeo si existe la conexion entre el puerto destino y el server, ademas
     private boolean existeCliente(int puertoDestino, int puertoOrigen){
-        System.out.println("\n ESTOY ACA");
-        System.out.printf(this.clientes.get(puertoDestino).toString());
-        System.out.println();
         if(this.clientes.containsKey(puertoDestino))
             return true;
         else
             return false;
     }
 
-    private void cambiarModoEscucha(int puerto){
-        Conexion conex=this.clientes.get(puerto);
-        if(conex.isEstaModoEscucha())
-            conex.setEstaModoEscucha(false);
-        else
-            conex.setEstaModoEscucha(true);
-    }
+//    private void cambiarModoEscucha(int puerto){
+//        Conexion conex=this.clientes.get(puerto);
+//        if(conex.isEstaModoEscucha())
+//            conex.setEstaModoEscucha(false);
+//        else
+//            conex.setEstaModoEscucha(true);
+//    }
 
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text);
+        System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
-
 }

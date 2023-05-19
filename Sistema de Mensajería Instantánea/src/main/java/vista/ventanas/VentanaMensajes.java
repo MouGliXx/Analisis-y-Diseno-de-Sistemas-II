@@ -7,7 +7,7 @@ import vista.interfaces.IVistaMensajes;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
-import java.io.IOException;
+import java.util.Objects;
 
 public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListener {
     private JPanel PanelPrincipal;
@@ -46,7 +46,7 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
         setSize(1280,720); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
-        setIconImage(new ImageIcon(getClass().getResource("Icono.png")).getImage());
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());
         setModelos();
     }
 
@@ -57,15 +57,13 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     }
 
     @Override
-    public void creaOtraVentana() {
+    public void creaVentanaInicio() {
         Cliente cliente = Sistema.getInstance().getCliente();
         VentanaInicio ventanaInicio = new VentanaInicio();
         ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
         cliente.agregarObservador(controladorInicio);
         try {
             cliente.registrarServidor();
-        } catch (IOException e){
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

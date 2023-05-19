@@ -9,11 +9,6 @@ public class Sistema {
     private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
 
     private Sistema() {
-        try {
-            this.cliente.registrarServidor(); // Conecto al cliente con el servidor
-        } catch (Exception e) { //TODO nose que mierda hacer con esta excepcion
-            e.printStackTrace();
-        }
     }
 
     public static Sistema getInstance() {

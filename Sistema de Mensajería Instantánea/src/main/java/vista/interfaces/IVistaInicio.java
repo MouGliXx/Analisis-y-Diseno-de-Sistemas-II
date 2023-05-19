@@ -1,13 +1,14 @@
 package vista.interfaces;
 
-import modelo.Sistema;
-
 public interface IVistaInicio extends IVista {
+
     void setKeyListener();
 
     void setChangeListener();
 
     void setMiDireccionIP(String IP);
+
+    String getMiDireccionIP();
 
     void setMiPuerto(String puerto);
 
@@ -23,5 +24,11 @@ public interface IVistaInicio extends IVista {
 
     int getPuerto();
 
-   void creaOtraVentana(Sistema sistema, int tipo, String nombreUsuarioEmisor);
+    IVistaNotificacion lanzarNotificacion();
+
+    void mostrarVentana();
+
+    void ocultarVentana();
+
+    void creaVentanaMensajes(String nombreUsuarioEmisor);
 }
