@@ -140,7 +140,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 Sistema.getInstance().getCliente().getObservadores().remove(this);
                 this.vista.mostrarVentana();
             }
-
         }
     }
 

@@ -32,9 +32,8 @@ public class ControladorMensajes implements ActionListener, IObserver {
     }
 
     private void cerrarSesion() {
-        Sistema.getInstance().getCliente().cerrarConexion("");
+        Sistema.getInstance().getCliente().cerrarVentanaSesion();
         Sistema.getInstance().getCliente().getObservadores().remove(this);
-//        vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
         vista.cerrarVentana();
     }
 
@@ -42,9 +41,9 @@ public class ControladorMensajes implements ActionListener, IObserver {
     public void notificarCambio(String estado, String mensaje) {
         switch (estado) {
             case "Recibo mensaje" -> vista.agregarNuevoRecibido(mensaje);
-            case "Cierro ventana sesion" -> {
+            case "CIERRO VENTANA SESION" -> {
+                System.out.print("duiasdfoiusnbfosdfngohgiuhasrg");
                 Sistema.getInstance().getCliente().getObservadores().remove(this);
-//                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
                 vista.cerrarVentana();
             }
         }

@@ -143,7 +143,11 @@ public class Servidor implements Runnable, Serializable {
     }
 
     private void procesarCierroVentana(Mensaje mensaje){
-        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"CIERRO VENTANA SESION","");
+        if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
+            int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
+            Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","");
+            clientes.get(puertoDestino).mandarMensaje(mensaje1);
+        }
     }
 
 //    private void cambiarModoEscucha(int puerto){
@@ -153,7 +157,6 @@ public class Servidor implements Runnable, Serializable {
 //        else
 //            conex.setEstaModoEscucha(true);
 //    }
-
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text);
