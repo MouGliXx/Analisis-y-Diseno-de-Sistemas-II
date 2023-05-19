@@ -38,7 +38,7 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
         setTitle("Sistema de Mensajeria Instantaneo");
         pack(); //Coloca los componentes
         setContentPane(PanelPrincipal);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setSize(1280,720); //Dimensiones del JFrame
         setResizable(false); //No redimensionable

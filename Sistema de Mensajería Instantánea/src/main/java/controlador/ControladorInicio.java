@@ -126,17 +126,14 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
         switch (estado) {
             case "Rechazo invitacion sesion" -> {
-                System.out.printf("\nRechazo invitacion sesion\n");
                 this.notificacion.cerrarDialogo();
                 this.vista.mostrarVentana();
             }
             case "Abro ventana notificacion" -> {
-                System.out.printf("\n\nHOLAAAAAAAAAAAAAAAAAAAAAAAA Abro ventana notificacion? \n\n");
                 this.vista.ocultarVentana();
                 setNotificacion(1,nombreUsuarioEmisor);
             }
             case "CONEXION CORRECTA" -> {
-                System.out.printf("\n\nHOLAAAAAAAAAAAAAAAAAAAAAAAA CONEXION CORRECTA? \n\n");
                 setNotificacion(2,nombreUsuarioEmisor);
                 this.vista.ocultarVentana();
             }
