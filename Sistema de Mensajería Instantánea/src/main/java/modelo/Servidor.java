@@ -67,6 +67,10 @@ public class Servidor implements Runnable, Serializable {
             case "DESCONECTAR":
                 procesarDesconexion(mensaje);
                 break;
+            case "CIERRO VENTANA SESION":
+                System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
+                procesarCierroVentana(mensaje);
+                break;
 
             default:
                 break;
@@ -136,6 +140,10 @@ public class Servidor implements Runnable, Serializable {
             return true;
         else
             return false;
+    }
+
+    private void procesarCierroVentana(Mensaje mensaje){
+        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"CIERRO VENTANA SESION","");
     }
 
 //    private void cambiarModoEscucha(int puerto){

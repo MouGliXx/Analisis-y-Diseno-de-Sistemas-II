@@ -87,8 +87,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
-
-            setNotificacion(2);
     }
 
     private void cambiarModoEscucha() {
@@ -118,7 +116,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, String mensaje) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.printf("RECIBIO NOTIFICACION DE CAMBIO " + estado);
+        System.out.printf("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
         if ("Rechazo invitacion sesion".equals(estado)){
             this.notificacion.cerrarDialogo();
         }
@@ -130,10 +128,10 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         }
         if ("Abro ventana sesion".equals(estado)){
             // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
-            vista.creaVentanaMensajes("nombre usuario emisor");
             this.notificacion.cerrarDialogo();
+            vista.creaVentanaMensajes("nombre usuario emisor");
         }
-        if ("Cierro ventana sesion".equals(estado)) {
+        if ("CIERRO VENTANA SESION".equals(estado)) {
             Sistema.getInstance().getCliente().getObservadores().remove(this);
 //                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
             vista.mostrarVentana();

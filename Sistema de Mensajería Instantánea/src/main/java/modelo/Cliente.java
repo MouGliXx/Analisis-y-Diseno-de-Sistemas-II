@@ -83,7 +83,10 @@ public class Cliente implements IObservable{
                 mandarMensaje(mensaje.getPuertoOrigen(),"CONEXION CORRECTA","");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen());
             }
-            case "Cerrar sesion" -> notifyObservadores("Cierro ventana sesion", "");
+            case "CIERRO VENTANA SESION" -> {
+                System.out.printf("Se va a cerrar la sesion");
+                notifyObservadores("CIERRO VENTANA SESION", "");
+            }
             case "Acepto conexion" -> notifyObservadores("Acepto conexion", "");
             case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "");
             case "ERROR CONEXION" ->notifyObservadores("ERROR CONEXION","");
@@ -107,7 +110,8 @@ public class Cliente implements IObservable{
     }
 
     public void cerrarVentanaSesion() {
-        this.mandarMensaje(puertoServer, "CERRAR VENTANA SESION", "");
+        System.out.printf("Mandamos mensaje para cerrar sesion");
+        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
     }
 
     public void aceptarConexion(int puertoDestino) {
