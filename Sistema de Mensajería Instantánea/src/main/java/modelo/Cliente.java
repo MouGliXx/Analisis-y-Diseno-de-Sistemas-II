@@ -106,6 +106,10 @@ public class Cliente implements IObservable{
         this.mandarMensaje(puertoServer, "REGISTRAR", "");
     }
 
+    public void cerrarVentanaSesion() {
+        this.mandarMensaje(puertoServer, "CERRAR VENTANA SESION", "");
+    }
+
     public void aceptarConexion(int puertoDestino) {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");

@@ -133,6 +133,11 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             vista.creaVentanaMensajes("nombre usuario emisor");
             this.notificacion.cerrarDialogo();
         }
+        if ("Cierro ventana sesion".equals(estado)) {
+            Sistema.getInstance().getCliente().getObservadores().remove(this);
+//                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
+            vista.mostrarVentana();
+        }
         if ("ERROR CONEXION".equals(estado)){
             // TODO se puede poner notificacion uno
             vista.lanzarVentanaEmergente("El usuario no existe o no se encuentra en modo escucha");
