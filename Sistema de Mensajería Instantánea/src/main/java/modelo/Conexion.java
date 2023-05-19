@@ -10,6 +10,7 @@ public class Conexion {
     private Socket socket;
     private ObjectOutputStream output;
     private ObjectInputStream input;
+    private String nombreUsuario;
 
     public Conexion() {
     }
@@ -36,6 +37,14 @@ public class Conexion {
         } catch (IOException e) {
             System.err.println("\nError al cerrar el socket: " + e.getMessage());
         }
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public int getPuertoCliente() { return puertoCliente; }

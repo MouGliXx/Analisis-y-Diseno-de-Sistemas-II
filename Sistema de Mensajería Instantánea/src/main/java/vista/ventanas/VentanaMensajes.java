@@ -57,20 +57,6 @@ public class VentanaMensajes extends JFrame implements IVistaMensajes, KeyListen
     }
 
     @Override
-    public void creaVentanaInicio() {
-        Cliente cliente = Sistema.getInstance().getCliente();
-        VentanaInicio ventanaInicio = new VentanaInicio();
-        ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
-        cliente.agregarObservador(controladorInicio);
-        try {
-            cliente.registrarServidor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ventanaInicio.ejecutar();
-    }
-
-    @Override
     public void lanzarVentanaEmergente(String mensaje) {
         JFrame jFrameVacio = new JFrame();
         JOptionPane.showMessageDialog(jFrameVacio, mensaje);

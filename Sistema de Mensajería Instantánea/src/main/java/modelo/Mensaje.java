@@ -7,12 +7,22 @@ public class Mensaje implements Serializable {
     private int puertoDestino;
     String mensajeControl;
     String mensaje;
+    private String nombreUsuarioEmisor;
 
-    public Mensaje(int puertoOrigen, int puertoDestino, String mensajeControl, String mensaje) {
+    public Mensaje(int puertoOrigen, int puertoDestino, String mensajeControl, String mensaje,String nombreUsuarioEmisor) {
         this.puertoOrigen = puertoOrigen;
         this.puertoDestino = puertoDestino;
         this.mensajeControl = mensajeControl;
         this.mensaje = mensaje;
+        this.nombreUsuarioEmisor=nombreUsuarioEmisor;
+    }
+
+    public String getNombreUsuarioEmisor() {
+        return nombreUsuarioEmisor;
+    }
+
+    public void setNombreUsuarioEmisor(String nombreUsuarioEmisor) {
+        this.nombreUsuarioEmisor = nombreUsuarioEmisor;
     }
 
     public int getPuertoOrigen() {
