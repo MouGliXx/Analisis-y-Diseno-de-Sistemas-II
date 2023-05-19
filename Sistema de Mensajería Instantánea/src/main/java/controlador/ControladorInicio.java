@@ -54,7 +54,8 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            //vista.creaVentanaMensajes("nombre del emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            System.out.printf("\nEl nombre es: " +Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
+            vista.creaVentanaMensajes(Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor()); //TODO poner el nombre de usuario del emisor que recibo del modelo
             this.notificacion.cerrarDialogo();
         } else {
             //Si es de tipo error -> no hago nada
@@ -91,6 +92,9 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
+            System.out.printf("INTENTAMOS CONECTARNOS");
+            Sistema.getInstance().getCliente().setearNombreReceptor(puertoDestino);
+            System.out.printf("\nEl nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
     }
 
     private void cambiarModoEscucha() {

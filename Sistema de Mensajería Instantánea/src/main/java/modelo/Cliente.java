@@ -14,6 +14,7 @@ import java.util.Iterator;
 public class Cliente implements IObservable{
     private final String hostName = "localhost";
     private String nombreDeUsuario;
+    private String nombreDeUsuarioReceptor;
     private  int puertoPropio;
     private  int puertoServer = 1234;
     private String usuario = "";
@@ -21,10 +22,6 @@ public class Cliente implements IObservable{
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
-    private boolean isConnected = false;
-    private boolean isRejected = false;
-    private boolean isServer = false;
-    public boolean isStop = false;
     public boolean modoEscucha = false;
 
     public Cliente(int puertoPropio) {
@@ -92,6 +89,10 @@ public class Cliente implements IObservable{
             case "ERROR CONEXION" ->notifyObservadores("ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
             case "CONEXION CORRECTA"->notifyObservadores("CONEXION CORRECTA","",mensaje.getNombreUsuarioEmisor());
             case "SOLICITAR NOMBRE" ->mandarMensaje(mensaje.getPuertoDestino(),"SOLICITAR NOMBRE","" );
+            case "NOMBRE"-> {
+                System.out.printf("se seteo el nombre");
+                this.setNombreDeUsuarioReceptor(mensaje.getMensaje());
+            }
             default -> {
                 byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
                 String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");
@@ -103,6 +104,11 @@ public class Cliente implements IObservable{
     // TIPOS DE MENSAJES
     public void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text,this.nombreDeUsuario);
+        this.conexion.mandarMensaje(mensaje);
+    }
+
+    public void setearNombreReceptor(int puertoDestino ){
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"SOLICITAR NOMBRE","",this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
     }
 
@@ -123,7 +129,6 @@ public class Cliente implements IObservable{
     public void aceptarConexion(int puertoDestino) {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
-        this.mandarMensaje(puertoPropio,"ACEPTAR","");
     }
 
     public void rechazarConexion(int puertoDestino){
@@ -188,16 +193,16 @@ public class Cliente implements IObservable{
         return puertoPropio;
     }
 
-    public boolean isConnected() {
-        return isConnected;
-    }
-
-    public void setConnected(boolean connected) {
-        isConnected = connected;
-    }
-
     public void setModoEscucha(boolean stop) {
         modoEscucha = stop;
+    }
+
+    public String getNombreDeUsuarioReceptor() {
+        return nombreDeUsuarioReceptor;
+    }
+
+    public void setNombreDeUsuarioReceptor(String nombreDeUsuarioReceptor) {
+        this.nombreDeUsuarioReceptor = nombreDeUsuarioReceptor;
     }
 
     public String getNombreDeUsuario() {

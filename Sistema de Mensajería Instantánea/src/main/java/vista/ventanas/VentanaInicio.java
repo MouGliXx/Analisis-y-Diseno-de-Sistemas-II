@@ -92,7 +92,6 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         ArrayList<IObserver> observadores = new ArrayList<>(cliente.getObservadores());
         observadores.add(controladorMensajes);
         cliente.setObservadores(observadores);
-        cliente.setConnected(true);
         ventanaMensajes.setUsuarios(cliente.getNombreDeUsuario(), nombreUsuarioEmisor); //TODO poner nombre de cliente receptor y hacer que se configure el nombre de cliente en la notificacion
         ventanaMensajes.ejecutar();
     }
