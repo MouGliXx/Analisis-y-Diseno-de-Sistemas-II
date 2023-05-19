@@ -1,15 +1,8 @@
 package vista.ventanas;
 
-import controlador.ControladorInicio;
-import controlador.ControladorMensajes;
-import modelo.Cliente;
-import modelo.Sistema;
-import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaNotificacion;
-
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
@@ -44,11 +37,6 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
     }
 
     @Override
-    public void lanzarVentanaEmergente(String mensaje) {
-
-    }
-
-    @Override
     public void setActionListener(ActionListener controlador) {
         aceptarButton.addActionListener(controlador);
         cancelarButton.addActionListener(controlador);
@@ -60,37 +48,8 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
     }
 
     @Override
-    public void cerrarVentana() {
+    public void cerrarDialogo() {
         dispose(); // Cierra el JDialog
-    }
-
-    @Override
-    public void creaOtraVentana(int tipo, String nombreUsuarioEmisor) {
-        Cliente cliente = Sistema.getInstance().getCliente();
-        switch (tipo) {
-            case 0 -> { //CASO VENTANA MENSAJES
-                VentanaMensajes ventanaMensajes = new VentanaMensajes();
-                ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes);
-                ArrayList<IObserver> observadores = new ArrayList<>(cliente.getObservadores());
-                observadores.add(controladorMensajes);
-                cliente.setObservadores(observadores);
-                cliente.setConnected(true);
-                ventanaMensajes.setUsuarios(cliente.getNombreDeUsuario(), "nombre del receptor"); //TODO poner nombre de cliente receptor y hacer que se configure el nombre de cliente en la notificacion
-                ventanaMensajes.ejecutar();
-            }
-            case 1 -> { //CASO VENTANA INICIO
-                VentanaInicio ventanaInicio = new VentanaInicio();
-                ControladorInicio controladorInicio = new ControladorInicio(ventanaInicio);
-                cliente.agregarObservador(controladorInicio);
-                //TODO REVISAR SI TENGO QUE REGISTRARME EN EL SERVER DE NUEVO
-                try {
-                    cliente.registrarServidor();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                ventanaInicio.ejecutar();
-            }
-        }
     }
 
     public int getTipo() {
@@ -98,7 +57,7 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
     }
 
     @Override
-    public void setTipoVentana(int tipo, String nombreUsuarioEmisor) {
+    public void setTipoNotificacion(int tipo, String nombreUsuarioEmisor) {
         this.tipo = tipo;
         switch (tipo) {
             case 1 -> { //tipo 1 -> Notificacion Error

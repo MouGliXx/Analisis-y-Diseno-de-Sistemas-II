@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControladorMensajes implements ActionListener, IObserver {
-    private static final String STATE_RECIBIR_MENSAJE = "Recibo mensaje";
-    private static final String STATE_CERRAR_SESION = "Cierro ventana sesion";
     private final IVistaMensajes vista;
 
     public ControladorMensajes(IVistaMensajes vista) {
@@ -36,17 +34,17 @@ public class ControladorMensajes implements ActionListener, IObserver {
     private void cerrarSesion() {
         Sistema.getInstance().getCliente().cerrarConexion("");
         Sistema.getInstance().getCliente().getObservadores().remove(this);
-        vista.creaVentanaInicio();
+//        vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
         vista.cerrarVentana();
     }
 
     @Override
     public void notificarCambio(String estado, String mensaje) {
         switch (estado) {
-            case STATE_RECIBIR_MENSAJE -> vista.agregarNuevoRecibido(mensaje);
-            case STATE_CERRAR_SESION -> {
+            case "Recibo mensaje" -> vista.agregarNuevoRecibido(mensaje);
+            case "Cierro ventana sesion" -> {
                 Sistema.getInstance().getCliente().getObservadores().remove(this);
-                vista.creaVentanaInicio();
+//                vista.creaVentanaInicio(); //TODO no deberia crearla, sino volver a mostrarla
                 vista.cerrarVentana();
             }
         }

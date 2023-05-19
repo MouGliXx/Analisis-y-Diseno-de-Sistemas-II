@@ -50,18 +50,19 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     private void notificacionAceptada() {
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
-                System.out.printf("puerto que me invito a sesion" + getPuertoInvitoASesion());
                 Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             vista.creaVentanaMensajes("nombre usuario emisor"); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            this.vista.ocultarVentana();
         }
         //Si es de tipo error -> no hago nada
         this.notificacion.cerrarVentana();
     }
 
     private void notificacionRechazada() {
+        //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
@@ -87,6 +88,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             Sistema.getInstance().getCliente().crearConexion(puertoDestino);
 
+            setNotificacion(2);
     }
 
     private void cambiarModoEscucha() {
