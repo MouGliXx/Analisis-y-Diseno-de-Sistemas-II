@@ -37,13 +37,13 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         }
     }
 
-    private void setNotificacion(int tipo) {
-        String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
+    private void setNotificacion(int tipo, String nombreEmisor) {
+        //String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
 
         this.notificacion = this.vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);
-        this.notificacion.setTipoNotificacion(tipo, nombreUsuarioEmisor);
+        this.notificacion.setTipoNotificacion(tipo, nombreEmisor);
         this.notificacion.ejecutar();
     }
 
@@ -124,11 +124,11 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
         switch (estado) {
             case "Rechazo invitacion sesion" -> this.notificacion.cerrarDialogo();
             case "Abro ventana notificacion", "ERROR CONEXION" -> {
-                setNotificacion(1);
+                setNotificacion(1,null);
                 this.vista.ocultarVentana();
             }
             case "CONEXION CORRECTA" -> {
-                setNotificacion(2);
+                setNotificacion(2,null);
                 this.vista.ocultarVentana();
             }
             case "Abro ventana sesion" -> {
@@ -145,13 +145,13 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     }
 
     @Override
-    public void notificarCambio(String estado, int puerto) {
+    public void notificarCambio(String estado, int puerto, String nombreEmisor) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         System.out.print("ENTRO A NOTIFICAR CAMBIO [CONTROLADOR INICIO]");
 
         setPuertoInvitoASesion(puerto);
         if ("Abro ventana notificacion".equals(estado)) {
-            setNotificacion(3);
+            setNotificacion(3,nombreEmisor);
             this.vista.ocultarVentana();
         }
     }
