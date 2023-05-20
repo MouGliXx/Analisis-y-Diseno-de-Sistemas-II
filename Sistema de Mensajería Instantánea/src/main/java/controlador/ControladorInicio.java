@@ -15,6 +15,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     private final IVistaInicio vista;
     private IVistaNotificacion notificacion;
     private int puertoInvitoASesion;
+    private String nombreUsuarioEmisor;
 
     public ControladorInicio(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
@@ -54,8 +55,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            System.out.printf("\nEl nombre es: " +Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
-            vista.creaVentanaMensajes(Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor()); //TODO poner el nombre de usuario del emisor que recibo del modelo
+            vista.creaVentanaMensajes(nombreUsuarioEmisor);
             this.notificacion.cerrarDialogo();
         } else {
             //Si es de tipo error -> no hago nada
@@ -80,21 +80,16 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
             Sistema.getInstance().getCliente().registrarServidor(nombreUsuario);
             this.vista.setModoConectar();
             this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
-        }
-        catch (Exception e){
-            this.vista.lanzarVentanaEmergente("ALERTA: No existe servidor.");
+        } catch (Exception e){
+            this.vista.lanzarVentanaEmergente("ALERTA! No existe el servidor.");
         }
     }
 
     private void conectar() {
-            //NOTIFICACION ESPERA
-            int puertoDestino = vista.getPuerto();
-
-            Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
-            Sistema.getInstance().getCliente().crearConexion(puertoDestino);
-            System.out.printf("INTENTAMOS CONECTARNOS");
-            Sistema.getInstance().getCliente().setearNombreReceptor(puertoDestino);
-            System.out.printf("\nEl nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
+        System.out.printf("\n[apreto CONECTAR] El nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
+        Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
+        Sistema.getInstance().getCliente().crearConexion(vista.getPuerto());
+        Sistema.getInstance().getCliente().setearNombreReceptor(vista.getPuerto());
     }
 
     private void cambiarModoEscucha() {
@@ -125,7 +120,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     public void notificarCambio(String estado, String mensaje, String nombreUsuarioEmisor) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
         System.out.printf("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
-
         switch (estado) {
             case "Rechazo invitacion sesion" -> {
                 this.notificacion.cerrarDialogo();
@@ -142,7 +136,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 this.vista.ocultarVentana();
             }
             case "Abro ventana sesion" -> {
-                // TODO recibir nombre de usuario emisor , recien no se me cerro la notificacion rari.
                 this.vista.creaVentanaMensajes(nombreUsuarioEmisor);
                 this.notificacion.cerrarDialogo();
             }
@@ -157,10 +150,8 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
     @Override
     public void notificarCambio(String estado, int puerto, String nombreEmisor) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.print("ENTRO A NOTIFICAR CAMBIO [CONTROLADOR INICIO]");
-
+        this.nombreUsuarioEmisor = nombreEmisor;
         setPuertoInvitoASesion(puerto);
-        System.out.println("ENTRE Y EL nombre emisor es: "+nombreEmisor);
         if ("Abro ventana notificacion".equals(estado)) {
             setNotificacion(3,nombreEmisor);
             this.vista.ocultarVentana();

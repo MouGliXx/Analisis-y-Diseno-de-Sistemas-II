@@ -73,7 +73,8 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
                 this.Contenido1Label.setText("La solicitud ha sido enviada correctamente. Aguarde a ");
                 this.Contenido2Label.setText("que el cliente ingresado responda la misma.");
                 this.aceptarButton.setVisible(false);
-                this.cancelarButton.setVisible(true);
+//                this.cancelarButton.setVisible(true);
+                this.cancelarButton.setVisible(false);
             }
             case 3 -> { //tipo 3 -> Notificacion Solicitud
                 this.TituloLabel.setText("Atencion!");
