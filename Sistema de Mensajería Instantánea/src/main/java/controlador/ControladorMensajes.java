@@ -32,6 +32,7 @@ public class ControladorMensajes implements ActionListener, IObserver {
     }
 
     private void cerrarSesion() {
+        Sistema.getInstance().getCliente().setEnSesion(false);
         Sistema.getInstance().getCliente().cerrarVentanaSesion();
         Sistema.getInstance().getCliente().cerrarVentanaSesionLocal();
         Sistema.getInstance().getCliente().getObservadores().remove(this);

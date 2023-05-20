@@ -52,7 +52,7 @@ public class Servidor implements Runnable, Serializable {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
                 procesarRegistro(conexion,mensaje);
                 break;
-            case "CONECTAR":
+            case "NUEVA CONEXION":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                 procesarConexion(mensaje);
                 break;
@@ -107,7 +107,7 @@ public class Servidor implements Runnable, Serializable {
     private void procesarConexion(Mensaje mensaje) {
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
             System.out.printf("EL PUERTO ORIGEN ES" + mensaje.getPuertoOrigen());
-            mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA_CONEXION", "", mensaje.getNombreUsuarioEmisor());
+            mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "NUEVA CONEXION", "", mensaje.getNombreUsuarioEmisor());
         }
         else{
             //TODO definir como variable el puerto del server
@@ -126,14 +126,14 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
-        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "Abro ventana sesion", "", mensaje.getNombreUsuarioEmisor());
+        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
 
     //Aviso al puerto que me rechazaron la sesion
     //TODO hay que terminarlo
     private void procesarRechazo(Conexion conexion, Mensaje mensaje) {
         System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
-        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"Rechazo conexion","", mensaje.getNombreUsuarioEmisor());
+        mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(),"RECHAZAR","", mensaje.getNombreUsuarioEmisor());
     }
 
     // Mando mensaje de texto entre sesiones, por las dudas verifico que la sesion exista
@@ -149,7 +149,7 @@ public class Servidor implements Runnable, Serializable {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             sesiones.remove(puertoDestino);
             sesiones.remove(mensaje.getPuertoOrigen());
-            Mensaje mensaje1 = new Mensaje(0,0,"Cerrar sesion","",null);
+            Mensaje mensaje1 = new Mensaje(0,0,"CERRAR SESION","",null);
             clientes.get(puertoDestino).mandarMensaje(mensaje1);
         }
     }

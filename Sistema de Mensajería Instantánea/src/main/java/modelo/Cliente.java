@@ -23,6 +23,7 @@ public class Cliente implements IObservable{
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
     public boolean modoEscucha = false;
+    private boolean enSesion = false;
 
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
@@ -49,7 +50,7 @@ public class Cliente implements IObservable{
 
     // TODO que lance una excepcion cuando no aceptan conexion
     public void crearConexion(int puertoDestino){
-        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"CONECTAR","",this.nombreDeUsuario);
+        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
     }
@@ -59,6 +60,7 @@ public class Cliente implements IObservable{
         Mensaje mensaje;
         while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
             System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
+            System.out.printf("\nEl modo sesion es " + this.enSesion);
             if (modoEscucha){
                 procesarMensaje(mensaje);
             } else {
@@ -70,60 +72,71 @@ public class Cliente implements IObservable{
     private void procesarMensaje(Mensaje mensaje) throws Exception {
         String mensajeControl = mensaje.getMensajeControl();
         System.out.printf("\nel mensaje de CONTROL RECIBIDO: " + mensajeControl);
+
         switch (mensajeControl) {
-            case "Abro ventana sesion" -> {
-                System.out.print("INTENTANDO ABRIR VENTANA 1");
-                notifyObservadores("Abro ventana sesion", "",mensaje.getNombreUsuarioEmisor());
+            case "ACEPTAR" ->{
+                this.enSesion = true;
+                System.out.printf("" + "\nACEPTAR --- se cambio el enSesion");
+                System.out.printf("\n En sesion " + this.enSesion);
+                notifyObservadores("Abro ventana sesion", "", mensaje.getNombreUsuarioEmisor());
             }
-            case "NUEVA_CONEXION" -> {
-                System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
-                mandarMensaje(mensaje.getPuertoOrigen(),"CONEXION CORRECTA","");
-                notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen(),mensaje.getNombreUsuarioEmisor());
+            case "NUEVA CONEXION" -> procesarNuevaConexion(mensaje);
+            case "CIERRO VENTANA SESION" -> procesarCierreSesion(mensaje);
+            case "Acepto conexion" -> {
+                notifyObservadores("Acepto conexion", "", mensaje.getNombreUsuarioEmisor());
             }
-            case "CIERRO VENTANA SESION" -> {
-                System.out.printf("Se va a cerrar la sesion");
-                notifyObservadores("CIERRO VENTANA SESION", "", mensaje.getNombreUsuarioEmisor());
-            }
-            case "Acepto conexion" -> notifyObservadores("Acepto conexion", "",mensaje.getNombreUsuarioEmisor());
-            case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "",mensaje.getNombreUsuarioEmisor());
-            case "ERROR CONEXION" -> notifyObservadores("ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
-            case "CONEXION CORRECTA"->notifyObservadores("CONEXION CORRECTA","",mensaje.getNombreUsuarioEmisor());
-            case "SOLICITAR NOMBRE" ->mandarMensaje(mensaje.getPuertoDestino(),"SOLICITAR NOMBRE","" );
-            case "NOMBRE"-> {
-                System.out.printf("se seteo el nombre");
-                this.setNombreDeUsuarioReceptor(mensaje.getMensaje());
-            }
-            default -> {
-                byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
-                String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");
-                notifyObservadores("Recibo mensaje", textoOriginal,mensaje.getNombreUsuarioEmisor());
-            }
+            case "RECHAZAR" -> notifyObservadores("Rechazo invitacion sesion", "", mensaje.getNombreUsuarioEmisor());
+            case "ERROR CONEXION" -> notifyObservadores("ERROR CONEXION", "", mensaje.getNombreUsuarioEmisor());
+            case "CONEXION CORRECTA" -> notifyObservadores("CONEXION CORRECTA", "", mensaje.getNombreUsuarioEmisor());
+            case "SOLICITAR NOMBRE" -> mandarMensaje(mensaje.getPuertoDestino(), "SOLICITAR NOMBRE", "");
+            case "NOMBRE" -> procesarNombre(mensaje);
+            default -> procesarMensajeRecibido(mensaje);
         }
     }
 
+
+
+    private void procesarNuevaConexion(Mensaje mensaje) {
+        System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
+        if (!enSesion) {
+            mandarMensaje(mensaje.getPuertoOrigen(), "CONEXION CORRECTA", "");
+            notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen(), mensaje.getNombreUsuarioEmisor());
+        }
+        else{
+            mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
+        }
+        }
+
+    private void procesarCierreSesion(Mensaje mensaje) {
+        System.out.printf("Se va a cerrar la sesion");
+        notifyObservadores("CIERRO VENTANA SESION", "", mensaje.getNombreUsuarioEmisor());
+    }
+
+    private void procesarNombre(Mensaje mensaje) {
+        System.out.printf("se seteo el nombre");
+        System.out.printf("se seteo el nombre");
+        this.setNombreDeUsuarioReceptor(mensaje.getMensaje());
+    }
+
+    private void procesarMensajeRecibido(Mensaje mensaje) throws Exception{
+        byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
+        String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");
+        notifyObservadores("Recibo mensaje", textoOriginal, mensaje.getNombreUsuarioEmisor());
+    }
+
     // TIPOS DE MENSAJES
-    public void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
+
+    private void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text,this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
     }
 
     public void setearNombreReceptor(int puertoDestino ){
-        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"SOLICITAR NOMBRE","",this.nombreDeUsuario);
-        this.conexion.mandarMensaje(mensaje);
+        this.mandarMensaje(puertoDestino,"SOLICITAR NOMBRE","");
     }
 
     public void registrar(String nombreDeUsuario) {
         this.mandarMensaje(puertoServer, "REGISTRAR", nombreDeUsuario);
-    }
-
-    public void cerrarVentanaSesion() {
-        System.out.printf("Mandamos mensaje para cerrar sesion");
-        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
-    }
-
-    public void cerrarVentanaSesionLocal() {
-        System.out.printf("Mandamos mensaje para cerrar sesion");
-        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION LOCAL", "");
     }
 
     public void aceptarConexion(int puertoDestino) {
@@ -144,6 +157,16 @@ public class Cliente implements IObservable{
         } catch (Exception e) { //TODO getionar excepcion
             e.printStackTrace();
         }
+    }
+
+    public void cerrarVentanaSesion() {
+        System.out.printf("Mandamos mensaje para cerrar sesion");
+        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
+    }
+
+    public void cerrarVentanaSesionLocal() {
+        System.out.printf("Mandamos mensaje para cerrar sesion");
+        this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION LOCAL", "");
     }
 
     public void cerrarConexion(String mensaje) {
@@ -211,5 +234,13 @@ public class Cliente implements IObservable{
 
     public void setNombreDeUsuario(String nombreDeUsuario) {
         this.nombreDeUsuario = nombreDeUsuario;
+    }
+
+    public boolean isEnSesion() {
+        return enSesion;
+    }
+
+    public void setEnSesion(boolean enSesion) {
+        this.enSesion = enSesion;
     }
 }

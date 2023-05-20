@@ -54,6 +54,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            Sistema.getInstance().getCliente().setEnSesion(true);
             vista.creaVentanaMensajes(nombreUsuarioEmisor);
             this.notificacion.cerrarDialogo();
         } else {
@@ -133,10 +134,14 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
                 this.vista.ocultarVentana();
             }
             case "Abro ventana sesion" -> {
+                Sistema.getInstance().getCliente().setEnSesion(true);
+                System.out.printf("" + "\nACEPTAR --- se cambio el enSesion");
+                System.out.printf("\n En sesion " + Sistema.getInstance().getCliente());
                 this.vista.creaVentanaMensajes(nombreUsuarioEmisor);
                 this.notificacion.cerrarDialogo();
             }
             case "CIERRO VENTANA SESION" -> {
+                Sistema.getInstance().getCliente().setEnSesion(false);
                 this.vista.mostrarVentana();
             }
         }
