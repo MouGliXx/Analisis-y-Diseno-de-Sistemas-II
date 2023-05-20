@@ -3,6 +3,7 @@ package modelo;
 import static modelo.Cifrado.desencriptar;
 import static modelo.Cifrado.encriptar;
 
+import modelo.interfaces.IConexion;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 
-public class Cliente implements IObservable{
+public class Cliente implements IObservable, IConexion {
     private final String hostName = "localhost";
     private String nombreDeUsuario;
     private String nombreDeUsuarioReceptor;
