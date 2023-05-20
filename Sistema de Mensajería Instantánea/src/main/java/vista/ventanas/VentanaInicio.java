@@ -65,18 +65,12 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public void mostrarVentana() {
-        PuertoSpinner.setValue(0);
         setVisible(true);
     }
 
     @Override
     public void ocultarVentana() {
         setVisible(false); //Oculto la ventana
-    }
-
-    @Override
-    public void cerrarVentana() {
-        dispose();
     }
 
     @Override
@@ -87,7 +81,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
     @Override
     public IVistaNotificacion lanzarNotificacion() {
-        return new DialogoNotificacion();
+        return new DialogoNotificacion(this);
     }
 
     @Override

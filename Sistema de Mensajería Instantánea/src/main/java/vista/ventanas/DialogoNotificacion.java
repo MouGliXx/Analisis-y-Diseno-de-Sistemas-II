@@ -16,6 +16,10 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
     private JButton aceptarButton;
     private JButton cancelarButton;
 
+    public DialogoNotificacion(JFrame parent) {
+        setLocationRelativeTo(parent);
+    }
+
     @Override
     public void ejecutar() {
         setTitle("Sistema de Mensajeria Instantaneo");
@@ -25,7 +29,7 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
         setModal(false);
         setVisible(true);
         setResizable(false); //No redimensionable
-        setLocationRelativeTo(null);
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         getRootPane().setDefaultButton(aceptarButton);
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());

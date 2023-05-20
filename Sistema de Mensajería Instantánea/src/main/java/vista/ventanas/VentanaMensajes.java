@@ -1,5 +1,8 @@
 package vista.ventanas;
 
+import controlador.ControladorInicio;
+import modelo.Cliente;
+import modelo.Sistema;
 import vista.interfaces.IVistaMensajes;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

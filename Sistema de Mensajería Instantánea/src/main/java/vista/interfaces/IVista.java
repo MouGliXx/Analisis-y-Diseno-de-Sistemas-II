@@ -9,6 +9,4 @@ public interface IVista {
     void ejecutar();
 
     void lanzarVentanaEmergente(String mensaje);
-
-    void cerrarVentana();
 }

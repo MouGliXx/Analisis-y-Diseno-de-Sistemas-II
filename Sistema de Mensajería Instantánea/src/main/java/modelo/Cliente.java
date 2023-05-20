@@ -17,7 +17,9 @@ public class Cliente implements IObservable{
     private String nombreDeUsuarioReceptor;
     private  int puertoPropio;
     private  int puertoServer = 1234;
+    private String usuario = "";
     private ArrayList<IObserver> observadores = new ArrayList<>();
+
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
     public boolean modoEscucha = false;
@@ -56,7 +58,7 @@ public class Cliente implements IObservable{
     private void listenerMensajes() throws Exception {
         Mensaje mensaje;
         while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
-            System.out.print("\nEL MODO ESCUCHA ES" + this.modoEscucha);
+            System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
             if (modoEscucha){
                 procesarMensaje(mensaje);
             } else {
@@ -67,20 +69,20 @@ public class Cliente implements IObservable{
 
     private void procesarMensaje(Mensaje mensaje) throws Exception {
         String mensajeControl = mensaje.getMensajeControl();
-        System.out.print("\nel mensaje de CONTROL RECIBIDO: " + mensajeControl);
+        System.out.printf("\nel mensaje de CONTROL RECIBIDO: " + mensajeControl);
         switch (mensajeControl) {
             case "Abro ventana sesion" -> {
                 System.out.print("INTENTANDO ABRIR VENTANA 1");
                 notifyObservadores("Abro ventana sesion", "",mensaje.getNombreUsuarioEmisor());
             }
             case "NUEVA_CONEXION" -> {
-                System.out.print("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
+                System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
                 mandarMensaje(mensaje.getPuertoOrigen(),"CONEXION CORRECTA","");
                 notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen(),mensaje.getNombreUsuarioEmisor());
             }
             case "CIERRO VENTANA SESION" -> {
-                System.out.print("Se va a cerrar la sesion");
-                notifyObservadores("CIERRO VENTANA SESION", "", mensaje.getNombreUsuarioEmisor());
+                System.out.printf("Se va a cerrar la sesion");
+                notifyObservadores("CIERRO VENTANA SESION", "",mensaje.getNombreUsuarioEmisor());
             }
             case "Acepto conexion" -> notifyObservadores("Acepto conexion", "",mensaje.getNombreUsuarioEmisor());
             case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "",mensaje.getNombreUsuarioEmisor());
@@ -88,7 +90,7 @@ public class Cliente implements IObservable{
             case "CONEXION CORRECTA"->notifyObservadores("CONEXION CORRECTA","",mensaje.getNombreUsuarioEmisor());
             case "SOLICITAR NOMBRE" ->mandarMensaje(mensaje.getPuertoDestino(),"SOLICITAR NOMBRE","" );
             case "NOMBRE"-> {
-                System.out.print("\nse seteo el nombre: " + mensaje.getMensaje());
+                System.out.printf("se seteo el nombre");
                 this.setNombreDeUsuarioReceptor(mensaje.getMensaje());
             }
             default -> {
@@ -115,12 +117,12 @@ public class Cliente implements IObservable{
     }
 
     public void cerrarVentanaSesion() {
-        System.out.print("Mandamos mensaje para cerrar sesion");
+        System.out.printf("Mandamos mensaje para cerrar sesion");
         this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
     }
 
     public void cerrarVentanaSesionLocal() {
-        System.out.print("Mandamos mensaje para cerrar sesion");
+        System.out.printf("Mandamos mensaje para cerrar sesion");
         this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION LOCAL", "");
     }
 
@@ -153,6 +155,7 @@ public class Cliente implements IObservable{
     }
 
     // METODOS PARA EL OBSERVER
+
     @Override
     public void notifyObservadores(String estado, String mensaje,String nombreUsuarioEmisor) {
         Iterator<IObserver> iter = observadores.iterator();
