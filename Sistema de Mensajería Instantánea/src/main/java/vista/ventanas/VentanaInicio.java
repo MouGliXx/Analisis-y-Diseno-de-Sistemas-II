@@ -90,7 +90,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public void creaVentanaMensajes(String nombreUsuarioEmisor) { //TODO crear ventana mensajes
+    public void creaVentanaMensajes(String nombreUsuarioEmisor) {
         Cliente cliente = Sistema.getInstance().getCliente();
         VentanaMensajes ventanaMensajes = new VentanaMensajes();
         ControladorMensajes controladorMensajes = new ControladorMensajes(ventanaMensajes);
