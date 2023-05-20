@@ -8,16 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
 import java.net.UnknownHostException;
 
-public class ControladorInicio implements ActionListener, WindowListener, IObserver {
+public class ControladorCliente implements ActionListener, WindowListener, IObserver {
     private final IVistaInicio vista;
     private IVistaNotificacion notificacion;
     private int puertoInvitoASesion;
     private String nombreUsuarioEmisor;
 
-    public ControladorInicio(IVistaInicio vistaInicio) {
+    public ControladorCliente(IVistaInicio vistaInicio) {
         this.vista = vistaInicio;
 
         vista.setActionListener(this);
@@ -126,8 +125,6 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 this.vista.mostrarVentana();
             }
             case "Abro ventana notificacion", "ERROR CONEXION" -> {
-                System.out.printf("entro aca?");
-
                 setNotificacion(1,nombreUsuarioEmisor);
                 this.vista.ocultarVentana();
             }
@@ -140,9 +137,7 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
                 this.notificacion.cerrarDialogo();
             }
             case "CIERRO VENTANA SESION" -> {
-                System.out.printf("\nhola papi\n");
                 this.vista.mostrarVentana();
-                //Sistema.getInstance().getCliente().getObservadores().remove(this);
             }
         }
     }
@@ -168,7 +163,8 @@ public class ControladorInicio implements ActionListener, WindowListener, IObser
 
     @Override
     public void windowClosing(WindowEvent e) {
-        notificacionRechazada();
+//        notificacionRechazada();
+        this.vista.cerrarVentana();
     }
 
     //METODOS NO USADOS

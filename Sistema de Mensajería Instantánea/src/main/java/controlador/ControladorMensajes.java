@@ -40,15 +40,9 @@ public class ControladorMensajes implements ActionListener, IObserver {
 
     @Override
     public void notificarCambio(String estado, String mensaje, String nombreUsuarioEmisor) {
-        System.out.printf("ENTRO PAPITOOOO");
-        System.out.printf("\n a ver que recibe el hijo de mi puta: " + estado);
         switch (estado) {
             case "Recibo mensaje" -> vista.agregarNuevoRecibido(mensaje);
-            case "CIERRO VENTANA SESION" -> {
-                System.out.print("duiasdfoiusnbfosdfngohgiuhasrg");
-                vista.cerrarVentana();
-                Sistema.getInstance().getCliente().getObservadores().remove(this);
-            }
+            case "CIERRO VENTANA SESION" -> vista.cerrarVentana();
         }
     }
 

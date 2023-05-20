@@ -11,14 +11,6 @@ public class SocketIO{
     public SocketIO() {
     }
 
-    public void mandarMensaje(Object o){
-//        try{
-//            output.writeObject(o);
-//        } catch(IOException e) {
-//            System.err.println("No se ha inicializado la salida del socket.");
-//        }
-    }
-
     public void close() {
         try {
             if (socket != null) {

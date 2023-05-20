@@ -74,6 +74,11 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void cerrarVentana() {
+        dispose(); //Cierro la ventana
+    }
+
+    @Override
     public void lanzarVentanaEmergente(String mensaje) {
         JFrame jFrameVacio = new JFrame();
         JOptionPane.showMessageDialog(jFrameVacio, mensaje);

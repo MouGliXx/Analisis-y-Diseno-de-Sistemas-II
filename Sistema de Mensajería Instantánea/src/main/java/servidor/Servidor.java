@@ -1,5 +1,7 @@
-package modelo;
+package servidor;
 
+import modelo.Conexion;
+import modelo.Mensaje;
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
@@ -7,6 +9,11 @@ import java.util.HashMap;
 public class Servidor implements Runnable, Serializable {
     private HashMap<Integer, Conexion> clientes = new HashMap<>();
     private HashMap<Integer,Integer> sesiones = new HashMap<>();
+
+    public static void main(String[] args) {
+        Thread servidor = new Thread(new Servidor());
+        servidor.start();
+    }
 
     public Servidor() {
     }
@@ -32,13 +39,13 @@ public class Servidor implements Runnable, Serializable {
             ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
             Mensaje mensaje;
             while ((mensaje = (Mensaje) reader.readObject()) != null)
-                procesarMensaje(clientSocket, conexion, mensaje);
+                procesarMensaje(conexion, mensaje);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void procesarMensaje(Socket clientSocket, Conexion conexion, Mensaje mensaje) {
+    private void procesarMensaje(Conexion conexion, Mensaje mensaje) {
         String mensajeControl = mensaje.getMensajeControl();
         switch (mensajeControl) {
             case "REGISTRAR":
@@ -81,11 +88,10 @@ public class Servidor implements Runnable, Serializable {
                 break;
             case "SOLICITAR NOMBRE":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: SOLICITAR NOMBRE");
-                mandarMensaje(1234,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
-                break;
-
-
-            default:
+                if (this.clientes.containsKey(mensaje.getPuertoDestino()))
+                    mandarMensaje(1234,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
+                else
+                    mandarMensaje(1234,mensaje.getPuertoOrigen(), "NOMBRE","",mensaje.getNombreUsuarioEmisor());
                 break;
         }
     }
@@ -171,14 +177,6 @@ public class Servidor implements Runnable, Serializable {
             clientes.get(mensaje.getPuertoOrigen()).mandarMensaje(mensaje1);
         }
     }
-
-//    private void cambiarModoEscucha(int puerto){
-//        Conexion conex=this.clientes.get(puerto);
-//        if(conex.isEstaModoEscucha())
-//            conex.setEstaModoEscucha(false);
-//        else
-//            conex.setEstaModoEscucha(true);
-//    }
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text, String nombreUsuarioEmisor){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text,nombreUsuarioEmisor);

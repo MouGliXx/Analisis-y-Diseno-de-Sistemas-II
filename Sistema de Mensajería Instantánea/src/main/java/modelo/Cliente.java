@@ -82,11 +82,11 @@ public class Cliente implements IObservable{
             }
             case "CIERRO VENTANA SESION" -> {
                 System.out.printf("Se va a cerrar la sesion");
-                notifyObservadores("CIERRO VENTANA SESION", "",mensaje.getNombreUsuarioEmisor());
+                notifyObservadores("CIERRO VENTANA SESION", "", mensaje.getNombreUsuarioEmisor());
             }
             case "Acepto conexion" -> notifyObservadores("Acepto conexion", "",mensaje.getNombreUsuarioEmisor());
             case "Rechazo conexion" -> notifyObservadores("Rechazo invitacion sesion", "",mensaje.getNombreUsuarioEmisor());
-            case "ERROR CONEXION" ->notifyObservadores("ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
+            case "ERROR CONEXION" -> notifyObservadores("ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
             case "CONEXION CORRECTA"->notifyObservadores("CONEXION CORRECTA","",mensaje.getNombreUsuarioEmisor());
             case "SOLICITAR NOMBRE" ->mandarMensaje(mensaje.getPuertoDestino(),"SOLICITAR NOMBRE","" );
             case "NOMBRE"-> {
