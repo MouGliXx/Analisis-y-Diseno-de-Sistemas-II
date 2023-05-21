@@ -41,7 +41,7 @@ public class Servidor implements Runnable, Serializable {
             while ((mensaje = (Mensaje) reader.readObject()) != null)
                 procesarMensaje(conexion, mensaje);
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.printf("Se cerro conexion");
         }
     }
 
