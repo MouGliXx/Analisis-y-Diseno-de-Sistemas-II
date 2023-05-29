@@ -145,6 +145,8 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
 
         Info1Label.setText("Para chatear con otro usuario ingrese");
         Info2Label.setText("su IP y puerto para continuar:");
+
+        tabbedPane1.setEnabled(true);
     }
 
     @Override
