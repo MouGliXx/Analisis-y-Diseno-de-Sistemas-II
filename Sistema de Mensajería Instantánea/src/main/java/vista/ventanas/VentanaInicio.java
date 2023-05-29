@@ -9,32 +9,42 @@ import vista.interfaces.IVistaNotificacion;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class VentanaInicio extends JFrame implements IVistaInicio, ActionListener, KeyListener, ChangeListener {
     private JPanel PanelPrincipal;
-    private JPanel PanelCentral;
     private JButton registrarseConectarButton;
-    private JLabel IconoMensaje;
     private JLabel MiDireccionLabel;
     private JTextField NombreDeUsuarioJTextField;
     private JTextField IpJTextField;
-    private JLabel NombreDeUsuarioLabel;
-    private JLabel IPLabel;
-    private JLabel PuertoLabel;
     private JCheckBox modoEscuchaCheckBox;
     private JLabel Info1Label;
     private JLabel Info2Label;
     private JSpinner PuertoSpinner;
     private JLabel MiPuertoLabel;
+    private JTabbedPane tabbedPane1;
+    private JPanel PanelCentral;
+    private JLabel IconoMensaje;
+    private JLabel NombreDeUsuarioLabel;
+    private JLabel IPLabel;
+    private JLabel PuertoLabel;
+    private JPanel PanelUsuariosConectados;
+    private JButton refrescarButton;
+    private JLabel usuariosConectadosLabel;
+    private JTable usuariosConectadosTable;
+    //ATRIBUTOS TABLA
+    private final String[] columnNames = {"Nombre de usuario", "IP", "Puerto"};
+    private final DefaultTableModel modeloTabla = new DefaultTableModel(columnNames, 0);
 
     @Override
     public void setActionListener(ActionListener controlador) {
         this.modoEscuchaCheckBox.addActionListener(controlador);
         this.modoEscuchaCheckBox.addActionListener(this);
         this.registrarseConectarButton.addActionListener(controlador);
+        this.refrescarButton.addActionListener(controlador);
     }
 
     @Override
@@ -46,6 +56,11 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public void setChangeListener() {
         this.PuertoSpinner.addChangeListener(this);
+    }
+
+    @Override
+    public void setModelos() {
+        this.usuariosConectadosTable.setModel(modeloTabla);
     }
 
     @Override
@@ -61,6 +76,7 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());
         registrarseConectarButton.setEnabled(false);
         IpJTextField.setText("localhost");
+        setModelos();
     }
 
     @Override
@@ -158,6 +174,12 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     @Override
     public int getPuerto() {
         return Integer.parseInt(this.PuertoSpinner.getValue().toString());
+    }
+
+    @Override
+    public void actualizarTablaUsuarios() { //TODO definir que parametro recibo
+        Object[] newRow = {"1", "2", "3"};
+        modeloTabla.addRow(newRow);
     }
 
     @Override

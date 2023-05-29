@@ -6,6 +6,8 @@ public interface IVistaInicio extends IVista {
 
     void setChangeListener();
 
+    void setModelos();
+
     void setMiDireccionIP(String IP);
 
     String getMiDireccionIP();
@@ -23,6 +25,8 @@ public interface IVistaInicio extends IVista {
     boolean getModoEscucha();
 
     int getPuerto();
+
+    void actualizarTablaUsuarios();
 
     IVistaNotificacion lanzarNotificacion();
 

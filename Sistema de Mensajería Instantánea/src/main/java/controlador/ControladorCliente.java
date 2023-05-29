@@ -34,12 +34,16 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             case "Modo Escucha" -> cambiarModoEscucha();
             case "Aceptar Notificacion" -> notificacionAceptada();
             case "Cancelar Notificacion" -> notificacionRechazada();
+            case "Refrescar" -> actualizarUsuariosConectados();
         }
     }
 
-    private void setNotificacion(int tipo, String nombreEmisor) {
-        //String nombreUsuarioEmisor = null; //TODO poner el nombre de cliente del emisor que recibo del modelo
+    private void actualizarUsuariosConectados() {
+        //TODO invocar funcion del modelo que me devuelva coleccion de conectados
+//        this.vista.actualizarTablaUsuarios();
+    }
 
+    private void setNotificacion(int tipo, String nombreEmisor) {
         this.notificacion = this.vista.lanzarNotificacion();
         this.notificacion.setActionListener(this);
         this.notificacion.setWindowListener(this);

@@ -95,8 +95,6 @@ public class Cliente implements IObservable, IConexion {
         }
     }
 
-
-
     private void procesarNuevaConexion(Mensaje mensaje) {
         System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
         if (!enSesion) {
@@ -126,7 +124,6 @@ public class Cliente implements IObservable, IConexion {
     }
 
     // TIPOS DE MENSAJES
-
     private void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text,this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
