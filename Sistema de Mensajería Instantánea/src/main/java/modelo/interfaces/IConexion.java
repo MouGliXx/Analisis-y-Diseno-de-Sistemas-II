@@ -1,10 +1,12 @@
 package modelo.interfaces;
 
+import java.io.IOException;
+
 public interface IConexion {
-    void crearConexion(int puertoDestino);
-    void registrar(String nombreDeUsuario);
-    void aceptarConexion(int puertoDestino);
-    void rechazarConexion(int puertoDestino);
-    void mandarTexto(String mensaje);
+    void crearConexion(int puertoDestino) throws IOException;
+    void registrar(String nombreDeUsuario) throws IOException;
+    void aceptarConexion(int puertoDestino) throws IOException;
+    void rechazarConexion(int puertoDestino) throws IOException;
+    void mandarTexto(String mensaje) throws IOException;
     void cerrarConexion(String mensaje);
 }

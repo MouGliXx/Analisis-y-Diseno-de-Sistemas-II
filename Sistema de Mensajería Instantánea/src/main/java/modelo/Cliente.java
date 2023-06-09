@@ -16,9 +16,8 @@ public class Cliente implements IObservable, IConexion {
     private final String hostName = "localhost";
     private String nombreDeUsuario;
     private String nombreDeUsuarioReceptor;
-    private  int puertoPropio;
-    private  int puertoServer = 1234;
-    private String usuario = "";
+    private final int puertoPropio;
+    private final int puertoServer = 1234;
     private ArrayList<IObserver> observadores = new ArrayList<>();
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
@@ -31,14 +30,12 @@ public class Cliente implements IObservable, IConexion {
     }
 
     public void registrarServidor(String nombreDeUsuario) throws Exception {
-//        if (puertoDestino == this.puertoPropio)
-//            throw new IOException();
         System.out.print("Intentando conectarse");
         Socket socket = new Socket(hostName, puertoServer);
         this.conexion.setSocket(socket);
         this.conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
         this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
-        Thread listenerMensajes = new Thread(() -> {
+        Thread listenerMensajes = new Thread(()  -> {
             try {
                 listenerMensajes();
             } catch (Exception e) { //TODO propagar excepcion
@@ -50,7 +47,7 @@ public class Cliente implements IObservable, IConexion {
     }
 
     // TODO que lance una excepcion cuando no aceptan conexion
-    public void crearConexion(int puertoDestino){
+    public void crearConexion(int puertoDestino) throws IOException {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
@@ -83,9 +80,7 @@ public class Cliente implements IObservable, IConexion {
             }
             case "NUEVA CONEXION" -> procesarNuevaConexion(mensaje);
             case "CIERRO VENTANA SESION" -> procesarCierreSesion(mensaje);
-            case "Acepto conexion" -> {
-                notifyObservadores("Acepto conexion", "", mensaje.getNombreUsuarioEmisor());
-            }
+            case "Acepto conexion" -> notifyObservadores("Acepto conexion", "", mensaje.getNombreUsuarioEmisor());
             case "RECHAZAR" -> notifyObservadores("Rechazo invitacion sesion", "", mensaje.getNombreUsuarioEmisor());
             case "ERROR CONEXION" -> notifyObservadores("ERROR CONEXION", "", mensaje.getNombreUsuarioEmisor());
             case "CONEXION CORRECTA" -> notifyObservadores("CONEXION CORRECTA", "", mensaje.getNombreUsuarioEmisor());
@@ -95,16 +90,15 @@ public class Cliente implements IObservable, IConexion {
         }
     }
 
-    private void procesarNuevaConexion(Mensaje mensaje) {
+    private void procesarNuevaConexion(Mensaje mensaje) throws IOException {
         System.out.printf("\nDiciendole al puerto que entro la solicitud" + mensaje.getPuertoDestino());
         if (!enSesion) {
             mandarMensaje(mensaje.getPuertoOrigen(), "CONEXION CORRECTA", "");
             notifyObservadores("Abro ventana notificacion", mensaje.getPuertoOrigen(), mensaje.getNombreUsuarioEmisor());
-        }
-        else{
+        } else{
             mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
         }
-        }
+    }
 
     private void procesarCierreSesion(Mensaje mensaje) {
         System.out.printf("Se va a cerrar la sesion");
@@ -117,52 +111,48 @@ public class Cliente implements IObservable, IConexion {
         this.setNombreDeUsuarioReceptor(mensaje.getMensaje());
     }
 
-    private void procesarMensajeRecibido(Mensaje mensaje) throws Exception{
+    private void procesarMensajeRecibido(Mensaje mensaje) {
         byte[] textoEncriptado = Base64.getDecoder().decode(mensaje.getMensaje());
         String textoOriginal = desencriptar("12345678", textoEncriptado, "DES");
         notifyObservadores("Recibo mensaje", textoOriginal, mensaje.getNombreUsuarioEmisor());
     }
 
     // TIPOS DE MENSAJES
-    private void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
+    private void mandarMensaje(int puertoDestino, String mensajeControl, String text) throws IOException {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text,this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
     }
 
-    public void setearNombreReceptor(int puertoDestino ){
+    public void setearNombreReceptor(int puertoDestino ) throws IOException{
         this.mandarMensaje(puertoDestino,"SOLICITAR NOMBRE","");
     }
 
-    public void registrar(String nombreDeUsuario) {
+    public void registrar(String nombreDeUsuario) throws IOException {
         this.mandarMensaje(puertoServer, "REGISTRAR", nombreDeUsuario);
     }
 
-    public void aceptarConexion(int puertoDestino) {
+    public void aceptarConexion(int puertoDestino) throws IOException {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
     }
 
-    public void rechazarConexion(int puertoDestino){
+    public void rechazarConexion(int puertoDestino) throws IOException {
         System.out.print("se rechazo la conexion con el puerto destino");
         this.mandarMensaje(puertoDestino,"RECHAZAR","");
     }
 
-    public void mandarTexto(String mensaje) {
-        try {
-            byte[] textoEncriptado = encriptar("12345678", mensaje, "DES");
-            String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
-            mandarMensaje(-1, "TEXTO", textoEncriptadoBase64);
-        } catch (Exception e) { //TODO getionar excepcion
-            e.printStackTrace();
-        }
+    public void mandarTexto(String mensaje) throws IOException {
+        byte[] textoEncriptado = encriptar("12345678", mensaje, "DES");
+        String textoEncriptadoBase64 = Base64.getEncoder().encodeToString(textoEncriptado);
+        mandarMensaje(-1, "TEXTO", textoEncriptadoBase64);
     }
 
-    public void cerrarVentanaSesion() {
+    public void cerrarVentanaSesion() throws IOException {
         System.out.printf("Mandamos mensaje para cerrar sesion");
         this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION", "");
     }
 
-    public void cerrarVentanaSesionLocal() {
+    public void cerrarVentanaSesionLocal() throws IOException {
         System.out.printf("Mandamos mensaje para cerrar sesion");
         this.mandarMensaje(puertoServer, "CIERRO VENTANA SESION LOCAL", "");
     }
@@ -232,10 +222,6 @@ public class Cliente implements IObservable, IConexion {
 
     public void setNombreDeUsuario(String nombreDeUsuario) {
         this.nombreDeUsuario = nombreDeUsuario;
-    }
-
-    public boolean isEnSesion() {
-        return enSesion;
     }
 
     public void setEnSesion(boolean enSesion) {

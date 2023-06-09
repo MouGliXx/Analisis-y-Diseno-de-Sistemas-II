@@ -6,6 +6,7 @@ import modelo.interfaces.IObserver;
 import vista.interfaces.IVistaMensajes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ControladorMensajes implements ActionListener, IObserver {
     private final IVistaMensajes vista;
@@ -25,17 +26,25 @@ public class ControladorMensajes implements ActionListener, IObserver {
     }
 
     private void enviarMensaje() {
-        Cliente cliente = Sistema.getInstance().getCliente();
-        String mensaje = vista.getMensajeEnviado();
-        cliente.mandarTexto(mensaje);
-        vista.agregarNuevoEnviado(mensaje);
+        try {
+            Cliente cliente = Sistema.getInstance().getCliente();
+            String mensaje = vista.getMensajeEnviado();
+            cliente.mandarTexto(mensaje);
+            vista.agregarNuevoEnviado(mensaje);
+        } catch (IOException e) {
+            vista.lanzarVentanaEmergente("ERROR: El servidor no se encuentra disponible en este momento");
+        }
     }
 
     private void cerrarSesion() {
-        Sistema.getInstance().getCliente().setEnSesion(false);
-        Sistema.getInstance().getCliente().cerrarVentanaSesion();
-        Sistema.getInstance().getCliente().cerrarVentanaSesionLocal();
-        Sistema.getInstance().getCliente().getObservadores().remove(this);
+        try {
+            Sistema.getInstance().getCliente().setEnSesion(false);
+            Sistema.getInstance().getCliente().cerrarVentanaSesion();
+            Sistema.getInstance().getCliente().cerrarVentanaSesionLocal();
+            Sistema.getInstance().getCliente().getObservadores().remove(this);
+        } catch (IOException e) {
+            vista.lanzarVentanaEmergente("ERROR: El servidor no se encuentra disponible en este momento");
+        }
         vista.cerrarVentana();
     }
 

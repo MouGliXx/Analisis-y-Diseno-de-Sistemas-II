@@ -140,7 +140,11 @@ public class Servidor implements Runnable, Serializable {
     private void procesarTexto(Conexion conexion, Mensaje mensaje) {
         if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
-            clientes.get(puertoDestino).mandarMensaje(mensaje);
+            try {
+                clientes.get(puertoDestino).mandarMensaje(mensaje);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -150,7 +154,11 @@ public class Servidor implements Runnable, Serializable {
             sesiones.remove(puertoDestino);
             sesiones.remove(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CERRAR SESION","",null);
-            clientes.get(puertoDestino).mandarMensaje(mensaje1);
+            try {
+                clientes.get(puertoDestino).mandarMensaje(mensaje1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -166,7 +174,11 @@ public class Servidor implements Runnable, Serializable {
         if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","",null);
-            clientes.get(puertoDestino).mandarMensaje(mensaje1);
+            try {
+                clientes.get(puertoDestino).mandarMensaje(mensaje1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -174,13 +186,21 @@ public class Servidor implements Runnable, Serializable {
         if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","",null);
-            clientes.get(mensaje.getPuertoOrigen()).mandarMensaje(mensaje1);
+            try {
+                clientes.get(mensaje.getPuertoOrigen()).mandarMensaje(mensaje1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text, String nombreUsuarioEmisor){
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text,nombreUsuarioEmisor);
         System.out.printf("puerto destino" + puertoDestino);
-        this.clientes.get(puertoDestino).mandarMensaje(mensaje);
+        try {
+            this.clientes.get(puertoDestino).mandarMensaje(mensaje);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
