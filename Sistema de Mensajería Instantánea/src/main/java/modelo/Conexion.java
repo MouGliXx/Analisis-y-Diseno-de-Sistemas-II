@@ -86,6 +86,7 @@ public class Conexion {
     @Override
     public String toString() {
         return "Conexion{" +
+                "Nombre" + nombreUsuario +
                 "puertoServidor=" + puertoServidor +
                 ", puertoCliente=" + puertoCliente +
                 ", socket=" + socket +

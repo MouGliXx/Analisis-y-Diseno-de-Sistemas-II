@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Cliente implements IObservable, IConexion {
@@ -18,8 +19,11 @@ public class Cliente implements IObservable, IConexion {
     private String nombreDeUsuarioReceptor;
     private  int puertoPropio;
     private  int puertoServer = 1234;
+    private final int PUERTOS[] = {1234,1235};
     private String usuario = "";
     private ArrayList<IObserver> observadores = new ArrayList<>();
+    private ArrayList<Integer> servidores = new ArrayList<>();
+    private HashMap<Integer,Conexion> conexiones = new HashMap<>();
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
@@ -28,29 +32,53 @@ public class Cliente implements IObservable, IConexion {
 
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
+        for (int puerto:PUERTOS){
+            servidores.add(puerto);
+        }
     }
 
     public void registrarServidor(String nombreDeUsuario) throws Exception {
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.print("Intentando conectarse");
-        Socket socket = new Socket(hostName, puertoServer);
-        this.conexion.setSocket(socket);
-        this.conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
-        this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
-        Thread listenerMensajes = new Thread(() -> {
-            try {
-                listenerMensajes();
-            } catch (Exception e) { //TODO propagar excepcion
-                e.printStackTrace();
-            }
-        });
-        listenerMensajes.start();
-        this.registrar(nombreDeUsuario);
+        for (Integer puerto:servidores) {
+            Socket socket = new Socket(hostName, puerto);
+            Conexion conexionLocal = new Conexion();
+            conexionLocal.setSocket(socket);
+            conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+            conexionLocal.setInput( new ObjectInputStream(socket.getInputStream()));
+            //conexionLocal.getInput().readObject();
+            //this.conexiones.add(conexionLocal);
+            this.conexiones.put(puerto,conexionLocal);
+            this.conexion = conexionLocal;
+            //this.conexion.setSocket(socket);
+//            this.conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+//            this.conexion.setInput(new ObjectInputStream(socket.getInputStream()));
+
+            System.out.printf("Se conecto al puerto" + puerto);
+            Thread listenerMensajes = new Thread(() -> {
+                try {
+                    listenerMensajes();
+                } catch (Exception e) { // Se cayo un servidor entonces lo cambiamos jejejje
+                    System.out.printf("\n\n\n\nSE CAYO LA CONEXION PAPI\n\n\n\n\n");
+                    this.conexion = conexiones.get(1234);
+                }
+            });
+            listenerMensajes.start();
+            System.out.printf("El nombre de usuario es" + nombreDeUsuario);
+            this.registrar(nombreDeUsuario);
+            //cambiarServidor(0);
+        }
+    }
+
+    public void cambiarServidor(int index){
+        System.out.printf("\n Las conexiones son" + conexiones);
+        //aaathis.conexion = conexiones.get(index);
     }
 
     // TODO que lance una excepcion cuando no aceptan conexion
     public void crearConexion(int puertoDestino){
+        System.out.printf("\nLAS CONEXIONES DE LOS SERVIDORES SON" + conexiones.toString());
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
         //this.conexion.getOutput()
@@ -91,6 +119,7 @@ public class Cliente implements IObservable, IConexion {
             case "CONEXION CORRECTA" -> notifyObservadores("CONEXION CORRECTA", "", mensaje.getNombreUsuarioEmisor());
             case "SOLICITAR NOMBRE" -> mandarMensaje(mensaje.getPuertoDestino(), "SOLICITAR NOMBRE", "");
             case "NOMBRE" -> procesarNombre(mensaje);
+            case "LISTA USUARIOS" -> System.out.printf("se recibe la lista usuarios"); //TODO agregar notifyObservadores con la lista de usuarios
             default -> procesarMensajeRecibido(mensaje);
         }
     }
@@ -134,12 +163,17 @@ public class Cliente implements IObservable, IConexion {
     }
 
     public void registrar(String nombreDeUsuario) {
+        System.out.printf("\nEl nombre de usuario es" + nombreDeUsuario);
         this.mandarMensaje(puertoServer, "REGISTRAR", nombreDeUsuario);
     }
 
     public void aceptarConexion(int puertoDestino) {
         System.out.print("se acepto la conexion con puerto destino:" + puertoDestino);
         this.mandarMensaje(puertoDestino,"ACEPTAR","");
+    }
+
+    public void listaUsuarios(){
+        this.mandarMensaje(puertoServer,"LISTA USUARIOS","");
     }
 
     public void rechazarConexion(int puertoDestino){

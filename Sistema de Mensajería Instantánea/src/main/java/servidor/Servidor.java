@@ -9,18 +9,24 @@ import java.util.HashMap;
 public class Servidor implements Runnable, Serializable {
     private HashMap<Integer, Conexion> clientes = new HashMap<>();
     private HashMap<Integer,Integer> sesiones = new HashMap<>();
+    private HashMap<Integer, String> clientesConectados = new HashMap<>();
+    private int puerto;
+    private Conexion redundancia;
+    private boolean hayRedundancia = false;
 
     public static void main(String[] args) {
-        Thread servidor = new Thread(new Servidor());
+        Thread servidor = new Thread(new Servidor(1235));
         servidor.start();
     }
 
-    public Servidor() {
+    public Servidor(int puerto) {
+        this.puerto = puerto;
     }
 
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(1234);
+            System.out.printf("Servidor corriendo en el puerto"+ puerto);
+            ServerSocket serverSocket = new ServerSocket(puerto);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 Conexion conexion = new Conexion();
@@ -45,8 +51,29 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
+
+    private void crearConexionRedundancia() {
+        if (puerto == 1234 && !hayRedundancia) {
+            try {
+                Socket socket = new Socket("localhost", 1234);
+                Conexion conexionLocal = new Conexion();
+                conexionLocal.setSocket(socket);
+                conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+                conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
+                this.redundancia = conexionLocal;
+                this.hayRedundancia = true;
+                System.out.printf("Se creo conexion con el servidor secundario");
+            }catch (IOException e){
+                System.out.printf("Error");
+            }
+
+        }
+    }
+
     private void procesarMensaje(Conexion conexion, Mensaje mensaje) {
         String mensajeControl = mensaje.getMensajeControl();
+        System.out.printf(clientes.toString());
+        System.out.printf("SE RECIBIO MENSAJE");
         switch (mensajeControl) {
             case "REGISTRAR":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
@@ -54,6 +81,7 @@ public class Servidor implements Runnable, Serializable {
                 break;
             case "NUEVA CONEXION":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
+                crearConexionRedundancia();
                 procesarConexion(mensaje);
                 break;
             case "CONEXION CORRECTA":
@@ -84,21 +112,28 @@ public class Servidor implements Runnable, Serializable {
                 break;
             case "ERROR CONEXION":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ERRO CONEXION");
-                mandarMensaje(1234,mensaje.getPuertoDestino(), "ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
+                mandarMensaje(puerto,mensaje.getPuertoDestino(), "ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
                 break;
             case "SOLICITAR NOMBRE":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: SOLICITAR NOMBRE");
                 if (this.clientes.containsKey(mensaje.getPuertoDestino()))
-                    mandarMensaje(1234,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
+                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
                 else
-                    mandarMensaje(1234,mensaje.getPuertoOrigen(), "NOMBRE","",mensaje.getNombreUsuarioEmisor());
+                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE","",mensaje.getNombreUsuarioEmisor());
                 break;
+            case "LISTA USUARIOS":
+                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
+                mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS",clientesConectados.toString(),"");
+            case "SINCRONIZACION":
+
         }
     }
 
     // Agrego la conexion al servidor
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         conexion.setNombreUsuario(mensaje.getMensaje());
+        System.out.printf("El nombre de usuario", mensaje.getMensaje());
+        clientesConectados.put(mensaje.getPuertoOrigen(), mensaje.getMensaje());
         clientes.put(mensaje.getPuertoOrigen(), conexion);
         System.out.printf("Los clientes son" + clientes.toString());
     }
@@ -112,13 +147,13 @@ public class Servidor implements Runnable, Serializable {
         else{
             //TODO definir como variable el puerto del server
             // Aviso al origen que no existe el usuaario
-            mandarMensaje(1234,mensaje.getPuertoOrigen(), "ERROR CONEXION","", mensaje.getNombreUsuarioEmisor());
+            mandarMensaje(puerto,mensaje.getPuertoOrigen(), "ERROR CONEXION","", mensaje.getNombreUsuarioEmisor());
         }
     }
 
     private void procesarConexionAceptada(Mensaje mensaje) {
         System.out.printf("\n CONEXION ACEPTADA \nse mando conexion aceptadaa");
-        mandarMensaje(1234,mensaje.getPuertoDestino(), "CONEXION CORRECTA","", mensaje.getNombreUsuarioEmisor());
+        mandarMensaje(puerto,mensaje.getPuertoDestino(), "CONEXION CORRECTA","", mensaje.getNombreUsuarioEmisor());
     }
 
     //Aviso al puerto que me aceptaron la sesion, creo sesiones y abro ventana sesion.
@@ -126,6 +161,9 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
+        if (puerto == 1235){
+            this.redundancia.mandarMensaje(mensaje);
+        }
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
 
@@ -138,10 +176,11 @@ public class Servidor implements Runnable, Serializable {
 
     // Mando mensaje de texto entre sesiones, por las dudas verifico que la sesion exista
     private void procesarTexto(Conexion conexion, Mensaje mensaje) {
-        if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
+//        if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
+            System.out.printf("INTENTAMOS MANDAR MENSAJE A ");
+            System.out.printf("PUERTO ORI" + mensaje.getPuertoOrigen() + "PUERTO DEST" + puertoDestino );
             clientes.get(puertoDestino).mandarMensaje(mensaje);
-        }
     }
 
     private void procesarDesconexion(Mensaje mensaje){
@@ -183,4 +222,7 @@ public class Servidor implements Runnable, Serializable {
         System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
+
+
+
 }
