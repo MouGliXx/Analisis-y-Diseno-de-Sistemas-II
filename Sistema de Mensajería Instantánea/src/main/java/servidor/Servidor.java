@@ -15,18 +15,22 @@ public class Servidor implements Runnable, Serializable {
     private boolean hayRedundancia = false;
 
     public static void main(String[] args) {
-        Thread servidor = new Thread(new Servidor(1235));
-        servidor.start();
+        try {
+            Thread servidor = new Thread(new Servidor(1234));
+            servidor.start();
+        }catch (Exception e){
+            System.out.printf("El servidor ya se encuentra en uso");
+        }
     }
 
     public Servidor(int puerto) {
         this.puerto = puerto;
     }
 
-    public void run() {
+    public void run(){
         try {
-            System.out.printf("Servidor corriendo en el puerto"+ puerto);
             ServerSocket serverSocket = new ServerSocket(puerto);
+            System.out.printf("Servidor corriendo en el puerto"+ puerto);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 Conexion conexion = new Conexion();
@@ -36,7 +40,22 @@ public class Servidor implements Runnable, Serializable {
                 listenerMensajes.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                this.puerto += 1;
+                ServerSocket serverSocket = new ServerSocket(puerto);
+                System.out.printf("Servidor corriendo en el puerto"+ puerto);
+                while (true) {
+                    Socket clientSocket = serverSocket.accept();
+                    Conexion conexion = new Conexion();
+                    conexion.setSocket(clientSocket);
+                    conexion.setOutput(new ObjectOutputStream(conexion.getSocket().getOutputStream()));
+                    Thread listenerMensajes = new Thread(() -> listenerMensajes(clientSocket, conexion));
+                    listenerMensajes.start();
+                }
+            }
+            catch(Exception e1){
+                System.out.printf("Error en el servidor");
+            }
         }
     }
 
@@ -55,7 +74,7 @@ public class Servidor implements Runnable, Serializable {
     private void crearConexionRedundancia() {
         if (puerto == 1234 && !hayRedundancia) {
             try {
-                Socket socket = new Socket("localhost", 1234);
+                Socket socket = new Socket("localhost", 1235);
                 Conexion conexionLocal = new Conexion();
                 conexionLocal.setSocket(socket);
                 conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
