@@ -26,7 +26,7 @@ public interface IVistaInicio extends IVista {
 
     int getPuerto();
 
-    void actualizarTablaUsuarios();
+    void actualizarTablaUsuarios(String mensaje);
 
     IVistaNotificacion lanzarNotificacion();
 

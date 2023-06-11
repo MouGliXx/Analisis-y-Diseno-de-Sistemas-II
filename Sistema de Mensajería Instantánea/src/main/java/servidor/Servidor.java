@@ -224,7 +224,4 @@ public class Servidor implements Runnable, Serializable {
         System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
-
-
-
 }

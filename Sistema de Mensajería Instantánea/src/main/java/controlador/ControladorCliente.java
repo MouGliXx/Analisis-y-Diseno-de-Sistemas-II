@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ControladorCliente implements ActionListener, WindowListener, IObserver {
@@ -64,7 +63,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     private void actualizarUsuariosConectados() {
         Sistema.getInstance().getCliente().listaUsuarios();
-        this.vista.actualizarTablaUsuarios();
+
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
@@ -93,7 +92,6 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionRechazada() {
-        //TODO revisar esto con lauta
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
@@ -172,8 +170,8 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
                 Sistema.getInstance().getCliente().setEnSesion(false);
                 this.vista.mostrarVentana();
             }
-            case "LISTA USUARIOS"->{
-                System.out.printf("Lista usuarios:" + mensaje);
+            case "LISTA USUARIOS"-> {
+                this.vista.actualizarTablaUsuarios(mensaje);
             }
         }
     }
