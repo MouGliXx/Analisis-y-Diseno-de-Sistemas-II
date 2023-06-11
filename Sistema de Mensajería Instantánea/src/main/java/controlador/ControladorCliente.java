@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ControladorCliente implements ActionListener, WindowListener, IObserver {
@@ -26,6 +27,29 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
         this.establecerIP();
     }
 
+
+    public void selfTest() throws InterruptedException {
+        // Registrar usuario
+
+        Thread.sleep(5000);
+        try {
+            String nombreUsuario= "Tomas";
+            Sistema.getInstance().getCliente().registrarServidor(nombreUsuario);
+            this.vista.setModoConectar();
+        } catch (Exception e){
+            this.vista.lanzarVentanaEmergente("ALERTA! No existe el servidor.");
+        }
+
+        Thread.sleep(5000);
+
+        this.vista.setModoEscucha(true);
+        Thread.sleep(2000);
+        Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
+        Sistema.getInstance().getCliente().crearConexion(vista.getPuerto());
+        Sistema.getInstance().getCliente().setearNombreReceptor(vista.getPuerto());
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -39,8 +63,8 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void actualizarUsuariosConectados() {
-        //TODO invocar funcion del modelo que me devuelva coleccion de conectados
-//        this.vista.actualizarTablaUsuarios();
+        Sistema.getInstance().getCliente().listaUsuarios();
+        this.vista.actualizarTablaUsuarios();
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
@@ -147,6 +171,9 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             case "CIERRO VENTANA SESION" -> {
                 Sistema.getInstance().getCliente().setEnSesion(false);
                 this.vista.mostrarVentana();
+            }
+            case "LISTA USUARIOS"->{
+                System.out.printf("Lista usuarios:" + mensaje);
             }
         }
     }

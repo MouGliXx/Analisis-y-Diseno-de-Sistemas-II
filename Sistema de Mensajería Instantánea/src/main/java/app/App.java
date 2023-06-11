@@ -13,6 +13,7 @@ public class App {
         Sistema.getInstance().getCliente().agregarObservador(controladorInicio);
         ventanaInicio.ejecutar();
 
+
 //        Thread servidor = new Thread(new Servidor());
 //        servidor.start();
     }

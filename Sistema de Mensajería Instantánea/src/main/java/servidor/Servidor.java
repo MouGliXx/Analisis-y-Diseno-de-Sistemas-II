@@ -12,11 +12,14 @@ public class Servidor implements Runnable, Serializable {
     private HashMap<Integer, String> clientesConectados = new HashMap<>();
     private int puerto;
     private Conexion redundancia;
+    private Conexion monitor;
     private boolean hayRedundancia = false;
 
     public static void main(String[] args) {
         Thread servidor = new Thread(new Servidor(1235));
+        Thread servidor2 = new Thread(new Servidor(1234));
         servidor.start();
+        servidor2.start();
     }
 
     public Servidor(int puerto) {
@@ -53,7 +56,7 @@ public class Servidor implements Runnable, Serializable {
 
 
     private void crearConexionRedundancia() {
-        if (puerto == 1234 && !hayRedundancia) {
+        if (puerto == 1235 && !hayRedundancia) {
             try {
                 Socket socket = new Socket("localhost", 1234);
                 Conexion conexionLocal = new Conexion();
@@ -124,7 +127,6 @@ public class Servidor implements Runnable, Serializable {
             case "LISTA USUARIOS":
                 System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
                 mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS",clientesConectados.toString(),"");
-            case "SINCRONIZACION":
 
         }
     }
@@ -161,7 +163,7 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
-        if (puerto == 1235){
+        if (puerto == 1235 && hayRedundancia){
             this.redundancia.mandarMensaje(mensaje);
         }
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
