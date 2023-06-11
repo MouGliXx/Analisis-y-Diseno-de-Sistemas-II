@@ -24,8 +24,8 @@ public class VentanaHeartBeat extends JFrame {
     /**
      * Create the frame.
      */
-    public VentanaHeartBeat() {
-        setTitle("HeartBeat");
+    public VentanaHeartBeat(String nombre) {
+        setTitle(nombre);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 741, 423);
         contentPane = new JPanel();
@@ -45,7 +45,7 @@ public class VentanaHeartBeat extends JFrame {
         txtPane.setEditable(false);
         scrollPane.setViewportView(txtPane);
 
-        lblTitulo = new JLabel("HeartBeat");
+        lblTitulo = new JLabel(nombre);
         lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 28));
         lblTitulo.setBounds(295, 11, 248, 34);
         contentPane.add(lblTitulo);

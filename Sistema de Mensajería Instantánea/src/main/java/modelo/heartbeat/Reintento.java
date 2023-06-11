@@ -7,21 +7,17 @@ import modelo.heartbeat.vista.VentanaHeartBeat;
 import servidor.Servidor;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.*;
+import java.net.Socket;
 
-public class HeartApp {
-
-
+public class Reintento {
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, IOException {
         long startTime;
         long endTime;
-        Servidor response = new Servidor(1234);
-        VentanaHeartBeat ventana = new VentanaHeartBeat("HeartBeat");
+        Servidor response = new Servidor(1235);
+        VentanaHeartBeat ventana = new VentanaHeartBeat("Reintento");
         TextField.txtPane = ventana.txtPane;
         Conexion conexion = new Conexion();
         while(true) {
@@ -29,7 +25,7 @@ public class HeartApp {
             try {
                 Thread.sleep(1000);
                 startTime = System.nanoTime();
-                socket = new Socket("localhost",1234);
+                socket = new Socket("localhost",1235);
                 conexion.setSocket(socket);
                 conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
                 conexion.setInput(new ObjectInputStream(socket.getInputStream()));
@@ -46,7 +42,11 @@ public class HeartApp {
                 System.out.printf("HOLAA");
                 String ubicacionActual = System.getProperty("user.dir");
                 System.out.println("La ubicación actual es: " + ubicacionActual);
-                Thread.sleep(1000);
+                Thread.sleep(5000);
+                for (int i = 10 ; i>0 ; i--) {
+                    Thread.sleep(1000);
+                    TextField.txtPane.setText("Reintentando conexion-Tiempo restante: " + i + "segundos");
+                }
                 try {
                     startTime = System.nanoTime();
                     socket = new Socket("localhost",1234);
@@ -70,3 +70,4 @@ public class HeartApp {
         }
     }
 }
+
