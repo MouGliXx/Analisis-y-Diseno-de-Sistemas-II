@@ -16,6 +16,7 @@ public class Reintento {
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, IOException {
         long startTime;
         long endTime;
+        boolean bandera = false;
         Servidor response = new Servidor(1235);
         VentanaHeartBeat ventana = new VentanaHeartBeat("Reintento");
         TextField.txtPane = ventana.txtPane;
@@ -39,13 +40,15 @@ public class Reintento {
             } catch (IOException e) {
                 ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "servidor.jar");
                 Process process = processBuilder.start();
-                System.out.printf("HOLAA");
                 String ubicacionActual = System.getProperty("user.dir");
                 System.out.println("La ubicación actual es: " + ubicacionActual);
-                Thread.sleep(5000);
-                for (int i = 10 ; i>0 ; i--) {
-                    Thread.sleep(1000);
-                    TextField.txtPane.setText("Reintentando conexion-Tiempo restante: " + i + "segundos");
+                Thread.sleep(1000);
+                if (!bandera) {
+                    for (int i = 10; i > 0; i--) {
+                        Thread.sleep(1000);
+                        TextField.txtPane.setText("Reintentando conexion-Tiempo restante: " + i + "segundos");
+                    }
+                    bandera = true;
                 }
                 try {
                     startTime = System.nanoTime();
