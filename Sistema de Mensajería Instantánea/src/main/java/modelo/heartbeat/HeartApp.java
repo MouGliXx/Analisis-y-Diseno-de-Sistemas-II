@@ -20,7 +20,6 @@ public class HeartApp {
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, IOException {
         long startTime;
         long endTime;
-        Servidor response = new Servidor(1234);
         VentanaHeartBeat ventana = new VentanaHeartBeat("HeartBeat");
         TextField.txtPane = ventana.txtPane;
         Conexion conexion = new Conexion();
@@ -29,7 +28,7 @@ public class HeartApp {
             try {
                 Thread.sleep(1000);
                 startTime = System.nanoTime();
-                socket = new Socket("localhost",1234);
+                socket = new Socket("localhost",1235);
                 conexion.setSocket(socket);
                 conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
                 conexion.setInput(new ObjectInputStream(socket.getInputStream()));
@@ -41,15 +40,15 @@ public class HeartApp {
                 TextField.txtPane.setText(TextField.txtPane.getText() + ping);
 
             } catch (IOException e) {
-                ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "servidor.jar");
-                Process process = processBuilder.start();
-                System.out.printf("HOLAA");
+                //ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "servidor.jar");
+                System.out.printf("Se cayo servidor");
+                //Process process = processBuilder.start();
                 String ubicacionActual = System.getProperty("user.dir");
                 System.out.println("La ubicación actual es: " + ubicacionActual);
-                Thread.sleep(1000);
+                Thread.sleep(5000);
                 try {
                     startTime = System.nanoTime();
-                    socket = new Socket("localhost",1234);
+                    socket = new Socket("localhost",1235);
                     conexion.setSocket(socket);
                     conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
                     conexion.setInput(new ObjectInputStream(socket.getInputStream()));
@@ -62,7 +61,7 @@ public class HeartApp {
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
                     TextField.txtPane.setText(TextField.txtPane.getText() + ping);
                 } catch (IOException ex){
-                    JOptionPane.showMessageDialog(null,ex.getMessage());
+                    JOptionPane.showMessageDialog(null,"Se cayo el servidor");
                 }
 
             }

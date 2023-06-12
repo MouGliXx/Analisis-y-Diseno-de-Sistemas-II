@@ -155,7 +155,12 @@ public class Servidor implements Runnable, Serializable {
             case "LISTA USUARIOS":
                 System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
                 mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS",clientesConectados.toString(),"");
-
+                break;
+            case "CERRAR CONEXION":
+                System.out.printf("\nLOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
+                this.clientesConectados.remove(mensaje.getPuertoOrigen());
+                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
+                break;
         }
     }
 

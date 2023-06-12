@@ -25,10 +25,12 @@ public class Cliente implements IObservable, IConexion {
     private ArrayList<Integer> servidores = new ArrayList<>();
     private HashMap<Integer,Conexion> conexiones = new HashMap<>();
 
+
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = new Conexion();
     public boolean modoEscucha = false;
     private boolean enSesion = false;
+    private boolean redundancia = false;
 
     public Cliente(int puertoPropio) {
         this.puertoPropio = puertoPropio;
@@ -61,8 +63,14 @@ public class Cliente implements IObservable, IConexion {
                     listenerMensajes();
                 } catch (Exception e) { // Se cayo un servidor entonces lo cambiamos jejejje
                     System.out.printf("\n\n\n\nSE CAYO LA CONEXION PAPI\n\n\n\n\n");
-                    this.conexion = conexiones.get(1234);
-                    this.puertoServer = 1234;
+                    if (!redundancia) {
+                        this.conexion = conexiones.get(1234);
+                        this.puertoServer = 1234;
+                        redundancia = true;
+                    }
+                    else{
+                        notifyObservadores("SERVIDOR OUT","","");
+                    }
                 }
             });
             listenerMensajes.start();
@@ -97,6 +105,10 @@ public class Cliente implements IObservable, IConexion {
                 mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
             }
         }
+    }
+
+    public void cerrarConexion(){
+        this.mandarMensaje(-1,"CERRAR CONEXION","");
     }
 
     private void procesarMensaje(Mensaje mensaje) throws Exception {

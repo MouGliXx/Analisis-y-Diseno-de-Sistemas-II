@@ -153,6 +153,9 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             case "LISTA USUARIOS"-> {
                 this.vista.actualizarTablaUsuarios(mensaje);
             }
+            case "SERVIDOR OUT"->{
+                this.vista.lanzarVentanaEmergente("SE CAYO EL SERVIDOR");
+            }
         }
     }
 
@@ -178,7 +181,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     @Override
     public void windowClosing(WindowEvent e) {
 //        this.vista.cerrarVentana();
-        //TODO MATA MATA MATA MATA MATA
+        Sistema.getInstance().getCliente().cerrarConexion();
     }
 
     //METODOS NO USADOS
