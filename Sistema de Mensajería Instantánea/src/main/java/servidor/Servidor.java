@@ -55,6 +55,35 @@ public class Servidor implements Runnable, Serializable {
     }
 
 
+    private void monitor(){
+        long startTime;
+        long endTime;
+
+        while(!clientesConectados.isEmpty()){
+            for (Integer keys : clientesConectados.keySet()){
+                Conexion conexion = new Conexion();
+                Socket socket = null;
+                try {
+                    System.out.printf("\nChequeando conexion del cliente" + keys + "\n");
+                    Thread.sleep(1000);
+                    startTime = System.nanoTime();
+                    System.out.printf("3");
+
+
+                    Thread.sleep(1000);
+                    clientes.get(keys).mandarMensaje(new Mensaje(-1,-1,"HOLA","",""));
+                    Thread.sleep(3);
+                    endTime = System.nanoTime();
+                    String ping = "\nPing: "+ (float) (endTime-startTime)/1000000 + " ms";
+                    System.out.printf(ping);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     private void crearConexionRedundancia() {
         if (puerto == 1235 && !hayRedundancia) {
             try {
