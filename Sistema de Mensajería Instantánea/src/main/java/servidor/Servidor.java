@@ -28,7 +28,7 @@ public class Servidor implements Runnable, Serializable {
 
     public void run() {
         try {
-            System.out.printf("Servidor corriendo en el puerto"+ puerto);
+            System.out.printf("Servidor corriendo");
             ServerSocket serverSocket = new ServerSocket(puerto);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
