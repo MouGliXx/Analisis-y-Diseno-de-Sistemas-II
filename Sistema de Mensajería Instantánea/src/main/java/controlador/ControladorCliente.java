@@ -22,31 +22,9 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
         vista.setActionListener(this);
         vista.setKeyListener();
         vista.setChangeListener();
+        vista.setWindowListener(this);
 
         this.establecerIP();
-    }
-
-
-    public void selfTest() throws InterruptedException {
-        // Registrar usuario
-
-        Thread.sleep(5000);
-        try {
-            String nombreUsuario= "Tomas";
-            Sistema.getInstance().getCliente().registrarServidor(nombreUsuario);
-            this.vista.setModoConectar();
-        } catch (Exception e){
-            this.vista.lanzarVentanaEmergente("ALERTA! No existe el servidor.");
-        }
-
-        Thread.sleep(5000);
-
-        this.vista.setModoEscucha(true);
-        Thread.sleep(2000);
-        Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
-        Sistema.getInstance().getCliente().crearConexion(vista.getPuerto());
-        Sistema.getInstance().getCliente().setearNombreReceptor(vista.getPuerto());
-
     }
 
     @Override
@@ -75,6 +53,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionAceptada() {
+        System.out.printf("\nnotificacionAceptada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
                 Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
@@ -92,6 +71,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionRechazada() {
+        System.out.printf("\nnotificacionRechazada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
@@ -197,18 +177,18 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     @Override
     public void windowClosing(WindowEvent e) {
-//        notificacionRechazada();
-        this.vista.cerrarVentana();
+//        this.vista.cerrarVentana();
+        //TODO MATA MATA MATA MATA MATA
     }
 
     //METODOS NO USADOS
     @Override
-    public void windowOpened(WindowEvent e) {
+    public void windowClosed(WindowEvent e) {
 
     }
 
     @Override
-    public void windowClosed(WindowEvent e) {
+    public void windowOpened(WindowEvent e) {
 
     }
 

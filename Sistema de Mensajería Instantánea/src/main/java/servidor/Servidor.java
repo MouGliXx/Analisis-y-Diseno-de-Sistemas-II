@@ -12,7 +12,7 @@ public class Servidor implements Runnable, Serializable {
     private HashMap<Integer, String> clientesConectados = new HashMap<>();
     private int puerto;
     private Conexion redundancia;
-    private Conexion monitor;
+    private Conexion monitor; //TODO ????
     private boolean hayRedundancia = false;
 
     public static void main(String[] args) {
@@ -54,8 +54,7 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
-
-    private void monitor(){
+    private void reintento() {
         long startTime;
         long endTime;
 
@@ -225,14 +224,14 @@ public class Servidor implements Runnable, Serializable {
     }
 
     //chequeo si existe la conexion entre el puerto destino y el server, ademas
-    private boolean existeCliente(int puertoDestino, int puertoOrigen){
+    private boolean existeCliente(int puertoDestino, int puertoOrigen) {
         if(this.clientes.containsKey(puertoDestino))
             return true;
         else
             return false;
     }
 
-    private void procesarCierroVentana(Mensaje mensaje){
+    private void procesarCierroVentana(Mensaje mensaje) {
         if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","",null);
@@ -240,7 +239,7 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
-    private void procesarCierroVentanaLocal(Mensaje mensaje){
+    private void procesarCierroVentanaLocal(Mensaje mensaje) {
         if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
             int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
             Mensaje mensaje1 = new Mensaje(0,0,"CIERRO VENTANA SESION","",null);
@@ -248,7 +247,7 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
-    public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text, String nombreUsuarioEmisor){
+    public void mandarMensaje(int puertoOrigen,int puertoDestino,String mensajeControl, String text, String nombreUsuarioEmisor) {
         Mensaje mensaje = new Mensaje(puertoOrigen,puertoDestino,mensajeControl,text,nombreUsuarioEmisor);
         System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);

@@ -54,6 +54,11 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void setWindowListener(WindowListener controlador) {
+        this.addWindowListener(controlador);
+    }
+
+    @Override
     public void setChangeListener() {
         this.PuertoSpinner.addChangeListener(this);
     }

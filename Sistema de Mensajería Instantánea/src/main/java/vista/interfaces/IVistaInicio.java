@@ -1,10 +1,14 @@
 package vista.interfaces;
 
+import java.awt.event.WindowListener;
+
 public interface IVistaInicio extends IVista {
 
     void setKeyListener();
 
     void setChangeListener();
+
+    void setWindowListener(WindowListener controlador);
 
     void setModelos();
 
