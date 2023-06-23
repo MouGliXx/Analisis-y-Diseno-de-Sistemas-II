@@ -16,10 +16,8 @@ public class Servidor implements Runnable, Serializable {
     private boolean hayRedundancia = false;
 
     public static void main(String[] args) {
-        Thread servidor = new Thread(new Servidor(1235));
-        Thread servidor2 = new Thread(new Servidor(1234));
+        Thread servidor = new Thread(new Servidor(1234));
         servidor.start();
-        servidor2.start();
     }
 
     public Servidor(int puerto) {

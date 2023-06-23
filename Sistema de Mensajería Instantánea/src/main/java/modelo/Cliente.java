@@ -52,30 +52,33 @@ public class Cliente implements IObservable, IConexion {
                 conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
                 this.conexiones.put(puerto,conexionLocal);
                 this.conexion = conexionLocal;
+
+                System.out.printf("Se conecto al puerto" + puerto);
+                Thread listenerMensajes = new Thread(() -> {
+                    try {
+                        listenerMensajes();
+                    } catch (Exception e) { // Se cayo un servidor entonces lo cambiamos jejejje
+                        System.out.printf("\n\n\n\nSE CAYO LA CONEXION PAPI\n\n\n\n\n");
+                        e.printStackTrace();
+                        if (!redundancia) {
+                            this.conexion = conexiones.get(1234);
+                            this.puertoServer = 1234;
+                            redundancia = true;
+                        }
+                        else{
+                            notifyObservadores("SERVIDOR OUT","","");
+                        }
+                    }
+                });
+                listenerMensajes.start();
+                this.registrar(nombreDeUsuario);
             }
             catch(IOException e){
                 e.printStackTrace();
+                System.out.printf("No se pudo conectar al puerto" + puerto);
             }
-
-            System.out.printf("Se conecto al puerto" + puerto);
-            Thread listenerMensajes = new Thread(() -> {
-                try {
-                    listenerMensajes();
-                } catch (Exception e) { // Se cayo un servidor entonces lo cambiamos jejejje
-                    System.out.printf("\n\n\n\nSE CAYO LA CONEXION PAPI\n\n\n\n\n");
-                    if (!redundancia) {
-                        this.conexion = conexiones.get(1234);
-                        this.puertoServer = 1234;
-                        redundancia = true;
-                    }
-                    else{
-                        notifyObservadores("SERVIDOR OUT","","");
-                    }
-                }
-            });
-            listenerMensajes.start();
-            this.registrar(nombreDeUsuario);
-
+            System.out.printf("\nlas conexiones son " + this.conexiones);
+            System.out.printf("\n\n la conexion actual es " + this.conexion);
             //cambiarServidor(0);
         }
     }
@@ -96,14 +99,24 @@ public class Cliente implements IObservable, IConexion {
 
     private void listenerMensajes() throws Exception {
         Mensaje mensaje;
-        while ((mensaje = (Mensaje) this.conexion.getInput().readObject()) != null ) {
-            System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
-            System.out.printf("\nEl modo sesion es " + this.enSesion);
-            if (modoEscucha){
-                procesarMensaje(mensaje);
+        Object obj;
+        while ((obj = this.conexion.getInput().readObject()) != null ) {
+            if (obj instanceof Mensaje) {
+                System.out.printf("\n Instancia de mensaje");
+                mensaje = (Mensaje) obj;
+                System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
+                System.out.printf("\nEl modo sesion es " + this.enSesion);
+                if (modoEscucha){
+                    procesarMensaje(mensaje);
+                } else {
+                    mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
+                }
             } else {
-                mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
+                System.out.printf("\nNo es instancia de mensaje");
+                String mensaje2 = (String)this.conexion.getInput().readObject();
+                System.out.printf(mensaje2);
             }
+
         }
     }
 
