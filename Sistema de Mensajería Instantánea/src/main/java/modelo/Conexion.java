@@ -19,6 +19,7 @@ public class Conexion {
         try{
             output.writeObject(o);
         } catch(IOException e) {
+            e.printStackTrace();
             System.err.println("No se ha inicializado la salida del socket.");
         }
     }

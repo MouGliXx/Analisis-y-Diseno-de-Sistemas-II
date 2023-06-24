@@ -11,13 +11,29 @@ public class Servidor implements Runnable, Serializable {
     private HashMap<Integer,Integer> sesiones = new HashMap<>();
     private HashMap<Integer, String> clientesConectados = new HashMap<>();
     private int puerto;
+    private int puertoRedundancia;
     private Conexion redundancia;
-    private Conexion monitor; //TODO ????
     private boolean hayRedundancia = false;
+    private int servidores[] = {1235,1234};
 
     public static void main(String[] args) {
-        Thread servidor = new Thread(new Servidor(1234));
-        servidor.start();
+        try {
+            ServerSocket serverSocket = new ServerSocket(1235);
+            serverSocket.close();
+            Thread servidor = new Thread(new Servidor(1235));
+            servidor.start();
+        }
+        catch( Exception e){
+            try {
+                ServerSocket serverSocket = new ServerSocket(1234);
+                serverSocket.close();
+                Thread servidor = new Thread(new Servidor(1234));
+                servidor.start();
+            }
+            catch(Exception e1){
+                System.out.printf("------ ERROR!! NO SE PUDO ESTABLECER EL SERVIDOR -------");
+            }
+        }
     }
 
     public Servidor(int puerto) {
@@ -26,13 +42,14 @@ public class Servidor implements Runnable, Serializable {
 
     public void run() {
         try {
-            System.out.printf("Servidor corriendo");
+            System.out.printf("Servidor corriendo en el PUERTO: " + puerto);
             ServerSocket serverSocket = new ServerSocket(puerto);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 Conexion conexion = new Conexion();
                 conexion.setSocket(clientSocket);
                 conexion.setOutput(new ObjectOutputStream(conexion.getSocket().getOutputStream()));
+
                 Thread listenerMensajes = new Thread(() -> listenerMensajes(clientSocket, conexion));
                 listenerMensajes.start();
             }
@@ -45,44 +62,20 @@ public class Servidor implements Runnable, Serializable {
         try {
             ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
             Mensaje mensaje;
+            System.out.printf("\n Se esta escuchando mensajes");
             while ((mensaje = (Mensaje) reader.readObject()) != null)
                 procesarMensaje(conexion, mensaje);
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             System.out.printf("Se cerro conexion");
         }
     }
 
-    private void reintento() {
-        long startTime;
-        long endTime;
 
-        while(!clientesConectados.isEmpty()){
-            for (Integer keys : clientesConectados.keySet()){
-                Conexion conexion = new Conexion();
-                Socket socket = null;
-                try {
-                    System.out.printf("\nChequeando conexion del cliente" + keys + "\n");
-                    Thread.sleep(1000);
-                    startTime = System.nanoTime();
-                    System.out.printf("3");
-
-
-                    Thread.sleep(1000);
-                    clientes.get(keys).mandarMensaje(new Mensaje(-1,-1,"HOLA","",""));
-                    Thread.sleep(3);
-                    endTime = System.nanoTime();
-                    String ping = "\nPing: "+ (float) (endTime-startTime)/1000000 + " ms";
-                    System.out.printf(ping);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
 
     private void crearConexionRedundancia() {
-        if (puerto == 1235 && !hayRedundancia) {
+        if (!hayRedundancia) {
             try {
                 Socket socket = new Socket("localhost", 1234);
                 Conexion conexionLocal = new Conexion();
@@ -106,11 +99,12 @@ public class Servidor implements Runnable, Serializable {
         switch (mensajeControl) {
             case "REGISTRAR":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
+                crearConexionRedundancia();
                 procesarRegistro(conexion,mensaje);
+                crearConexionRedundancia();
                 break;
             case "NUEVA CONEXION":
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
-                crearConexionRedundancia();
                 procesarConexion(mensaje);
                 break;
             case "CONEXION CORRECTA":
@@ -165,10 +159,12 @@ public class Servidor implements Runnable, Serializable {
     // Agrego la conexion al servidor
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         conexion.setNombreUsuario(mensaje.getMensaje());
-        System.out.printf("El nombre de usuario", mensaje.getMensaje());
         clientesConectados.put(mensaje.getPuertoOrigen(), mensaje.getMensaje());
         clientes.put(mensaje.getPuertoOrigen(), conexion);
-        System.out.printf("Los clientes son" + clientes.toString());
+//        if (redundancia != null)
+//            this.redundancia.mandarMensaje(mensaje);
+        System.out.printf("Se realizo el registro");
+        //mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
 
     //Aviso al puerto destino que me quiero conectar con el

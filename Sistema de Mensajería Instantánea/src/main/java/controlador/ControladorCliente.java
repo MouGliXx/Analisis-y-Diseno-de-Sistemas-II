@@ -87,6 +87,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             this.vista.setModoConectar();
             this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
         } catch (Exception e){
+            e.printStackTrace();
             this.vista.lanzarVentanaEmergente("ALERTA! No existe el servidor.");
         }
     }

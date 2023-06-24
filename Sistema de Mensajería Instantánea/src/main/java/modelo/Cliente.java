@@ -8,6 +8,7 @@ import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class Cliente implements IObservable, IConexion {
 
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
-    private Conexion conexion = new Conexion();
+    private Conexion conexion = null;
     public boolean modoEscucha = false;
     private boolean enSesion = false;
     private boolean redundancia = false;
@@ -43,44 +44,112 @@ public class Cliente implements IObservable, IConexion {
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.print("Intentando conectarse");
-        for (Integer puerto:servidores) {
-            try {
-                Socket socket = new Socket(hostName, puerto);
-                Conexion conexionLocal = new Conexion();
-                conexionLocal.setSocket(socket);
-                conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
-                conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
-                this.conexiones.put(puerto,conexionLocal);
-                this.conexion = conexionLocal;
-
-                System.out.printf("Se conecto al puerto" + puerto);
-                Thread listenerMensajes = new Thread(() -> {
-                    try {
-                        listenerMensajes();
-                    } catch (Exception e) { // Se cayo un servidor entonces lo cambiamos jejejje
-                        System.out.printf("\n\n\n\nSE CAYO LA CONEXION PAPI\n\n\n\n\n");
-                        e.printStackTrace();
-                        if (!redundancia) {
-                            this.conexion = conexiones.get(1234);
-                            this.puertoServer = 1234;
-                            redundancia = true;
-                        }
-                        else{
-                            notifyObservadores("SERVIDOR OUT","","");
-                        }
+        for (Integer puerto : servidores) {
+            Thread thread = new Thread(() -> {
+                try {
+                    Conexion socket = conectar(puerto);
+                    System.out.printf("\nNos conectamos al puerto"+puerto);
+                    conexiones.put(puerto,socket); // Almacena la referencia al socket en la lista
+                    if (this.conexion == null) {
+                        this.conexion = socket; // Asigna el primer servidor conectado como principal
+                        System.out.println("\nConectado al servidor principal: " + socket);
                     }
-                });
-                listenerMensajes.start();
-                this.registrar(nombreDeUsuario);
-            }
-            catch(IOException e){
-                e.printStackTrace();
-                System.out.printf("No se pudo conectar al puerto" + puerto);
-            }
-            System.out.printf("\nlas conexiones son " + this.conexiones);
-            System.out.printf("\n\n la conexion actual es " + this.conexion);
-            //cambiarServidor(0);
+                    listenerMensajes(socket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("No se pudo establecer la conexión con el servidor " + puerto);
+                }
+                catch(Exception e1){
+                    e1.printStackTrace();
+                    System.out.printf("Error en la recepcion de mensajes");
+                }
+            });
+            thread.start();
+            Thread.sleep(1000);
         }
+        this.registrar(nombreDeUsuario);
+    }
+
+    private static Conexion conectar(int puerto) throws IOException {
+        Socket socket = new Socket("localhost", puerto);
+        Conexion conexion = new Conexion();
+        conexion.setSocket(socket);
+        conexion.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+        conexion.setInput(new ObjectInputStream(socket.getInputStream()));
+        return conexion;
+    }
+
+    private void listenerMensajes(Conexion conexion) throws Exception {
+        Mensaje mensaje;
+        Object obj;
+        try {
+            while ((obj = conexion.getInput().readObject()) != null) {
+                System.out.printf("Se recibio mensaje");
+                if (obj instanceof Mensaje) {
+                    System.out.printf("\n Instancia de mensaje");
+                    mensaje = (Mensaje) obj;
+                    System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
+                    System.out.printf("\nEl modo sesion es " + this.enSesion);
+                    if (modoEscucha) {
+                        procesarMensaje(mensaje);
+                    } else {
+                        mandarMensaje(mensaje.getPuertoOrigen(), "ERROR CONEXION", "");
+                    }
+                } else {
+                    System.out.printf("\nNo es instancia de mensaje");
+                    String mensaje2 = (String) obj;
+                    System.out.printf(mensaje2);
+                }
+
+            }
+        }
+        catch (SocketException e){
+            System.out.println("Error al enviar el mensaje al servidor principal " );
+            // Intentar reconexión con el servidor principal
+            Conexion servidorPrincipal = reconectar();
+            if (servidorPrincipal == null){
+                this.notifyObservadores("SERVIDOR OUT","",null);
+            }
+            else {
+                this.registrar(nombreDeUsuario);
+                System.out.println("Se ha seleccionado un nuevo servidor principal: ");
+            }
+        }
+    }
+
+    public Conexion reconectar(){
+        this.conexion.close();
+
+        // Intenta establecer una nueva conexión con el servidor principal
+        Conexion nuevoSocket = null;
+        for (Integer puerto : servidores) {
+            try {
+                nuevoSocket = conectar(puerto);
+                System.out.printf("Nos conectamos nuevamente al puerto" + puerto);
+                break;
+            } catch (IOException e) {
+                System.out.println("No se pudo establecer la conexión con el servidor " + puerto);
+            }
+        }
+
+        if (nuevoSocket != null) {
+            // Reemplaza el socket principal con el nuevo socket
+            this.conexion = nuevoSocket;
+
+            // Inicia la recepción de mensajes del nuevo socket en un nuevo hilo
+            Thread thread = new Thread(() -> {
+                try {
+                    listenerMensajes(conexion);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Se cerro por segunda vez la conexion nueva! " );
+                }
+            });
+            thread.start();
+        }
+
+        // Retorna el nuevo socket principal (o null si no se pudo establecer la conexión)
+        return nuevoSocket;
     }
 
     public void cambiarServidor(int index){
@@ -91,34 +160,14 @@ public class Cliente implements IObservable, IConexion {
     // TODO que lance una excepcion cuando no aceptan conexion
     public void crearConexion(int puertoDestino){
         System.out.printf("\nLAS CONEXIONES DE LOS SERVIDORES SON" + conexiones.toString());
-        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
-        this.conexion.mandarMensaje(mensaje);
+//        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
+        this.mandarMensaje(puertoDestino,"NUEVA CONEXION","");
+
+        System.out.printf("\nSe mando mensaje");
         //this.conexion.getOutput()
     }
 
 
-    private void listenerMensajes() throws Exception {
-        Mensaje mensaje;
-        Object obj;
-        while ((obj = this.conexion.getInput().readObject()) != null ) {
-            if (obj instanceof Mensaje) {
-                System.out.printf("\n Instancia de mensaje");
-                mensaje = (Mensaje) obj;
-                System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
-                System.out.printf("\nEl modo sesion es " + this.enSesion);
-                if (modoEscucha){
-                    procesarMensaje(mensaje);
-                } else {
-                    mandarMensaje(mensaje.getPuertoOrigen(),"ERROR CONEXION","");
-                }
-            } else {
-                System.out.printf("\nNo es instancia de mensaje");
-                String mensaje2 = (String)this.conexion.getInput().readObject();
-                System.out.printf(mensaje2);
-            }
-
-        }
-    }
 
     public void cerrarConexion(){
         this.mandarMensaje(-1,"CERRAR CONEXION","");
