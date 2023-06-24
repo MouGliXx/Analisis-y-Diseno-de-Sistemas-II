@@ -44,12 +44,11 @@ public class Cliente implements IObservable, IConexion {
 //        if (puertoDestino == this.puertoPropio)
 //            throw new IOException();
         System.out.print("Intentando conectarse");
-        for (Integer puerto : servidores) {
             Thread thread = new Thread(() -> {
                 try {
-                    Conexion socket = conectar(puerto);
-                    System.out.printf("\nNos conectamos al puerto"+puerto);
-                    conexiones.put(puerto,socket); // Almacena la referencia al socket en la lista
+                    Conexion socket = conectar(1235);
+                    System.out.printf("\nNos conectamos al puerto"+1235);
+                    conexiones.put(1235,socket); // Almacena la referencia al socket en la lista
                     if (this.conexion == null) {
                         this.conexion = socket; // Asigna el primer servidor conectado como principal
                         System.out.println("\nConectado al servidor principal: " + socket);
@@ -57,7 +56,7 @@ public class Cliente implements IObservable, IConexion {
                     listenerMensajes(socket);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.out.println("No se pudo establecer la conexión con el servidor " + puerto);
+                    System.out.println("No se pudo establecer la conexión con el servidor " + 1235);
                 }
                 catch(Exception e1){
                     e1.printStackTrace();
@@ -66,7 +65,6 @@ public class Cliente implements IObservable, IConexion {
             });
             thread.start();
             Thread.sleep(1000);
-        }
         this.registrar(nombreDeUsuario);
     }
 
@@ -98,7 +96,6 @@ public class Cliente implements IObservable, IConexion {
                 } else {
                     System.out.printf("\nNo es instancia de mensaje");
                     String mensaje2 = (String) obj;
-                    System.out.printf(mensaje2);
                 }
 
             }
@@ -112,7 +109,7 @@ public class Cliente implements IObservable, IConexion {
             }
             else {
                 this.registrar(nombreDeUsuario);
-                System.out.println("Se ha seleccionado un nuevo servidor principal: ");
+                System.out.println("Se ha seleccionado un nuevo servidor principal: " );
             }
         }
     }
@@ -142,6 +139,14 @@ public class Cliente implements IObservable, IConexion {
                     listenerMensajes(conexion);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Conexion servidorPrincipal = reconectar();
+                    if (servidorPrincipal == null){
+                        this.notifyObservadores("SERVIDOR OUT","",null);
+                    }
+                    else {
+                        this.registrar(nombreDeUsuario);
+                        System.out.println("Se ha seleccionado un nuevo servidor principal: " );
+                    }
                     System.out.println("Se cerro por segunda vez la conexion nueva! " );
                 }
             });
@@ -162,8 +167,6 @@ public class Cliente implements IObservable, IConexion {
         System.out.printf("\nLAS CONEXIONES DE LOS SERVIDORES SON" + conexiones.toString());
 //        Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,"NUEVA CONEXION","",this.nombreDeUsuario);
         this.mandarMensaje(puertoDestino,"NUEVA CONEXION","");
-
-        System.out.printf("\nSe mando mensaje");
         //this.conexion.getOutput()
     }
 

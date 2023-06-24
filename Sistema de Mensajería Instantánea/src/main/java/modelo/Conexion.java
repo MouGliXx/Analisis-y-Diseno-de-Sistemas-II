@@ -26,14 +26,14 @@ public class Conexion {
 
     public void close() {
         try {
-            if (socket != null) {
-                socket.close();
-            }
             if (input != null) {
                 input.close();
             }
             if (output != null) {
                 output.close();
+            }
+            if (socket != null) {
+                socket.close();
             }
         } catch (IOException e) {
             System.err.println("\nError al cerrar el socket: " + e.getMessage());
