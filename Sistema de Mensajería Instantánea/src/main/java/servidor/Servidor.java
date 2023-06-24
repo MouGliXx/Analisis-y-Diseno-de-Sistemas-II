@@ -12,7 +12,7 @@ public class Servidor implements Runnable, Serializable {
     private HashMap<Integer, String> clientesConectados = new HashMap<>();
     private int puerto;
     private int puertoRedundancia;
-    private Conexion redundancia = null;
+    private Conexion redundancia;
     private boolean hayRedundancia = false;
     private int servidores[] = {1235,1234};
 
@@ -38,8 +38,6 @@ public class Servidor implements Runnable, Serializable {
 
     public Servidor(int puerto) {
         this.puerto = puerto;
-        if (puerto == 1235) puertoRedundancia = 1234;
-        else puertoRedundancia = 1235;
     }
 
     public void run() {
@@ -51,6 +49,7 @@ public class Servidor implements Runnable, Serializable {
                 Conexion conexion = new Conexion();
                 conexion.setSocket(clientSocket);
                 conexion.setOutput(new ObjectOutputStream(conexion.getSocket().getOutputStream()));
+
                 Thread listenerMensajes = new Thread(() -> listenerMensajes(clientSocket, conexion));
                 listenerMensajes.start();
             }
@@ -77,9 +76,8 @@ public class Servidor implements Runnable, Serializable {
 
     private void crearConexionRedundancia() {
         if (!hayRedundancia) {
-            System.out.printf("ENTRO ACAtomas");
             try {
-                Socket socket = new Socket("localhost", puertoRedundancia);
+                Socket socket = new Socket("localhost", 1234);
                 Conexion conexionLocal = new Conexion();
                 conexionLocal.setSocket(socket);
                 conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
@@ -88,11 +86,7 @@ public class Servidor implements Runnable, Serializable {
                 this.hayRedundancia = true;
                 System.out.printf("Se creo conexion con el servidor secundario");
             }catch (IOException e){
-
-                this.hayRedundancia = false;
-                this.redundancia = null;
-                e.printStackTrace();
-                System.out.printf("\nERROR SE CAYO LA CONEXION DE LA REDUNDANCIA\n");
+                System.out.printf("Error");
             }
 
         }
@@ -103,67 +97,58 @@ public class Servidor implements Runnable, Serializable {
         System.out.printf(clientes.toString());
         System.out.printf("SE RECIBIO MENSAJE");
         switch (mensajeControl) {
-            case "REGISTRAR":
+            case "REGISTRAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
                 crearConexionRedundancia();
-                procesarRegistro(conexion,mensaje);
+                procesarRegistro(conexion, mensaje);
                 crearConexionRedundancia();
-                break;
-            case "NUEVA CONEXION":
+            }
+            case "NUEVA CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                 procesarConexion(mensaje);
-                break;
-            case "CONEXION CORRECTA":
-                procesarConexionAceptada(mensaje);
-                break;
-            case "ACEPTAR":
+            }
+            case "CONEXION CORRECTA" -> procesarConexionAceptada(mensaje);
+            case "ACEPTAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
                 procesarAceptacion(mensaje);
-                break;
-            case "RECHAZAR":
+            }
+            case "RECHAZAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
                 procesarRechazo(conexion, mensaje);
-                break;
-            case "TEXTO":
+            }
+            case "TEXTO" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: TEXTO");
                 procesarTexto(conexion, mensaje);
-                break;
-            case "DESCONECTAR":
-                procesarDesconexion(mensaje);
-                break;
-            case "CIERRO VENTANA SESION":
+            }
+            case "DESCONECTAR" -> procesarDesconexion(mensaje);
+            case "CIERRO VENTANA SESION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
                 procesarCierroVentana(mensaje);
-                break;
-            case "CIERRO VENTANA SESION LOCAL":
+            }
+            case "CIERRO VENTANA SESION LOCAL" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
                 procesarCierroVentanaLocal(mensaje);
-                break;
-            case "ERROR CONEXION":
+            }
+            case "ERROR CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ERRO CONEXION");
-                mandarMensaje(puerto,mensaje.getPuertoDestino(), "ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
-                break;
-            case "SOLICITAR NOMBRE":
+                mandarMensaje(puerto, mensaje.getPuertoDestino(), "ERROR CONEXION", "", mensaje.getNombreUsuarioEmisor());
+            }
+            case "SOLICITAR NOMBRE" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: SOLICITAR NOMBRE");
                 if (this.clientes.containsKey(mensaje.getPuertoDestino()))
-                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
+                    mandarMensaje(puerto, mensaje.getPuertoOrigen(), "NOMBRE", this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(), mensaje.getNombreUsuarioEmisor());
                 else
-                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE","",mensaje.getNombreUsuarioEmisor());
-                break;
-            case "LISTA USUARIOS":
-                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
-                mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS",clientesConectados.toString(),"");
-                break;
-            case "CERRAR CONEXION":
-                System.out.printf("\nLOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
+                    mandarMensaje(puerto, mensaje.getPuertoOrigen(), "NOMBRE", "", mensaje.getNombreUsuarioEmisor());
+            }
+            case "LISTA USUARIOS" -> {
+                System.out.printf("LOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
+                mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS", clientesConectados.toString(), "");
+            }
+            case "CERRAR CONEXION" -> {
+                System.out.printf("\nLOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
                 this.clientesConectados.remove(mensaje.getPuertoOrigen());
-                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
-                break;
-            case "RESINCRONIZACION":
-                System.out.printf("\n ------------------------ \nRESINCRONIZACION");
-                this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
-                this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
-                break;
+                System.out.printf("LOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
+            }
         }
     }
 
@@ -172,6 +157,8 @@ public class Servidor implements Runnable, Serializable {
         conexion.setNombreUsuario(mensaje.getMensaje());
         clientesConectados.put(mensaje.getPuertoOrigen(), mensaje.getMensaje());
         clientes.put(mensaje.getPuertoOrigen(), conexion);
+//        if (redundancia != null)
+//            this.redundancia.mandarMensaje(mensaje);
         System.out.printf("Se realizo el registro");
         //mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
@@ -199,16 +186,8 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
-        if (hayRedundancia){
-            Mensaje mensajeRed = new Mensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "RESINCRONIZACION","","");
-            this.redundancia.mandarMensaje(mensajeRed);
-        }
-        else{
-            crearConexionRedundancia();
-            Mensaje mensajeRed = new Mensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "RESINCRONIZACION","","");
-            if (this.redundancia != null) {
-                this.redundancia.mandarMensaje(mensajeRed);
-            }
+        if (puerto == 1235 && hayRedundancia){
+            this.redundancia.mandarMensaje(mensaje);
         }
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
