@@ -97,62 +97,58 @@ public class Servidor implements Runnable, Serializable {
         System.out.printf(clientes.toString());
         System.out.printf("SE RECIBIO MENSAJE");
         switch (mensajeControl) {
-            case "REGISTRAR":
+            case "REGISTRAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
                 crearConexionRedundancia();
-                procesarRegistro(conexion,mensaje);
+                procesarRegistro(conexion, mensaje);
                 crearConexionRedundancia();
-                break;
-            case "NUEVA CONEXION":
+            }
+            case "NUEVA CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
                 procesarConexion(mensaje);
-                break;
-            case "CONEXION CORRECTA":
-                procesarConexionAceptada(mensaje);
-                break;
-            case "ACEPTAR":
+            }
+            case "CONEXION CORRECTA" -> procesarConexionAceptada(mensaje);
+            case "ACEPTAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
                 procesarAceptacion(mensaje);
-                break;
-            case "RECHAZAR":
+            }
+            case "RECHAZAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: RECHAZAR");
                 procesarRechazo(conexion, mensaje);
-                break;
-            case "TEXTO":
+            }
+            case "TEXTO" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: TEXTO");
                 procesarTexto(conexion, mensaje);
-                break;
-            case "DESCONECTAR":
-                procesarDesconexion(mensaje);
-                break;
-            case "CIERRO VENTANA SESION":
+            }
+            case "DESCONECTAR" -> procesarDesconexion(mensaje);
+            case "CIERRO VENTANA SESION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
                 procesarCierroVentana(mensaje);
-                break;
-            case "CIERRO VENTANA SESION LOCAL":
+            }
+            case "CIERRO VENTANA SESION LOCAL" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CIERRO VENTANA SESION");
                 procesarCierroVentanaLocal(mensaje);
-                break;
-            case "ERROR CONEXION":
+            }
+            case "ERROR CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ERRO CONEXION");
-                mandarMensaje(puerto,mensaje.getPuertoDestino(), "ERROR CONEXION","",mensaje.getNombreUsuarioEmisor());
-                break;
-            case "SOLICITAR NOMBRE":
+                mandarMensaje(puerto, mensaje.getPuertoDestino(), "ERROR CONEXION", "", mensaje.getNombreUsuarioEmisor());
+            }
+            case "SOLICITAR NOMBRE" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: SOLICITAR NOMBRE");
                 if (this.clientes.containsKey(mensaje.getPuertoDestino()))
-                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE",this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(),mensaje.getNombreUsuarioEmisor());
+                    mandarMensaje(puerto, mensaje.getPuertoOrigen(), "NOMBRE", this.clientes.get(mensaje.getPuertoDestino()).getNombreUsuario(), mensaje.getNombreUsuarioEmisor());
                 else
-                    mandarMensaje(puerto,mensaje.getPuertoOrigen(), "NOMBRE","",mensaje.getNombreUsuarioEmisor());
-                break;
-            case "LISTA USUARIOS":
-                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
-                mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS",clientesConectados.toString(),"");
-                break;
-            case "CERRAR CONEXION":
-                System.out.printf("\nLOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
+                    mandarMensaje(puerto, mensaje.getPuertoOrigen(), "NOMBRE", "", mensaje.getNombreUsuarioEmisor());
+            }
+            case "LISTA USUARIOS" -> {
+                System.out.printf("LOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
+                mandarMensaje(puerto, mensaje.getPuertoOrigen(), "LISTA USUARIOS", clientesConectados.toString(), "");
+            }
+            case "CERRAR CONEXION" -> {
+                System.out.printf("\nLOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
                 this.clientesConectados.remove(mensaje.getPuertoOrigen());
-                System.out.printf("LOS CLIENTES CONECTADOS SON "+ clientesConectados.toString());
-                break;
+                System.out.printf("LOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
+            }
         }
     }
 

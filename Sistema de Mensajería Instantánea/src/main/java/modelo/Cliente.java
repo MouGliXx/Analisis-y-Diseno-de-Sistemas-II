@@ -20,7 +20,7 @@ public class Cliente implements IObservable, IConexion {
     private String nombreDeUsuarioReceptor;
     private  int puertoPropio;
     private  int puertoServer = 1235;
-    private final int PUERTOS[] = {1235,1234};
+    private final int[] PUERTOS = {1235,1234};
     private String usuario = "";
     private ArrayList<IObserver> observadores = new ArrayList<>();
     private ArrayList<Integer> servidores = new ArrayList<>();
@@ -41,14 +41,12 @@ public class Cliente implements IObservable, IConexion {
     }
 
     public void registrarServidor(String nombreDeUsuario) throws Exception {
-//        if (puertoDestino == this.puertoPropio)
-//            throw new IOException();
         System.out.print("Intentando conectarse");
         for (Integer puerto : servidores) {
             Thread thread = new Thread(() -> {
                 try {
                     Conexion socket = conectar(puerto);
-                    System.out.printf("\nNos conectamos al puerto"+puerto);
+                    System.out.printf("\nNos conectamos al puerto: " + puerto);
                     conexiones.put(puerto,socket); // Almacena la referencia al socket en la lista
                     if (this.conexion == null) {
                         this.conexion = socket; // Asigna el primer servidor conectado como principal
@@ -57,7 +55,7 @@ public class Cliente implements IObservable, IConexion {
                     listenerMensajes(socket);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.out.println("No se pudo establecer la conexión con el servidor " + puerto);
+                    System.out.println("No se pudo establecer la conexión con el servidor: " + puerto);
                 }
                 catch(Exception e1){
                     e1.printStackTrace();
@@ -186,9 +184,7 @@ public class Cliente implements IObservable, IConexion {
             }
             case "NUEVA CONEXION" -> procesarNuevaConexion(mensaje);
             case "CIERRO VENTANA SESION" -> procesarCierreSesion(mensaje);
-            case "Acepto conexion" -> {
-                notifyObservadores("Acepto conexion", "", mensaje.getNombreUsuarioEmisor());
-            }
+            case "Acepto conexion" -> notifyObservadores("Acepto conexion", "", mensaje.getNombreUsuarioEmisor());
             case "RECHAZAR" -> notifyObservadores("Rechazo invitacion sesion", "", mensaje.getNombreUsuarioEmisor());
             case "ERROR CONEXION" -> notifyObservadores("ERROR CONEXION", "", mensaje.getNombreUsuarioEmisor());
             case "CONEXION CORRECTA" -> notifyObservadores("CONEXION CORRECTA", "", mensaje.getNombreUsuarioEmisor());

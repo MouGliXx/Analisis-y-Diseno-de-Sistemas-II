@@ -53,7 +53,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionAceptada() {
-        System.out.printf("\nnotificacionAceptada\n");
+        System.out.print("\nnotificacionAceptada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
                 Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
@@ -71,7 +71,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionRechazada() {
-        System.out.printf("\nnotificacionRechazada\n");
+        System.out.print("\nnotificacionRechazada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: "+ getPuertoInvitoASesion() + "\n");
             Sistema.getInstance().getCliente().rechazarConexion(getPuertoInvitoASesion());
@@ -93,7 +93,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void conectar() {
-        System.out.printf("\n[apreto CONECTAR] El nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
+        System.out.print("\n[apreto CONECTAR] El nombre es: " + Sistema.getInstance().getCliente().getNombreDeUsuarioReceptor());
         Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
         Sistema.getInstance().getCliente().crearConexion(vista.getPuerto());
         Sistema.getInstance().getCliente().setearNombreReceptor(vista.getPuerto());
@@ -126,7 +126,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     @Override
     public void notificarCambio(String estado, String mensaje, String nombreUsuarioEmisor) {
         //A esta funcion solo llego si soy el RECEPTOR y el EMISOR quiere conectarse conmigo
-        System.out.printf("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
+        System.out.print("\nRECIBIO NOTIFICACION DE CAMBIO: " + estado);
         switch (estado) {
             case "Rechazo invitacion sesion" -> {
                 this.notificacion.cerrarDialogo();
@@ -142,8 +142,8 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             }
             case "Abro ventana sesion" -> {
                 Sistema.getInstance().getCliente().setEnSesion(true);
-                System.out.printf("" + "\nACEPTAR --- se cambio el enSesion");
-                System.out.printf("\n En sesion " + Sistema.getInstance().getCliente());
+                System.out.print("" + "\nACEPTAR --- se cambio el enSesion");
+                System.out.print("\n En sesion " + Sistema.getInstance().getCliente());
                 this.vista.creaVentanaMensajes(nombreUsuarioEmisor);
                 this.notificacion.cerrarDialogo();
             }
@@ -151,12 +151,8 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
                 Sistema.getInstance().getCliente().setEnSesion(false);
                 this.vista.mostrarVentana();
             }
-            case "LISTA USUARIOS"-> {
-                this.vista.actualizarTablaUsuarios(mensaje);
-            }
-            case "SERVIDOR OUT"->{
-                this.vista.lanzarVentanaEmergente("SE CAYO EL SERVIDOR");
-            }
+            case "LISTA USUARIOS"-> this.vista.actualizarTablaUsuarios(mensaje);
+            case "SERVIDOR OUT"-> this.vista.lanzarVentanaEmergente("SE CAYO EL SERVIDOR");
         }
     }
 
