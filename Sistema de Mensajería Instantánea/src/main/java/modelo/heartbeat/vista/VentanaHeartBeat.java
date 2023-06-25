@@ -1,9 +1,7 @@
 package modelo.heartbeat.vista;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Font;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,18 +10,12 @@ import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
 public class VentanaHeartBeat extends JFrame {
-
     private JPanel contentPane;
     private JPanel panelCentral;
     private JScrollPane scrollPane;
     public JTextPane txtPane;
     private JLabel lblTitulo;
 
-
-
-    /**
-     * Create the frame.
-     */
     public VentanaHeartBeat(String nombre) {
         setTitle(nombre);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

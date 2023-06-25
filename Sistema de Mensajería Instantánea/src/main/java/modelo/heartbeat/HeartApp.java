@@ -4,11 +4,7 @@ import modelo.Conexion;
 import modelo.Mensaje;
 import modelo.heartbeat.vista.TextField;
 import modelo.heartbeat.vista.VentanaHeartBeat;
-import servidor.Servidor;
-
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -63,7 +59,6 @@ public class HeartApp {
 
                     conexion.mandarMensaje(new Mensaje(-1,-1,"HOLA","Hola como andas","Tomas"));
 
-
                     //System.out.println(response.toString());
                     endTime = System.nanoTime();
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
@@ -111,7 +106,6 @@ public class HeartApp {
 
                     conexion2.mandarMensaje(new Mensaje(-1,-1,"HOLA","Hola como andas","Tomas"));
 
-
                     //System.out.println(response.toString());
                     endTime = System.nanoTime();
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
@@ -120,7 +114,6 @@ public class HeartApp {
                     JOptionPane.showMessageDialog(null,"El servidor 1234 esta caido");
                 }
             }
-
         }
     }
 }
