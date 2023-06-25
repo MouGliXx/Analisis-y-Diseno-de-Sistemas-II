@@ -4,7 +4,7 @@ import modelo.Conexion;
 import modelo.Mensaje;
 import modelo.heartbeat.vista.TextField;
 import modelo.heartbeat.vista.VentanaHeartBeat;
-import servidor.Servidor;
+import Servidor;
 
 import javax.swing.*;
 import java.awt.*;
