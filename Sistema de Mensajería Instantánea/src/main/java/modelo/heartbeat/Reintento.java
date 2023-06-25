@@ -59,7 +59,6 @@ public class Reintento {
 
                     conexion.mandarMensaje(new Mensaje(-1,-1,"HOLA","Hola como andas","Tomas"));
 
-
                     //System.out.println(response.toString());
                     endTime = System.nanoTime();
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
