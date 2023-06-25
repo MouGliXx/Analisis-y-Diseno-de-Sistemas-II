@@ -65,7 +65,10 @@ public class Servidor implements Runnable, Serializable {
             System.out.printf("\n Se esta escuchando mensajes");
             while ((mensaje = (Mensaje) reader.readObject()) != null)
                 procesarMensaje(conexion, mensaje);
-        } catch (IOException | ClassNotFoundException e) {
+        }catch(SocketException e){
+
+        }
+        catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             System.out.printf("Se cerro conexion");
         }
@@ -77,7 +80,8 @@ public class Servidor implements Runnable, Serializable {
     private void crearConexionRedundancia() {
         if (!hayRedundancia) {
             try {
-                Socket socket = new Socket("localhost", 1234);
+                //TODO verificar como funciona con el puerto redundancia.
+                Socket socket = new Socket("localhost", puertoRedundancia);
                 Conexion conexionLocal = new Conexion();
                 conexionLocal.setSocket(socket);
                 conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
@@ -101,7 +105,7 @@ public class Servidor implements Runnable, Serializable {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
                 crearConexionRedundancia();
                 procesarRegistro(conexion, mensaje);
-                crearConexionRedundancia();
+                //crearConexionRedundancia();
             }
             case "NUEVA CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
