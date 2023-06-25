@@ -47,15 +47,20 @@ public class Cliente implements IObservable, IConexion {
             System.out.print("Intentando conectarse");
             int puertoDisponible = 1235;
             try {
-                ServerSocket serverSocket = new ServerSocket(1235);
+                System.out.printf("Entro 1");
+                Socket serverSocket = new Socket("localhost",1235);
                 serverSocket.close();
                 puertoDisponible = 1235;
+                System.out.printf("Entro 2");
             }
             catch( Exception e){
                 try {
-                    ServerSocket serverSocket = new ServerSocket(1234);
+                    System.out.printf("Entro 3");
+                    e.printStackTrace();
+                    Socket serverSocket = new Socket("localhost",1234);
                     serverSocket.close();
                     puertoDisponible = 1234;
+                    System.out.printf("Entro4");
                 }
                 catch(Exception e1){
                     System.out.printf("------ ERROR!! NO SE PUDO ESTABLECER EL SERVIDOR -------");

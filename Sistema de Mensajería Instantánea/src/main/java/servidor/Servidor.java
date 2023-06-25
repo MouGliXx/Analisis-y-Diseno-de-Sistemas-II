@@ -107,7 +107,6 @@ public class Servidor implements Runnable, Serializable {
         switch (mensajeControl) {
             case "REGISTRAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
-                crearConexionRedundancia();
                 procesarRegistro(conexion, mensaje);
                 //crearConexionRedundancia();
             }
@@ -118,6 +117,7 @@ public class Servidor implements Runnable, Serializable {
             case "CONEXION CORRECTA" -> procesarConexionAceptada(mensaje);
             case "ACEPTAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
+                crearConexionRedundancia();
                 procesarAceptacion(mensaje);
             }
             case "RECHAZAR" -> {
@@ -157,6 +157,11 @@ public class Servidor implements Runnable, Serializable {
                 this.clientesConectados.remove(mensaje.getPuertoOrigen());
                 System.out.printf("LOS CLIENTES CONECTADOS SON " + clientesConectados.toString());
             }
+            case "RESINCRONIZACION" ->{
+                System.out.printf("Se hizo la resincronizacion ----------------");
+                this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
+                this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
+            }
         }
     }
 
@@ -195,7 +200,8 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
         if (hayRedundancia){
-            this.redundancia.mandarMensaje(mensaje);
+            Mensaje mensajeRed = new Mensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "RESINCRONIZACION","", mensaje.getNombreUsuarioEmisor());
+            this.redundancia.mandarMensaje(mensajeRed);
         }
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }

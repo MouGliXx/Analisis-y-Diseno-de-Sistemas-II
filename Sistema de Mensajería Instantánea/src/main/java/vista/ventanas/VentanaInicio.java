@@ -142,6 +142,8 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         IpJTextField.setEnabled(true);
         PuertoSpinner.setEnabled(true);
         modoEscuchaCheckBox.setEnabled(true);
+        modoEscuchaCheckBox.setSelected(true);
+        modoEscuchaCheckBox.setText("Modo Escucha: ON");
 
         NombreDeUsuarioJTextField.setFocusable(false);
         registrarseConectarButton.setEnabled(false);
