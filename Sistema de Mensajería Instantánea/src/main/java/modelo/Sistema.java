@@ -6,14 +6,15 @@ import java.util.Random;
 
 public class Sistema {
     private static Sistema instance = null;
-    private Cliente cliente = new Cliente(this.obtenerPuertoAleatorio());
+    private Cliente cliente;
 
-    private Sistema() {
+    private Sistema(int puerto) {
+        cliente = new Cliente(puerto);
     }
 
     public static Sistema getInstance() {
         if (instance == null)
-            instance = new Sistema();
+            instance = new Sistema(1111);
         return instance;
     }
 
@@ -29,8 +30,7 @@ public class Sistema {
         int puertoInicial = 1024;
         int puertoFinal = 65535;
         Random rand = new Random();
-        int puertoAleatorio = rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial;
-        return puertoAleatorio;
+        return rand.nextInt(puertoFinal - puertoInicial + 1) + puertoInicial;
     }
 
     public String obtenerIP() throws UnknownHostException {

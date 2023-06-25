@@ -2,6 +2,9 @@
   <artifact type="jar" name="Sistema de Mensajería Instantánea:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Sistema_de_Mensajería_Instantánea_jar</output-path>
     <root id="archive" name="Sistema de Mensajería Instantánea.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/METAINF/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="Sistema de Mensajería Instantánea" />
     </root>
   </artifact>

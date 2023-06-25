@@ -1,10 +1,14 @@
 package vista.interfaces;
 
+import java.awt.event.WindowListener;
+
 public interface IVistaInicio extends IVista {
 
     void setKeyListener();
 
     void setChangeListener();
+
+    void setWindowListener(WindowListener controlador);
 
     void setModelos();
 
@@ -26,7 +30,7 @@ public interface IVistaInicio extends IVista {
 
     int getPuerto();
 
-    void actualizarTablaUsuarios();
+    void actualizarTablaUsuarios(String mensaje);
 
     IVistaNotificacion lanzarNotificacion();
 

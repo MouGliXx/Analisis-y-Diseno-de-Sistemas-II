@@ -45,7 +45,7 @@ public class DialogoNotificacion extends JDialog implements IVistaNotificacion {
 
     @Override
     public void setWindowListener(WindowListener controlador) {
-        this.addWindowListener(controlador);
+//        this.addWindowListener(controlador); //TODO gestionar en el futuro
     }
 
     @Override

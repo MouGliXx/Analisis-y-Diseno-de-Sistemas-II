@@ -15,20 +15,25 @@ public class Conexion {
     public Conexion() {
     }
 
-    public void mandarMensaje(Object o) throws IOException {
-        output.writeObject(o);
+    public void mandarMensaje(Object o){
+        try{
+            output.writeObject(o);
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.err.println("No se ha inicializado la salida del socket.");
+        }
     }
 
     public void close() {
         try {
-            if (socket != null) {
-                socket.close();
-            }
             if (input != null) {
                 input.close();
             }
             if (output != null) {
                 output.close();
+            }
+            if (socket != null) {
+                socket.close();
             }
         } catch (IOException e) {
             System.err.println("\nError al cerrar el socket: " + e.getMessage());
@@ -82,6 +87,7 @@ public class Conexion {
     @Override
     public String toString() {
         return "Conexion{" +
+                "Nombre" + nombreUsuario +
                 "puertoServidor=" + puertoServidor +
                 ", puertoCliente=" + puertoCliente +
                 ", socket=" + socket +

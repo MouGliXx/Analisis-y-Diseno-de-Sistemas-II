@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Sistema de Mensajería Instantánea:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/Sistema_de_Mensajería_Instantánea_jar2</output-path>
+    <root id="archive" name="Sistema de Mensajería Instantánea.jar">
+      <element id="module-output" name="Sistema de Mensajería Instantánea" />
+    </root>
+  </artifact>
+</component>

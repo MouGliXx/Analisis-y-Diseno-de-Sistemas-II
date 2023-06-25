@@ -54,6 +54,11 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
+    public void setWindowListener(WindowListener controlador) {
+        this.addWindowListener(controlador);
+    }
+
+    @Override
     public void setChangeListener() {
         this.PuertoSpinner.addChangeListener(this);
     }
@@ -137,6 +142,8 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
         IpJTextField.setEnabled(true);
         PuertoSpinner.setEnabled(true);
         modoEscuchaCheckBox.setEnabled(true);
+        modoEscuchaCheckBox.setSelected(true);
+        modoEscuchaCheckBox.setText("Modo Escucha: ON");
 
         NombreDeUsuarioJTextField.setFocusable(false);
         registrarseConectarButton.setEnabled(false);
@@ -179,9 +186,18 @@ public class VentanaInicio extends JFrame implements IVistaInicio, ActionListene
     }
 
     @Override
-    public void actualizarTablaUsuarios() { //TODO definir que parametro recibo
-        Object[] newRow = {"1", "2", "3"};
-        modeloTabla.addRow(newRow);
+    public void actualizarTablaUsuarios(String mensaje) {
+        modeloTabla.setRowCount(0);
+        //Parseo el mensaje
+        mensaje = mensaje.replace("{", "").replace("}", "");
+        String[] usuarios = mensaje.split(",");
+        for (String usuario : usuarios) {
+            String[] partes = usuario.split("=");
+            String puerto = partes[0].trim();
+            String nombreDeUsuario = partes[1].trim();
+            Object[] newRow = {nombreDeUsuario, "localhost", puerto};
+            modeloTabla.addRow(newRow);
+        }
     }
 
     @Override

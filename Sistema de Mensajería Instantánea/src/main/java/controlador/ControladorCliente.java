@@ -23,6 +23,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
         vista.setActionListener(this);
         vista.setKeyListener();
         vista.setChangeListener();
+        vista.setWindowListener(this);
 
         this.establecerIP();
     }
@@ -40,8 +41,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void actualizarUsuariosConectados() {
-        //TODO invocar funcion del modelo que me devuelva coleccion de conectados
-//        this.vista.actualizarTablaUsuarios();
+        Sistema.getInstance().getCliente().listaUsuarios();
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
@@ -53,6 +53,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionAceptada() {
+        System.out.print("\nnotificacionAceptada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> creo ventanaMensajes
             try {
                 Sistema.getInstance().getCliente().aceptarConexion(getPuertoInvitoASesion());
@@ -70,7 +71,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
     }
 
     private void notificacionRechazada() {
-        //TODO revisar esto con lauta
+        System.out.print("\nnotificacionRechazada\n");
         if (notificacion.getTipo() == 3) { //Si es de tipo solicitud -> informo al emisor
             System.out.print("Se rechazo la solicitud: " + getPuertoInvitoASesion() + "\n");
             try {
@@ -90,6 +91,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
             this.vista.setModoConectar();
             this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
         } catch (Exception e){
+            e.printStackTrace();
             this.vista.lanzarVentanaEmergente("ALERTA! No existe el servidor.");
         }
     }
@@ -157,6 +159,8 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
                 Sistema.getInstance().getCliente().setEnSesion(false);
                 this.vista.mostrarVentana();
             }
+            case "LISTA USUARIOS"-> this.vista.actualizarTablaUsuarios(mensaje);
+            case "SERVIDOR OUT"-> this.vista.lanzarVentanaEmergente("SE CAYO EL SERVIDOR");
         }
     }
 
@@ -181,18 +185,21 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     @Override
     public void windowClosing(WindowEvent e) {
-//        notificacionRechazada();
-        this.vista.cerrarVentana();
+        try {
+            Sistema.getInstance().getCliente().cerrarConexion();
+        } catch (NullPointerException exception) {
+            this.vista.cerrarVentana();
+        }
     }
 
     //METODOS NO USADOS
     @Override
-    public void windowOpened(WindowEvent e) {
+    public void windowClosed(WindowEvent e) {
 
     }
 
     @Override
-    public void windowClosed(WindowEvent e) {
+    public void windowOpened(WindowEvent e) {
 
     }
 
