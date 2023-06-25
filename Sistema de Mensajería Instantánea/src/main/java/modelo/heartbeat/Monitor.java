@@ -2,19 +2,19 @@ package modelo.heartbeat;
 
 import modelo.Conexion;
 import modelo.Mensaje;
-import modelo.heartbeat.vista.VentanaHeartBeat;
-import javax.swing.*;
+import modelo.heartbeat.vista.VentanaMonitor;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 
-public class HeartApp {
+public class Monitor {
     public static void main(String[] args) throws InterruptedException {
         long startTime, startTime2;
         long endTime, endTime2;
 
-        VentanaHeartBeat ventanaH = new VentanaHeartBeat();
+        VentanaMonitor ventanaH = new VentanaMonitor();
         ventanaH.ejecutar();
 
         Conexion conexion = new Conexion();

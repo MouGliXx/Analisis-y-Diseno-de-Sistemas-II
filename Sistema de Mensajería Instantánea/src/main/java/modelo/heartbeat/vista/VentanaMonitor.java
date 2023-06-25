@@ -3,7 +3,7 @@ package modelo.heartbeat.vista;
 import javax.swing.*;
 import java.util.Objects;
 
-public class VentanaHeartBeat extends JFrame{
+public class VentanaMonitor extends JFrame{
     private JPanel panelPrincipal;
     private JPanel panelSuperior;
     private JPanel panelCentral;
