@@ -1,8 +1,8 @@
-package modelo.heartbeat;
+package modelo.monitor;
 
 import conexion.Conexion;
 import modelo.Mensaje;
-import modelo.heartbeat.vista.VentanaMonitor;
+import modelo.monitor.vista.VentanaMonitor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

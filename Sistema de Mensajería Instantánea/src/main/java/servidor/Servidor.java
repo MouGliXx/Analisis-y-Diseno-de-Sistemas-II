@@ -81,8 +81,6 @@ public class Servidor implements Runnable, Serializable {
     }
 
 
-
-
     private void crearConexionRedundancia() {
         if (!hayRedundancia) {
             try {

@@ -1,4 +1,4 @@
-package modelo.heartbeat.vista;
+package modelo.monitor.vista;
 
 import javax.swing.*;
 import java.util.Objects;
