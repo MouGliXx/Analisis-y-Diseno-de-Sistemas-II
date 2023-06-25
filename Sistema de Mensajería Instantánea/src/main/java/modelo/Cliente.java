@@ -6,7 +6,10 @@ import static modelo.Cifrado.encriptar;
 import modelo.interfaces.IConexion;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
+import servidor.Servidor;
+
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -41,30 +44,45 @@ public class Cliente implements IObservable, IConexion {
     }
 
     public void registrarServidor(String nombreDeUsuario) throws Exception {
-        System.out.print("Intentando conectarse");
-        for (Integer puerto : servidores) {
-            Thread thread = new Thread(() -> {
+        Thread thread = new Thread(() -> {
+
+            System.out.print("Intentando conectarse");
+            int puertoDisponible = 1235;
+            try {
+                ServerSocket serverSocket = new ServerSocket(1235);
+                serverSocket.close();
+                puertoDisponible = 1235;
+            }
+            catch( Exception e){
                 try {
-                    Conexion socket = conectar(puerto);
-                    System.out.printf("\nNos conectamos al puerto: " + puerto);
-                    conexiones.put(puerto,socket); // Almacena la referencia al socket en la lista
-                    if (this.conexion == null) {
-                        this.conexion = socket; // Asigna el primer servidor conectado como principal
-                        System.out.println("\nConectado al servidor principal: " + socket);
-                    }
-                    listenerMensajes(socket);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("No se pudo establecer la conexión con el servidor: " + puerto);
+                    ServerSocket serverSocket = new ServerSocket(1234);
+                    serverSocket.close();
+                    puertoDisponible = 1234;
                 }
                 catch(Exception e1){
-                    e1.printStackTrace();
-                    System.out.printf("Error en la recepcion de mensajes");
+                    System.out.printf("------ ERROR!! NO SE PUDO ESTABLECER EL SERVIDOR -------");
                 }
-            });
-            thread.start();
-            Thread.sleep(1000);
-        }
+            }
+            try {
+                Conexion socket = conectar(puertoDisponible);
+                System.out.printf("\nNos conectamos al puerto: " + puertoDisponible);
+                conexiones.put(puertoDisponible,socket); // Almacena la referencia al socket en la lista
+                if (this.conexion == null) {
+                    this.conexion = socket; // Asigna el primer servidor conectado como principal
+                    System.out.println("\nConectado al servidor principal: " + socket);
+                }
+                listenerMensajes(socket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("No se pudo establecer la conexión con el servidor: " + puertoDisponible);
+            }
+            catch(Exception e1){
+                e1.printStackTrace();
+                System.out.printf("Error en la recepcion de mensajes");
+            }
+        });
+        thread.start();
+        Thread.sleep(500);
         this.registrar(nombreDeUsuario);
     }
 

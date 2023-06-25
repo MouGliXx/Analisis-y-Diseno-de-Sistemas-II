@@ -15,6 +15,7 @@ public class Servidor implements Runnable, Serializable {
     private Conexion redundancia;
     private boolean hayRedundancia = false;
     private int servidores[] = {1235,1234};
+    private Sincronizacion sincronizacion;
 
     public static void main(String[] args) {
         try {
@@ -29,6 +30,7 @@ public class Servidor implements Runnable, Serializable {
                 serverSocket.close();
                 Thread servidor = new Thread(new Servidor(1234));
                 servidor.start();
+
             }
             catch(Exception e1){
                 System.out.printf("------ ERROR!! NO SE PUDO ESTABLECER EL SERVIDOR -------");
@@ -38,6 +40,10 @@ public class Servidor implements Runnable, Serializable {
 
     public Servidor(int puerto) {
         this.puerto = puerto;
+        if (this.puerto == 1235)
+            puertoRedundancia = 1234;
+        else
+            puertoRedundancia = 1235;
     }
 
     public void run() {
@@ -83,16 +89,15 @@ public class Servidor implements Runnable, Serializable {
                 //TODO verificar como funciona con el puerto redundancia.
                 Socket socket = new Socket("localhost", puertoRedundancia);
                 Conexion conexionLocal = new Conexion();
+                System.out.printf("Se creo redundancia con el puerto" + puertoRedundancia);
                 conexionLocal.setSocket(socket);
                 conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
                 conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
                 this.redundancia = conexionLocal;
                 this.hayRedundancia = true;
-                System.out.printf("Se creo conexion con el servidor secundario");
             }catch (IOException e){
                 System.out.printf("Error");
             }
-
         }
     }
 
@@ -103,9 +108,8 @@ public class Servidor implements Runnable, Serializable {
         switch (mensajeControl) {
             case "REGISTRAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: REGISTRAR");
-                crearConexionRedundancia();
                 procesarRegistro(conexion, mensaje);
-                //crearConexionRedundancia();
+                crearConexionRedundancia();
             }
             case "NUEVA CONEXION" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: CONECTAR\n");
@@ -114,6 +118,7 @@ public class Servidor implements Runnable, Serializable {
             case "CONEXION CORRECTA" -> procesarConexionAceptada(mensaje);
             case "ACEPTAR" -> {
                 System.out.printf("\n ------------------------ \n MENSAJE CONTROL: ACEPTAR");
+                crearConexionRedundancia();
                 procesarAceptacion(mensaje);
             }
             case "RECHAZAR" -> {
@@ -190,7 +195,8 @@ public class Servidor implements Runnable, Serializable {
         this.sesiones.put(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino());
         this.sesiones.put(mensaje.getPuertoDestino(), mensaje.getPuertoOrigen());
         System.out.printf("\n Puerto al que se quiere mandar mensaje" + mensaje.getPuertoDestino());
-        if (puerto == 1235 && hayRedundancia){
+        if (hayRedundancia){
+            System.out.printf("Se mando mensaje a la redundancia de aceptar");
             this.redundancia.mandarMensaje(mensaje);
         }
         mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
