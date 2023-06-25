@@ -5,7 +5,6 @@ import modelo.Mensaje;
 import modelo.heartbeat.vista.TextField;
 import modelo.heartbeat.vista.VentanaHeartBeat;
 import servidor.Servidor;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;

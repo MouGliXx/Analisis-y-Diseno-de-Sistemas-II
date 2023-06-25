@@ -11,8 +11,6 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 
 public class HeartApp {
-
-
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, IOException {
         long startTime, startTime2;
         long endTime, endTime2;
