@@ -84,7 +84,7 @@ public class Cliente implements IObservable, IConexion {
             while ((obj = conexion.getInput().readObject()) != null) {
                 System.out.printf("Se recibio mensaje");
                 if (obj instanceof Mensaje) {
-                    System.out.printf("\n Instancia de mensaje");
+                        System.out.printf("\n Instancia de mensaje");
                     mensaje = (Mensaje) obj;
                     System.out.printf("\nEL MODO ESCUCHA ES" + this.modoEscucha);
                     System.out.printf("\nEl modo sesion es " + this.enSesion);
@@ -95,13 +95,12 @@ public class Cliente implements IObservable, IConexion {
                     }
                 } else {
                     System.out.printf("\nNo es instancia de mensaje");
-                    String mensaje2 = (String) obj;
-                    System.out.printf(mensaje2);
+                    System.out.printf("\nEl objeto es " + obj);
                 }
 
             }
         }
-        catch (SocketException e){
+        catch (SocketException | StreamCorruptedException e){
             System.out.println("Error al enviar el mensaje al servidor principal " );
             // Intentar reconexión con el servidor principal
             Conexion servidorPrincipal = reconectar();
@@ -120,7 +119,7 @@ public class Cliente implements IObservable, IConexion {
 
         // Intenta establecer una nueva conexión con el servidor principal
         Conexion nuevoSocket = null;
-        for (Integer puerto : servidores) {
+        for (Integer puerto : servidores) { // 1235 --- 1234
             try {
                 nuevoSocket = conectar(puerto);
                 System.out.printf("Nos conectamos nuevamente al puerto" + puerto);
