@@ -83,6 +83,7 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
         try {
             String nombreUsuario= vista.getNombreDeUsuario();
             Sistema.getInstance().getCliente().registrarServidor(nombreUsuario);
+            Sistema.getInstance().getCliente().setNombreDeUsuario(vista.getNombreDeUsuario());
             this.vista.setModoConectar();
             this.vista.lanzarVentanaEmergente("El usuario se ha registrado en el servidor con exito!");
         } catch (Exception e){

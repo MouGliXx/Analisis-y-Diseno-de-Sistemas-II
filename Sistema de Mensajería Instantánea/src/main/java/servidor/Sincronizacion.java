@@ -12,7 +12,7 @@ public class Sincronizacion implements ISincronizacion{
         @Override
         public void sincronizacion(){
                 System.out.printf("Se sincronizo");
-        };
+        }
 
         @Override
         public void conectarRedundancia() {
