@@ -41,7 +41,6 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     private void actualizarUsuariosConectados() {
         Sistema.getInstance().getCliente().listaUsuarios();
-
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
@@ -177,7 +176,11 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     @Override
     public void windowClosing(WindowEvent e) {
-        Sistema.getInstance().getCliente().cerrarConexion();
+        try {
+            Sistema.getInstance().getCliente().cerrarConexion();
+        } catch (NullPointerException exception) {
+            this.vista.cerrarVentana();
+        }
     }
 
     //METODOS NO USADOS
