@@ -30,7 +30,6 @@ public class Cliente implements IObservable, IConexion {
     private HashMap<Integer, Conexion> conexiones = new HashMap<>();
     private GestordeMensajes gestordeMensajes;
 
-
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = null;
     public boolean modoEscucha = true;
@@ -305,7 +304,6 @@ public class Cliente implements IObservable, IConexion {
     }
 
     // METODOS PARA EL OBSERVER
-
     @Override
     public void notifyObservadores(String estado, String mensaje,String nombreUsuarioEmisor) {
         Iterator<IObserver> iter = observadores.iterator();

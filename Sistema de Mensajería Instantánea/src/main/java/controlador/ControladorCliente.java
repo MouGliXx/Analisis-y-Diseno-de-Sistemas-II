@@ -41,7 +41,6 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     private void actualizarUsuariosConectados() {
         Sistema.getInstance().getCliente().listaUsuarios();
-
     }
 
     private void setNotificacion(int tipo, String nombreEmisor) {
