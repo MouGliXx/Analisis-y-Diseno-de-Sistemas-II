@@ -1,6 +1,6 @@
 package modelo.heartbeat;
 
-import modelo.Conexion;
+import conexion.Conexion;
 import modelo.Mensaje;
 import modelo.heartbeat.vista.VentanaMonitor;
 

@@ -1,13 +1,16 @@
-package servidor;
+package gestordeMensajes;
 
 import conexion.Conexion;
-import gestordeMensajes.GestordeMensajes;
+import modelo.Cifrado;
 import modelo.Mensaje;
-import java.io.*;
-import java.net.*;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.HashMap;
 
-public class Servidor implements Runnable, Serializable {
+public class GestordeMensajes implements IGestordeMensajes {
     private HashMap<Integer, Conexion> clientes = new HashMap<>();
     private HashMap<Integer,Integer> sesiones = new HashMap<>();
     private HashMap<Integer, String> clientesConectados = new HashMap<>();
@@ -16,93 +19,26 @@ public class Servidor implements Runnable, Serializable {
     private Conexion redundancia;
     private boolean hayRedundancia = false;
     private int servidores[] = {1235,1234};
-    private GestordeMensajes gestordeMensajes;
+    private Cifrado cifrado;
 
-    public static void main(String[] args) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(1235);
-            serverSocket.close();
-            Thread servidor = new Thread(new Servidor(1235));
-            servidor.start();
-        }
-        catch( Exception e){
-            try {
-                ServerSocket serverSocket = new ServerSocket(1234);
-                serverSocket.close();
-                Thread servidor = new Thread(new Servidor(1234));
-                servidor.start();
-            }
-            catch(Exception e1){
-                System.out.printf("------ ERROR!! NO SE PUDO ESTABLECER EL SERVIDOR -------");
-            }
-        }
-    }
-
-    public Servidor(int puerto) {
+    public GestordeMensajes(HashMap<Integer, Conexion> clientes, HashMap<Integer, Integer> sesiones, HashMap<Integer, String> clientesConectados, int puerto, int puertoRedundancia, Conexion redundancia, boolean hayRedundancia, int[] servidores, Cifrado cifrado) {
+        this.clientes = clientes;
+        this.sesiones = sesiones;
+        this.clientesConectados = clientesConectados;
         this.puerto = puerto;
-        if (this.puerto == 1235)
-            puertoRedundancia = 1234;
-        else
-            puertoRedundancia = 1235;
+        this.puertoRedundancia = puertoRedundancia;
+        this.redundancia = redundancia;
+        this.hayRedundancia = hayRedundancia;
+        this.servidores = servidores;
+        this.cifrado = cifrado;
     }
 
-    public void run() {
-        try {
-            System.out.printf("Servidor corriendo en el PUERTO: " + puerto);
-            ServerSocket serverSocket = new ServerSocket(puerto);
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                Conexion conexion = new Conexion();
-                conexion.setSocket(clientSocket);
-                conexion.setOutput(new ObjectOutputStream(conexion.getSocket().getOutputStream()));
-
-                Thread listenerMensajes = new Thread(() -> listenerMensajes(clientSocket, conexion));
-                listenerMensajes.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void crearConexion(Mensaje mensaje) {
     }
 
-    private void listenerMensajes(Socket clientSocket, Conexion conexion) {
-        try {
-            ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
-            Mensaje mensaje;
-            System.out.printf("\n Se esta escuchando mensajes");
-            while ((mensaje = (Mensaje) reader.readObject()) != null)
-                procesarMensaje(conexion, mensaje);
-        }catch(SocketException e){
-
-        }
-        catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            System.out.printf("Se cerro conexion");
-        }
-    }
-
-
-
-
-    private void crearConexionRedundancia() {
-        if (!hayRedundancia) {
-            try {
-                //TODO verificar como funciona con el puerto redundancia.
-                Socket socket = new Socket("localhost", puertoRedundancia);
-                System.out.printf("Se creo conexion con el servidor secundario");
-                Conexion conexionLocal = new Conexion();
-                conexionLocal.setSocket(socket);
-                conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
-                conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
-                this.redundancia = conexionLocal;
-                this.hayRedundancia = true;
-            }catch (IOException e){
-                System.out.printf("Error");
-            }
-
-        }
-    }
-
-    private void procesarMensaje(Conexion conexion, Mensaje mensaje) {
+    @Override
+    public void procesarMensaje(Conexion conexion, Mensaje mensaje) {
         String mensajeControl = mensaje.getMensajeControl();
         System.out.printf(clientes.toString());
         System.out.printf("SE RECIBIO MENSAJE");
@@ -167,7 +103,12 @@ public class Servidor implements Runnable, Serializable {
         }
     }
 
-    // Agrego la conexion al servidor
+    public void cerrarSesion(){}
+
+    public void setModoEscucha(){}
+
+    public void mandarMensajeEmisor(){}
+
     private void procesarRegistro(Conexion conexion,Mensaje mensaje) {
         conexion.setNombreUsuario(mensaje.getMensaje());
         clientesConectados.put(mensaje.getPuertoOrigen(), mensaje.getMensaje());
@@ -178,7 +119,6 @@ public class Servidor implements Runnable, Serializable {
         //mandarMensaje(mensaje.getPuertoOrigen(), mensaje.getPuertoDestino(), "ACEPTAR", "", mensaje.getNombreUsuarioEmisor());
     }
 
-    //Aviso al puerto destino que me quiero conectar con el
     private void procesarConexion(Mensaje mensaje) {
         if (existeCliente(mensaje.getPuertoDestino(),mensaje.getPuertoOrigen())) {
             System.out.printf("EL PUERTO ORIGEN ES" + mensaje.getPuertoOrigen());
@@ -218,10 +158,10 @@ public class Servidor implements Runnable, Serializable {
     // Mando mensaje de texto entre sesiones, por las dudas verifico que la sesion exista
     private void procesarTexto(Conexion conexion, Mensaje mensaje) {
 //        if (sesiones.containsKey(mensaje.getPuertoOrigen())) {
-            int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
-            System.out.printf("INTENTAMOS MANDAR MENSAJE A ");
-            System.out.printf("PUERTO ORI" + mensaje.getPuertoOrigen() + "PUERTO DEST" + puertoDestino );
-            clientes.get(puertoDestino).mandarMensaje(mensaje);
+        int puertoDestino = sesiones.get(mensaje.getPuertoOrigen());
+        System.out.printf("INTENTAMOS MANDAR MENSAJE A ");
+        System.out.printf("PUERTO ORI" + mensaje.getPuertoOrigen() + "PUERTO DEST" + puertoDestino );
+        clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
 
     private void procesarDesconexion(Mensaje mensaje){
@@ -263,4 +203,28 @@ public class Servidor implements Runnable, Serializable {
         System.out.printf("puerto destino" + puertoDestino);
         this.clientes.get(puertoDestino).mandarMensaje(mensaje);
     }
+
+    private void crearConexionRedundancia() {
+        if (!hayRedundancia) {
+            try {
+                //TODO verificar como funciona con el puerto redundancia.
+                Socket socket = new Socket("localhost", puertoRedundancia);
+                System.out.printf("Se creo conexion con el servidor secundario");
+                Conexion conexionLocal = new Conexion();
+                conexionLocal.setSocket(socket);
+                conexionLocal.setOutput(new ObjectOutputStream(socket.getOutputStream()));
+                conexionLocal.setInput(new ObjectInputStream(socket.getInputStream()));
+                this.redundancia = conexionLocal;
+                this.hayRedundancia = true;
+            }catch (IOException e){
+                System.out.printf("Error");
+            }
+
+        }
+    }
+
+
+
+
+
 }

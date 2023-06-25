@@ -3,11 +3,12 @@ package modelo;
 import static modelo.Cifrado.desencriptar;
 import static modelo.Cifrado.encriptar;
 
+import conexion.Conexion;
+import gestordeMensajes.GestordeMensajes;
 import modelo.interfaces.IConexion;
 import modelo.interfaces.IObservable;
 import modelo.interfaces.IObserver;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ public class Cliente implements IObservable, IConexion {
     private  int puertoPropio;
     private  int puertoServer = 1235;
     private final int[] PUERTOS = {1235,1234};
+    private Cifrado cifrado;
     private String usuario = "";
     private ArrayList<IObserver> observadores = new ArrayList<>();
     private ArrayList<Integer> servidores = new ArrayList<>();
-    private HashMap<Integer,Conexion> conexiones = new HashMap<>();
+    private HashMap<Integer, Conexion> conexiones = new HashMap<>();
+    private GestordeMensajes gestordeMensajes;
 
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes

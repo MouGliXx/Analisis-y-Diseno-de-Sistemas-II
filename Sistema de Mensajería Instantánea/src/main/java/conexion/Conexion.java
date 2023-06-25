@@ -1,4 +1,4 @@
-package modelo;
+package conexion;
 
 import java.io.*;
 import java.net.Socket;
@@ -94,5 +94,8 @@ public class Conexion {
                 ", output=" + output +
                 ", input=" + input +
                 '}';
+    }
+
+    public void put(int puertoOrigen, String mensaje) {
     }
 }
