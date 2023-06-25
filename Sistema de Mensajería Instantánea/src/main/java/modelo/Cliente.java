@@ -29,7 +29,7 @@ public class Cliente implements IObservable, IConexion {
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = null;
-    public boolean modoEscucha = false;
+    public boolean modoEscucha = true;
     private boolean enSesion = false;
     private boolean redundancia = false;
 
@@ -166,7 +166,7 @@ public class Cliente implements IObservable, IConexion {
 
 
 
-    public void cerrarConexion(){
+    public void cerrarConexion() throws NullPointerException{
         this.mandarMensaje(-1,"CERRAR CONEXION","");
     }
 
@@ -223,7 +223,7 @@ public class Cliente implements IObservable, IConexion {
     }
 
     // TIPOS DE MENSAJES
-    private void mandarMensaje(int puertoDestino, String mensajeControl, String text) {
+    private void mandarMensaje(int puertoDestino, String mensajeControl, String text) throws NullPointerException {
         Mensaje mensaje = new Mensaje(this.puertoPropio,puertoDestino,mensajeControl,text,this.nombreDeUsuario);
         this.conexion.mandarMensaje(mensaje);
     }
