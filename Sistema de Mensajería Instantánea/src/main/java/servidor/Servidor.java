@@ -38,6 +38,10 @@ public class Servidor implements Runnable, Serializable {
 
     public Servidor(int puerto) {
         this.puerto = puerto;
+        if (this.puerto == 1235)
+            puertoRedundancia = 1234;
+        else
+            puertoRedundancia = 1235;
     }
 
     public void run() {
