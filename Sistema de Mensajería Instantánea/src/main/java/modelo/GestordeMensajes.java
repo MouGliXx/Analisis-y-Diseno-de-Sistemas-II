@@ -1,10 +1,16 @@
-package servidor;
+package modelo;
 
 import gestordeMensajes.IGestordeMensajes;
-import modelo.Mensaje;
 
 public class GestordeMensajes implements IGestordeMensajes {
     @Override
     public void crearConexion(Mensaje mensaje) {
     }
+
+    public void cerrarSesion(){}
+
+    public void setModoEscucha(){}
+
+    public void mandarMensajeEmisor(){}
+
 }
