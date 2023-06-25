@@ -30,7 +30,7 @@ public class Cliente implements IObservable, IConexion {
 
     //TODO los socket cliente y server podrian estar dentro de una clase mensajes que implementa IMensajes
     private Conexion conexion = null;
-    public boolean modoEscucha = false;
+    public boolean modoEscucha = true;
     private boolean enSesion = false;
     private boolean redundancia = false;
 
