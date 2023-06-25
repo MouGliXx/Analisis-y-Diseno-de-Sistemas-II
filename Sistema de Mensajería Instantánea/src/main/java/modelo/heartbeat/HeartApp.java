@@ -25,7 +25,7 @@ public class HeartApp {
             Socket socket = null;
             Socket socket2 = null;
             try {
-                Thread.sleep(1000);
+                Thread.sleep(5000);
                 startTime = System.nanoTime();
                 socket = new Socket("localhost",1235);
 
@@ -62,13 +62,13 @@ public class HeartApp {
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
                     TextField.txtPane.setText(TextField.txtPane.getText() + ping);
                 } catch (IOException ex){
-                    JOptionPane.showMessageDialog(null,"Se cayo el servidor 1235");
+                    JOptionPane.showMessageDialog(null,"El servidor 1234 esta caido");
                 }
 
             }
 
             try{
-                Thread.sleep(1000);
+                Thread.sleep(5000);
 
                 startTime2 = System.nanoTime();
                 socket2 = new Socket("localhost", 1234);
@@ -109,7 +109,7 @@ public class HeartApp {
                     String ping = "\nPing: " + (float) (endTime - startTime) / 1000000 + " ms";
                     TextField.txtPane.setText(TextField.txtPane.getText() + ping);
                 } catch (IOException ex){
-                    JOptionPane.showMessageDialog(null,"Se cayo el servidor 1234");
+                    JOptionPane.showMessageDialog(null,"El servidor 1234 esta caido");
                 }
             }
         }
