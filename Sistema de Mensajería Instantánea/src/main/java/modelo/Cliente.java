@@ -187,8 +187,6 @@ public class Cliente implements IObservable, IConexion {
         //this.conexion.getOutput()
     }
 
-
-
     public void cerrarConexion(){
         this.mandarMensaje(-1,"CERRAR CONEXION","");
     }
@@ -321,7 +319,6 @@ public class Cliente implements IObservable, IConexion {
             obs.notificarCambio(estado, puerto,nombreUsuarioEmisor);
         }
     }
-
 
     @Override
     public void agregarObservador(IObserver observer) {
