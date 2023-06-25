@@ -15,7 +15,7 @@ public class Conexion {
     public Conexion() {
     }
 
-    public void mandarMensaje(Object o){
+    public void mandarMensaje(Object o) {
         try{
             output.writeObject(o);
         } catch(IOException e) {

@@ -22,7 +22,7 @@ public class VentanaHeartBeat extends JFrame{
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        setSize(600,800); //Dimensiones del JFrame
+        setSize(800,800); //Dimensiones del JFrame
         setResizable(false); //No redimensionable
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Icono.png"))).getImage());

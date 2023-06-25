@@ -61,9 +61,9 @@
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <maximumSize width="350" height="650"/>
-                  <minimumSize width="350" height="650"/>
-                  <preferredSize width="350" height="650"/>
+                  <maximumSize width="340" height="650"/>
+                  <minimumSize width="340" height="650"/>
+                  <preferredSize width="345" height="650"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -75,6 +75,9 @@
                       <focusable value="false"/>
                       <font name="Inter" size="12" style="0"/>
                       <foreground color="-16777216"/>
+                      <maximumSize width="340" height="650"/>
+                      <minimumSize width="340" height="650"/>
+                      <preferredSize width="340" height="650"/>
                     </properties>
                   </component>
                 </children>
@@ -85,9 +88,9 @@
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <maximumSize width="350" height="650"/>
-                  <minimumSize width="350" height="650"/>
-                  <preferredSize width="350" height="650"/>
+                  <maximumSize width="340" height="650"/>
+                  <minimumSize width="340" height="650"/>
+                  <preferredSize width="345" height="650"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -97,6 +100,9 @@
                       <background color="-1"/>
                       <font name="Inter" size="12" style="0"/>
                       <foreground color="-16777216"/>
+                      <maximumSize width="340" height="650"/>
+                      <minimumSize width="340" height="650"/>
+                      <preferredSize width="340" height="650"/>
                     </properties>
                   </component>
                 </children>
