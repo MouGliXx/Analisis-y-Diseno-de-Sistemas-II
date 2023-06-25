@@ -177,7 +177,6 @@ public class ControladorCliente implements ActionListener, WindowListener, IObse
 
     @Override
     public void windowClosing(WindowEvent e) {
-//        this.vista.cerrarVentana();
         Sistema.getInstance().getCliente().cerrarConexion();
     }
 
